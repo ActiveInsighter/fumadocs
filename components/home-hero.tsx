@@ -7,9 +7,9 @@ import {
   BookOpenText,
   Check,
   ChevronRight,
+  Code2,
   Command,
   FileText,
-  Github,
   Palette,
   Search,
   Sparkles,
@@ -80,7 +80,7 @@ export function HomeHero() {
                 href="https://github.com/ActiveInsighter/fumadocs"
                 className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-fd-border bg-fd-card/80 px-5 text-sm font-medium shadow-sm backdrop-blur-xl sm:w-auto"
               >
-                <Github className="size-4" />
+                <Code2 className="size-4" />
                 查看仓库
               </Link>
             </motion.div>
