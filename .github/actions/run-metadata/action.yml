@@ -36,7 +36,7 @@ runs:
         set -euo pipefail
 
         phase="${INPUT_PHASE:-snapshot}"
-        phase="$(printf '%s' "$phase" | tr -cs '[:alnum:]._- ' '-' | tr ' ' '-' | sed 's/^-*//; s/-*$//')"
+        phase="$(printf '%s' "$phase" | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
         [[ -n "$phase" ]] || phase="snapshot"
 
         limit="${INPUT_LIMIT:-10}"
