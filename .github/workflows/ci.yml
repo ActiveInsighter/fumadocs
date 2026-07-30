@@ -1,0 +1,63 @@
+name: CI
+run-name: CI ${{ github.run_id }} · ${{ github.ref_name }}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  issues: write
+
+concurrency:
+  group: fumadocs-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Type-check and build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Capture starting Run ID
+        uses: ./.github/actions/run-metadata
+        with:
+          phase: start
+          limit: "10"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.14.0
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Type-check
+        run: pnpm types:check
+
+      - name: Build
+        run: pnpm build
+
+      - name: Capture final Run ID and status
+        if: ${{ always() }}
+        uses: ./.github/actions/run-metadata
+        with:
+          phase: complete
+          limit: "10"

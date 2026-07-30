@@ -1,0 +1,38 @@
+{
+  "name": "fumadocs-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
+    "check": "pnpm types:check && pnpm build"
+  },
+  "dependencies": {
+    "cnfast": "^0.1.0",
+    "fumadocs-core": "16.13.0",
+    "fumadocs-mdx": "15.2.0",
+    "fumadocs-ui": "npm:@fumadocs/base-ui@16.13.0",
+    "lucide-react": "^1.27.0",
+    "motion": "^12.43.0",
+    "next": "16.2.12",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "postcss": "^8.5.24",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "pnpm@11.5.3",
+  "engines": {
+    "node": ">=24.14.0"
+  }
+}
