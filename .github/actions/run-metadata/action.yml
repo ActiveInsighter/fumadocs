@@ -99,7 +99,7 @@ runs:
           echo "| --- | ---: | --- | --- | --- | --- |"
           jq -r '.[] | [
             (.workflowName // "unknown" | gsub("\\|"; "\\|")),
-            ("[\\(" + (.databaseId | tostring) + "\\)](" + .url + ")"),
+            ("[" + (.databaseId | tostring) + "](" + .url + ")"),
             ((if (.conclusion // "") == "" then .status else .conclusion end) // "unknown"),
             ((.headBranch // "-") | gsub("\\|"; "\\|")),
             (.event // "-"),
