@@ -1,0 +1,55 @@
+---
+title: 导航与搜索
+description: 展示页面树、meta.json 排序和默认全文搜索能力。
+---
+
+## 页面树
+
+Fumadocs 根据 `content/docs` 的目录结构生成路由和侧边栏页面树。本示例站使用三个分类文件夹：
+
+```files
+content/docs
+├── components
+│   ├── callouts-cards.mdx
+│   ├── tabs-accordions.mdx
+│   ├── steps-files.mdx
+│   └── data-display.mdx
+├── content
+│   ├── markdown-code.mdx
+│   ├── math-mermaid.mdx
+│   └── includes.mdx
+├── platform
+│   ├── ai-exports.mdx
+│   └── navigation-search.mdx
+├── index.mdx
+└── meta.json
+```
+
+## meta.json 排序
+
+每个目录中的 `meta.json` 明确控制显示名称、展开状态和页面顺序。
+
+```json title="content/docs/components/meta.json"
+{
+  "title": "组件示例",
+  "defaultOpen": true,
+  "pages": [
+    "callouts-cards",
+    "tabs-accordions",
+    "steps-files",
+    "data-display"
+  ]
+}
+```
+
+## 默认搜索
+
+项目现有的搜索 Route Handler 使用 `createFromSource(source)`，会从 Fumadocs 内容源创建搜索接口。顶部搜索按钮可以直接检索这些示例页面及其正文内容。
+
+## 标题与锚点
+
+搜索结果和页面目录会使用构建时生成的标题数据。标题还支持显式锚点、从 TOC 隐藏以及只出现在 TOC 中等扩展语法。
+
+<Callout title="后续扩展" type="info">
+  当文档规模增大时，可以继续切换到 Orama Cloud、Algolia、Typesense 或其他搜索服务，而不需要改变页面内容写法。
+</Callout>
