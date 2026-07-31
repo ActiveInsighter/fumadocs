@@ -22,7 +22,10 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
-      NODE_OPTIONS: --max-old-space-size=6144
+      # The optimized Webpack build exceeded 6 GiB while the runner still had
+      # more than 6 GiB available. Keep enough V8 headroom without consuming
+      # the full 15 GiB runner memory.
+      NODE_OPTIONS: --max-old-space-size=10240
       NEXT_TELEMETRY_DISABLED: "1"
       CI: "1"
 
