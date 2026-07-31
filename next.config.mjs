@@ -6,12 +6,11 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
+  // Dynamic MDX compilation loads Shiki at runtime. Keeping it external avoids
+  // bundling every grammar and theme into the Next.js server compilation.
+  serverExternalPackages: ['shiki'],
   experimental: {
-    // Recommended by Next.js for large production builds. This trades a small
-    // amount of compilation speed for a lower peak Webpack heap.
     webpackMemoryOptimizations: true,
-    // Fumadocs augments the Webpack config, so force the build worker back on
-    // to isolate compilation memory from the main Next.js process.
     webpackBuildWorker: true,
     serverSourceMaps: false,
   },
