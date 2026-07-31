@@ -12,9 +12,9 @@ import {
   type SharedProps,
 } from 'fumadocs-ui/components/dialog/search';
 import { useDocsSearch } from 'fumadocs-core/search/client';
-import { staticClient } from 'fumadocs-core/search/client/orama-static';
+import { oramaStaticClient } from 'fumadocs-core/search/client/orama-static';
 
-const client = staticClient();
+const client = oramaStaticClient();
 
 export default function StaticSearchDialog(props: SharedProps) {
   const { search, setSearch, query } = useDocsSearch({ client });
