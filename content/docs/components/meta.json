@@ -1,0 +1,14 @@
+{
+  "title": "组件示例",
+  "description": "常用内容组件与交互组件",
+  "icon": "Blocks",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "callouts-cards",
+    "tabs-accordions",
+    "steps-files",
+    "data-display"
+  ]
+}

@@ -1,0 +1,52 @@
+---
+title: Callout 与 Cards
+description: 展示提示框、状态信息和链接卡片的常见写法。
+---
+
+## Callout 状态提示
+
+<Callout>
+  默认类型适合补充背景信息或解释上下文。
+</Callout>
+
+<Callout title="注意事项" type="warn">
+  警告类型适合放置兼容性限制、迁移提醒和可能导致错误的操作。
+</Callout>
+
+<Callout title="操作失败" type="error">
+  错误类型适合展示必须立即修复的问题。
+</Callout>
+
+<Callout title="配置完成" type="success">
+  成功类型适合确认某个步骤已经完成。
+</Callout>
+
+<Callout title="设计建议" type="idea">
+  想法类型适合展示可选方案和进一步优化方向。
+</Callout>
+
+## Cards 导航卡片
+
+<Cards>
+  <Card
+    title="Tabs 与 Accordion"
+    description="查看标签页与折叠面板的交互效果。"
+    href="/docs/components/tabs-accordions"
+  />
+  <Card
+    title="步骤与文件树"
+    description="查看教程步骤和目录结构组件。"
+    href="/docs/components/steps-files"
+  />
+  <Card
+    title="Markdown 与代码块"
+    description="查看代码高亮、Diff 和包管理器标签。"
+    href="/docs/content/markdown-code"
+  />
+</Cards>
+
+## 组合用法
+
+<Card title="带正文的独立卡片" href="/docs">
+  Card 不必只放在 Cards 容器中，也可以单独使用并承载 **Markdown**、`inline code` 和链接。
+</Card>

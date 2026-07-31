@@ -1,0 +1,14 @@
+{
+  "title": "平台能力",
+  "description": "导航、搜索、页面操作与 AI 输出",
+  "icon": "PanelsTopLeft",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "page-features",
+    "navigation-search",
+    "feedback",
+    "ai-exports"
+  ]
+}

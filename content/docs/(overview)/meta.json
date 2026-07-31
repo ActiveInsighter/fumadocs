@@ -1,0 +1,10 @@
+{
+  "title": "总览",
+  "description": "Fumadocs 能力展示与快速入口",
+  "icon": "LayoutDashboard",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "index"
+  ]
+}

@@ -1,0 +1,184 @@
+---
+title: 页面增强功能
+description: Copy Markdown、Open 菜单、GitHub 源码、最后更新时间、目录和页脚导航。
+icon: PanelsTopLeft
+---
+
+<InlineTOC items={toc} />
+
+## 当前页面可以看到什么
+
+本项目已经在统一的文档页面模板中启用：
+
+- **Copy Markdown**：获取逐页 Markdown 地址并复制页面原文。
+- **Open**：打开 Markdown、查看 GitHub 源码，以及使用支持的 AI 快捷入口。
+- **最后更新时间**：从 Git 历史读取当前文档最后一次修改时间。
+- **右侧目录**：根据页面标题自动生成，并高亮当前章节。
+- **上一篇与下一篇**：由页面树顺序自动生成。
+
+## Copy Markdown 与 Open
+
+页面操作区由 Fumadocs 官方组件提供：
+
+```tsx title="app/docs/[[...slug]]/page.tsx"
+import {
+  MarkdownCopyButton,
+  ViewOptionsPopover,
+} from 'fumadocs-ui/layouts/docs/page';
+
+const markdownUrl = '/llms.mdx/docs/components/callouts-cards';
+const githubUrl = 'https://github.com/owner/repo/blob/main/content/docs/page.mdx';
+
+<div className="flex items-center gap-2">
+  <MarkdownCopyButton markdownUrl={markdownUrl} />
+  <ViewOptionsPopover
+    markdownUrl={markdownUrl}
+    githubUrl={githubUrl}
+  />
+</div>
+```
+
+`MarkdownCopyButton` 会请求 `markdownUrl` 并复制文本；`ViewOptionsPopover` 会根据传入地址生成 Open 菜单。
+
+<Callout type="info" title="统一页面模板">
+  这些按钮写在动态文档路由中，因此所有 MDX 页面都会自动获得相同的操作区，不需要在每篇文章中重复添加。
+</Callout>
+
+## GitHub 源码地址
+
+当前项目根据页面真实路径构造源码地址：
+
+```ts
+const githubUrl =
+  `https://github.com/${owner}/${repo}/blob/${branch}/content/docs/${page.path}`;
+```
+
+因此移动或新增文档后，Open 菜单仍然会定位到对应文件。
+
+## 最后更新时间
+
+首先在 Fumadocs MDX 配置中启用插件：
+
+```ts title="source.config.ts"
+import { defineConfig } from 'fumadocs-mdx/config';
+import lastModified from 'fumadocs-mdx/plugins/last-modified';
+
+export default defineConfig({
+  plugins: [lastModified()],
+});
+```
+
+然后在页面底部渲染：
+
+```tsx title="app/docs/[[...slug]]/page.tsx"
+import { PageLastUpdate } from 'fumadocs-ui/layouts/docs/page';
+
+{page.data.lastModified ? (
+  <PageLastUpdate date={page.data.lastModified} />
+) : null}
+```
+
+该插件依赖 Git 历史，所以 CI 的 checkout 使用完整历史：
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+```
+
+## 右侧目录
+
+Fumadocs MDX 会自动生成 `toc`：
+
+```tsx
+<DocsPage toc={page.data.toc}>
+  {/* 页面内容 */}
+</DocsPage>
+```
+
+单篇 MDX 中可以控制标题是否进入目录：
+
+```md
+## 固定锚点 [#stable-anchor]
+
+## 不进入目录 [!toc]
+
+## 仅进入目录 [toc]
+```
+
+需要把目录放进正文时：
+
+```mdx
+<InlineTOC items={toc} />
+```
+
+## 目录样式
+
+默认目录不需要额外配置。需要使用 Clerk 风格时：
+
+```tsx
+<DocsPage
+  toc={page.data.toc}
+  tableOfContent={{
+    style: 'clerk',
+  }}
+>
+  {/* 页面内容 */}
+</DocsPage>
+```
+
+## 页面宽屏模式
+
+在 Frontmatter 中启用：
+
+```mdx
+---
+title: 宽屏页面
+full: true
+---
+```
+
+动态页面已经把它传给 `DocsPage`：
+
+```tsx
+<DocsPage full={page.data.full} />
+```
+
+宽屏模式适合大型表格、API Playground、流程图和交互式示例。
+
+## 上一篇与下一篇
+
+`DocsPage` 默认根据传入 `DocsLayout` 的页面树生成页脚导航。顺序由 `meta.json` 中的 `pages` 决定：
+
+```json
+{
+  "pages": [
+    "introduction",
+    "installation",
+    "configuration"
+  ]
+}
+```
+
+无需在每篇 MDX 中手工指定上一页和下一页。
+
+## 面包屑
+
+文档页面默认根据目录和页面树生成面包屑。合理使用文件夹、`meta.json` 标题和 `pagesIndex`，即可得到清晰的导航路径。
+
+## 公告 Banner
+
+需要显示可关闭的全站公告时，在根布局顶部加入：
+
+```tsx title="app/layout.tsx"
+import { Banner } from 'fumadocs-ui/components/banner';
+
+<body>
+  <Banner id="release-v1">
+    新版本已经发布
+  </Banner>
+  {children}
+</body>
+```
+
+提供 `id` 后，用户关闭公告的状态会自动保存。
