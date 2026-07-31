@@ -1,5 +1,5 @@
 {
-  "name": "fumadocs-studio",
+  "name": "fumadocs",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,12 +11,9 @@
     "check": "pnpm types:check && pnpm build"
   },
   "dependencies": {
-    "cnfast": "^0.1.0",
     "fumadocs-core": "16.13.0",
     "fumadocs-mdx": "15.2.0",
     "fumadocs-ui": "npm:@fumadocs/base-ui@16.13.0",
-    "lucide-react": "^1.27.0",
-    "motion": "^12.43.0",
     "next": "16.2.12",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
