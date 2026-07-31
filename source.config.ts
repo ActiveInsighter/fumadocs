@@ -5,6 +5,7 @@ import lastModified from 'fumadocs-mdx/plugins/last-modified';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import normalizeMathUnicode from './src/rehype/normalize-math-unicode';
+import stripRegisteredComponentImports from './src/remark/strip-registered-component-imports';
 
 const katexOptions = {
   // The question bank contains many formulas. HTML-only output avoids
@@ -31,7 +32,13 @@ export const docs = defineDocs({
 export default defineConfig({
   plugins: [lastModified()],
   mdxOptions: {
-    remarkPlugins: [remarkMath, remarkSteps, remarkMdxFiles, remarkMdxMermaid],
+    remarkPlugins: [
+      stripRegisteredComponentImports,
+      remarkMath,
+      remarkSteps,
+      remarkMdxFiles,
+      remarkMdxMermaid,
+    ],
     remarkNpmOptions: {
       persist: {
         id: 'package-manager',
