@@ -20,9 +20,10 @@ env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  # Keep the V8 heap below the physical memory of a standard hosted runner so
-  # the Linux OOM killer still has room for Turbopack workers and native tools.
-  NODE_OPTIONS: --max-old-space-size=6144
+  # Measured CI data showed the build reaching the 6 GiB V8 limit while the
+  # 15 GiB runner still had substantial free memory. Leave native-process and
+  # operating-system headroom while allowing the optimized build to finish.
+  NODE_OPTIONS: --max-old-space-size=10240
   NEXT_TELEMETRY_DISABLED: "1"
   CI: "1"
 
