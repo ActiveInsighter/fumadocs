@@ -5,7 +5,9 @@ type RouteProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export const revalidate = false;
+// Preserve every per-page Markdown endpoint while avoiding a second static
+// route for every large MDX page during the production build.
+export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: RouteProps) {
   const page = source.getPage((await params).slug);
@@ -17,10 +19,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
   return new Response(await getLLMText(page), {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
+      'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
     },
   });
-}
-
-export function generateStaticParams() {
-  return source.generateParams();
 }

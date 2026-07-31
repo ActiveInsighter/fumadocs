@@ -12,13 +12,18 @@ permissions:
 
 concurrency:
   group: fumadocs-vercel-production
-  cancel-in-progress: true
+  # A full question-bank build is relatively long. Do not terminate a healthy
+  # production build merely because another commit was pushed.
+  cancel-in-progress: false
 
 env:
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NODE_OPTIONS: --max-old-space-size=12288
+  # Measured CI data showed the build reaching the 6 GiB V8 limit while the
+  # 15 GiB runner still had substantial free memory. Leave native-process and
+  # operating-system headroom while allowing the optimized build to finish.
+  NODE_OPTIONS: --max-old-space-size=10240
   NEXT_TELEMETRY_DISABLED: "1"
   CI: "1"
 
@@ -26,7 +31,7 @@ jobs:
   deploy:
     name: Build on GitHub and deploy to Vercel
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
       - name: Checkout repository
@@ -34,12 +39,6 @@ jobs:
         with:
           fetch-depth: 1
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.5.3
-          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -138,8 +137,28 @@ jobs:
       - name: Pull Vercel production settings
         run: vercel pull --yes --environment=production
 
-      - name: Build production output
-        run: vercel build --prod
+      - name: Build production output with resource telemetry
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "::group::Initial runner resources"
+          free -h
+          df -h .
+          echo "::endgroup::"
+
+          vercel build --prod &
+          build_pid=$!
+
+          while kill -0 "$build_pid" 2>/dev/null; do
+            echo "::group::Build resources $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            free -h
+            ps -eo pid,ppid,rss,%mem,etime,cmd --sort=-rss | head -n 15 || true
+            echo "::endgroup::"
+            sleep 30
+          done
+
+          wait "$build_pid"
 
       - name: Deploy prebuilt production output
         id: deploy

@@ -3,6 +3,8 @@ run-name: CI ${{ github.run_id }} · ${{ github.ref_name }}
 
 on:
   pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -16,12 +18,16 @@ concurrency:
 
 jobs:
   build:
-    name: Type-check and build
+    name: Build Fumadocs
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
-      NODE_OPTIONS: --max-old-space-size=12288
+      # The optimized Webpack build exceeded 6 GiB while the runner still had
+      # more than 6 GiB available. Keep enough V8 headroom without consuming
+      # the full 15 GiB runner memory.
+      NODE_OPTIONS: --max-old-space-size=10240
       NEXT_TELEMETRY_DISABLED: "1"
+      CI: "1"
 
     steps:
       - name: Checkout repository
@@ -50,11 +56,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Type-check
-        run: pnpm types:check
+      # `next build` already performs the production TypeScript validation.
+      # Running `fumadocs-mdx` separately compiled the entire question bank twice.
+      - name: Build with resource telemetry
+        shell: bash
+        run: |
+          set -euo pipefail
 
-      - name: Build
-        run: pnpm build
+          echo "::group::Initial runner resources"
+          free -h
+          df -h .
+          echo "::endgroup::"
+
+          pnpm build &
+          build_pid=$!
+
+          while kill -0 "$build_pid" 2>/dev/null; do
+            echo "::group::Build resources $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            free -h
+            ps -eo pid,ppid,rss,%mem,etime,cmd --sort=-rss | head -n 15 || true
+            echo "::endgroup::"
+            sleep 30
+          done
+
+          wait "$build_pid"
 
       - name: Capture final Run ID and status
         if: ${{ always() }}
