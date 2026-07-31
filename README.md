@@ -28,7 +28,22 @@ Open `http://localhost:3000` for the landing page and `http://localhost:3000/doc
 pnpm types:check
 pnpm build
 pnpm check
+pnpm start
 ```
+
+## Vercel deployment
+
+Import the repository into Vercel with these settings:
+
+- Framework Preset: `Next.js`
+- Root Directory: `./`
+- Build Command: use the detected default (`pnpm build`)
+- Output Directory: leave empty and use the Next.js default
+- Install Command: use the detected default
+- Node.js Version: `24.x`
+- Production Branch: `main`
+
+The root `package.json` declares Next.js as a direct dependency, `vercel.json` explicitly selects the Next.js framework, and pushes to `main` are deployed automatically by the Vercel Git integration.
 
 ## Content
 
