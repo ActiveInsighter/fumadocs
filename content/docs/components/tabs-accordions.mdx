@@ -1,0 +1,56 @@
+---
+title: Tabs 与 Accordion
+description: 展示可同步、可持久化的标签页和折叠内容。
+---
+
+## 基础标签页
+
+<Tabs items={['TypeScript', 'JavaScript']}>
+  <Tab value="TypeScript">
+
+```ts
+const message: string = 'Hello Fumadocs';
+```
+
+  </Tab>
+  <Tab value="JavaScript">
+
+```js
+const message = 'Hello Fumadocs';
+```
+
+  </Tab>
+</Tabs>
+
+## 同步并持久化
+
+下面两组标签使用相同的 `groupId`，切换其中一组会同步另一组；`persist` 会把选择保存在浏览器中。
+
+<Tabs groupId="runtime" items={['Node.js', 'Bun']} persist>
+  <Tab value="Node.js">Node.js 示例内容</Tab>
+  <Tab value="Bun">Bun 示例内容</Tab>
+</Tabs>
+
+<Tabs groupId="runtime" items={['Node.js', 'Bun']} persist>
+  <Tab value="Node.js">当前选择：Node.js</Tab>
+  <Tab value="Bun">当前选择：Bun</Tab>
+</Tabs>
+
+## 单选折叠面板
+
+<Accordions type="single">
+  <Accordion id="faq-install" title="如何安装依赖？">
+    使用下方自动切换的包管理器命令即可。
+
+```npm
+npm install fumadocs-ui
+```
+
+  </Accordion>
+  <Accordion id="faq-theme" title="是否修改了主题？">
+    没有。本示例站继续使用 Fumadocs 官方默认的 neutral 主题和布局。
+  </Accordion>
+  <Accordion id="faq-mdx" title="组件能否直接写在 MDX 中？">
+    可以。常用组件已经在 `components/mdx.tsx` 中统一注册，因此页面通常不需要重复导入。
+  </Accordion>
+</Accordions>
