@@ -1,0 +1,9 @@
+{
+  "title": "内容能力",
+  "defaultOpen": true,
+  "pages": [
+    "markdown-code",
+    "math-mermaid",
+    "includes"
+  ]
+}
