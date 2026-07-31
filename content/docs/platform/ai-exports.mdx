@@ -1,0 +1,43 @@
+---
+title: AI 与 Markdown 输出
+description: 展示 llms.txt、完整文档文本和每页 Markdown 出口。
+---
+
+## 可用地址
+
+<Cards>
+  <Card
+    title="llms.txt"
+    description="提供文档页面索引，方便 AI 工具发现站点内容。"
+    href="/llms.txt"
+  />
+  <Card
+    title="llms-full.txt"
+    description="把所有文档的处理后 Markdown 合并为一个纯文本响应。"
+    href="/llms-full.txt"
+  />
+  <Card
+    title="当前页面的 Markdown"
+    description="在任意文档 URL 后追加 .md，获取该页面的 Markdown。"
+    href="/docs/platform/ai-exports.md"
+  />
+</Cards>
+
+## 实现原理
+
+`source.config.ts` 开启了 `includeProcessedMarkdown`。构建时，Fumadocs MDX 会保留适合 AI 阅读的处理后 Markdown，运行时通过 `page.data.getText('processed')` 获取。
+
+```ts title="lib/get-llm-text.ts"
+export async function getLLMText(page) {
+  const processed = await page.data.getText('processed');
+  return `# ${page.data.title}\n\n${processed}`;
+}
+```
+
+## 页面 Markdown 重写
+
+`next.config.mjs` 把 `/docs/:path*.md` 重写到专用 Route Handler，因此原始文档 URL 与 Markdown URL 保持一致的路径结构。
+
+<Callout title="用途" type="idea">
+  这些出口可用于知识库导入、RAG 索引、AI 编程助手上下文、站点内容审查以及离线文档处理。
+</Callout>
