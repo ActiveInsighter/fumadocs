@@ -2,7 +2,6 @@ import {
   Accordion,
   Accordions,
 } from 'fumadocs-ui/components/accordion';
-import { DynamicCodeBlock } from 'fumadocs-ui/components/dynamic-codeblock';
 import { File, Files, Folder } from 'fumadocs-ui/components/files';
 import { ImageZoom } from 'fumadocs-ui/components/image-zoom';
 import { InlineTOC } from 'fumadocs-ui/components/inline-toc';
@@ -11,6 +10,8 @@ import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
 import { TypeTable } from 'fumadocs-ui/components/type-table';
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
+import { CodeBlock, Pre } from '@/components/animate-ui/codeblock';
+import { DynamicCodeBlock } from '@/components/animate-ui/dynamic-codeblock';
 import { Mermaid } from '@/components/mdx/mermaid';
 
 export function getMDXComponents(components?: MDXComponents) {
@@ -29,6 +30,11 @@ export function getMDXComponents(components?: MDXComponents) {
     Tab,
     Tabs,
     TypeTable,
+    pre: ({ ref: _ref, onCopy: _nativeOnCopy, ...props }) => (
+      <CodeBlock {...props}>
+        <Pre>{props.children}</Pre>
+      </CodeBlock>
+    ),
     img: (props) => <ImageZoom {...(props as any)} />,
     ...components,
   } satisfies MDXComponents;
