@@ -30,7 +30,7 @@ export function getMDXComponents(components?: MDXComponents) {
     Tab,
     Tabs,
     TypeTable,
-    pre: ({ ref: _ref, ...props }) => (
+    pre: ({ ref: _ref, onCopy: _nativeOnCopy, ...props }) => (
       <CodeBlock {...props}>
         <Pre>{props.children}</Pre>
       </CodeBlock>
