@@ -1,0 +1,36 @@
+---
+title: 部署
+description: 构建项目，并为后续 Cloudflare 部署保留清晰边界。
+icon: Cloud
+---
+
+## 构建
+
+```bash
+pnpm build
+pnpm start
+```
+
+当前阶段只实现独立的 Next.js 文档站，不绑定 Cloudflare Worker 或 D1。
+
+## Cloudflare 接入建议
+
+后续接入 Cloudflare 时，建议按顺序完成：
+
+1. 确认 Next.js 的目标运行模式。
+2. 使用适配 Cloudflare 的 Next.js 构建方案。
+3. 将搜索、动态接口和静态资源分别验证。
+4. 再接入 Worker、环境变量和自定义域名。
+
+D1 不应与文档内容层耦合。未来需要评论、用户数据或编辑能力时，再新增独立的数据访问模块。
+
+## GitHub Actions Run ID
+
+`.github/actions/run-metadata/action.yml` 会生成：
+
+- `current-run.json`
+- `recent-runs.json`
+- `run-index.json`
+- `run-index.md`
+
+文件作为 Artifact 保存 14 天，同时更新仓库中的 **Workflow run index** Issue，便于根据 Run ID 查看失败日志。

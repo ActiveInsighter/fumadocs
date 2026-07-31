@@ -1,0 +1,56 @@
+---
+title: 快速开始
+description: 安装依赖、启动开发服务器并添加第一篇文档。
+icon: Rocket
+---
+
+## 环境要求
+
+- Node.js 24.14 或更高版本
+- pnpm 11
+
+## 安装与启动
+
+```bash
+corepack enable
+pnpm install
+pnpm dev
+```
+
+开发服务器启动后访问：
+
+```text
+http://localhost:3000
+```
+
+文档入口位于：
+
+```text
+http://localhost:3000/docs
+```
+
+## 添加文档
+
+在 `content/docs` 中创建新的 `.mdx` 文件：
+
+```mdx
+---
+title: 新页面
+description: 页面摘要
+---
+
+## 标题
+
+这里写正文。
+```
+
+然后将文件名加入同目录的 `meta.json`，即可控制侧边栏顺序。
+
+## 质量检查
+
+```bash
+pnpm types:check
+pnpm build
+```
+
+GitHub Actions 会在开始和结束阶段保存 Run ID、最近运行状态、JSON 索引和构建结果。
