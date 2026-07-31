@@ -1,0 +1,10 @@
+{
+  "title": "组件示例",
+  "defaultOpen": true,
+  "pages": [
+    "callouts-cards",
+    "tabs-accordions",
+    "steps-files",
+    "data-display"
+  ]
+}
