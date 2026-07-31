@@ -17,7 +17,7 @@ import {
 import type { ScrollArea as ScrollAreaPrimitive } from 'radix-ui';
 import { CopyButton } from '@/components/animate-ui/copy-button';
 
-export type CodeBlockProps = HTMLAttributes<HTMLElement> & {
+export type CodeBlockProps = Omit<HTMLAttributes<HTMLElement>, 'onCopy'> & {
   icon?: ReactNode;
   allowCopy?: boolean;
   viewportProps?: ScrollAreaPrimitive.ScrollAreaViewportProps;
