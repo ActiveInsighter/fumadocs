@@ -1,7 +1,12 @@
 {
   "title": "内容能力",
+  "description": "Markdown、MDX、代码、公式与图表",
+  "icon": "FileText",
+  "root": true,
   "defaultOpen": true,
   "pages": [
+    "index",
+    "mdx-syntax",
     "markdown-code",
     "math-mermaid",
     "includes"
