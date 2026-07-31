@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
-import { RootProvider } from 'fumadocs-ui/provider/next';
+import { Provider } from '@/components/provider';
 import './global.css';
 import { appDescription, appName } from '@/lib/shared';
 
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="min-h-screen antialiased">
-        <RootProvider>{children}</RootProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );
