@@ -1,0 +1,54 @@
+---
+title: 类型表、动态代码与图片
+description: 展示 TypeTable、DynamicCodeBlock、InlineTOC 和全局图片缩放。
+---
+
+<InlineTOC items={toc}>本页内容</InlineTOC>
+
+## TypeTable
+
+<TypeTable
+  type={{
+    enabled: {
+      description: '是否启用该功能。',
+      type: 'boolean',
+      default: true,
+    },
+    mode: {
+      description: '选择运行模式。',
+      type: "'automatic' | 'manual'",
+      default: 'automatic',
+    },
+    limit: {
+      description: '一次处理的最大项目数。',
+      type: 'number',
+      default: 20,
+    },
+  }}
+/>
+
+## DynamicCodeBlock
+
+动态代码块适合展示运行时生成、由配置拼接或从接口获取的代码内容。
+
+<DynamicCodeBlock
+  lang="tsx"
+  code={`export function Greeting({ name }: { name: string }) {
+  return <p>Hello, {name}!</p>;
+}`}
+/>
+
+## InlineTOC
+
+页面顶部的“本页内容”由 `InlineTOC` 根据当前页面自动生成的 `toc` 数据渲染。它适合较长的教程、API 文档和专题页面。
+
+## 图片缩放
+
+全局 `img` 已替换为 `ImageZoom`。点击下面的图片即可放大查看。
+
+<img
+  src="/fumadocs-capabilities.svg"
+  alt="Fumadocs 能力集成示意图"
+  width="1200"
+  height="600"
+/>
