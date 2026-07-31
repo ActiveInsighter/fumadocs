@@ -1,0 +1,47 @@
+---
+title: 组件示例
+description: Fumadocs UI 常用内容组件与交互组件的集中入口。
+icon: Blocks
+---
+
+<Callout title="全局可用" type="success">
+  本分类中的组件已经在 `components/mdx.tsx` 中统一注册，普通 MDX 页面可以直接使用，无需逐页导入。
+</Callout>
+
+## 组件目录
+
+<Cards>
+  <Card
+    title="Callout 与 Cards"
+    description="提示、警告、错误、成功状态和导航卡片。"
+    href="/docs/components/callouts-cards"
+  />
+  <Card
+    title="Tabs 与 Accordion"
+    description="标签切换、跨组件同步、持久化选择和折叠内容。"
+    href="/docs/components/tabs-accordions"
+  />
+  <Card
+    title="Steps 与 Files"
+    description="教程步骤、手写文件树和 files 代码块。"
+    href="/docs/components/steps-files"
+  />
+  <Card
+    title="类型表、动态代码与图片"
+    description="TypeTable、DynamicCodeBlock、InlineTOC 和 ImageZoom。"
+    href="/docs/components/data-display"
+  />
+</Cards>
+
+## 直接使用
+
+```mdx
+<Callout type="warn" title="注意">
+  修改配置后需要重新启动开发服务器。
+</Callout>
+
+<Tabs items={['npm', 'pnpm']}>
+  <Tab value="npm">npm install package</Tab>
+  <Tab value="pnpm">pnpm add package</Tab>
+</Tabs>
+```
