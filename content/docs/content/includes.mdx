@@ -1,0 +1,32 @@
+---
+title: 内容复用与 Include
+description: 展示 Fumadocs MDX 的文件包含和章节提取能力。
+---
+
+## 引入完整文件
+
+下面的内容不是复制到本页的，而是在构建时从共享 MDX 文件中引入。
+
+<include>../_shared/reusable.mdx</include>
+
+## 只引入指定章节
+
+可以在路径后添加标题锚点，只提取某个标题下面的内容。
+
+```mdx
+<include>../_shared/reusable.mdx#reusable-section</include>
+```
+
+## 引入源代码
+
+同样的语法也可以引入 TypeScript、JSON 等代码文件，并通过 `lang` 与 `meta` 指定语言和标题。
+
+```mdx
+<include lang="ts" meta='title="source.config.ts"'>
+  ../../../source.config.ts
+</include>
+```
+
+<Callout title="适用场景" type="idea">
+  Include 很适合拆分大型文档、复用安装步骤、共享接口定义，以及让示例代码与真实源码保持一致。
+</Callout>
