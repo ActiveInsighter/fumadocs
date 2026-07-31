@@ -19,7 +19,9 @@ export const docs = defineDocs({
   docs: {
     postprocess: {
       extractLinkReferences: true,
-      includeProcessedMarkdown: true,
+      // Do not export processed Markdown into every compiled MDX module.
+      // LLM endpoints use Fumadocs' built-in raw text accessor instead.
+      includeProcessedMarkdown: false,
     },
   },
 });
