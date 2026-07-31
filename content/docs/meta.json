@@ -1,9 +1,4 @@
 {
-  "title": "Fumadocs 功能示例",
-  "pages": [
-    "(overview)",
-    "components",
-    "content",
-    "platform"
-  ]
+  "title": "考研知识库",
+  "pages": ["index", "math", "408", "algorithm"]
 }
