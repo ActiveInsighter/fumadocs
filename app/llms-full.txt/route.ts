@@ -3,6 +3,7 @@ import { source } from '@/lib/source';
 
 // Building this as one static asset loads every document during next build.
 // Stream raw sources at request time instead and cache the response at the CDN.
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export function GET() {
