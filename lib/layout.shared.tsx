@@ -4,21 +4,11 @@ import { repositoryUrl } from '@/lib/shared';
 export function baseOptions(): BaseLayoutProps {
   return {
     nav: {
-      title: '考研知识库',
+      title: '算法知识库',
     },
     links: [
       {
-        text: '数学',
-        url: '/docs/math',
-        active: 'nested-url',
-      },
-      {
-        text: '408',
-        url: '/docs/408',
-        active: 'nested-url',
-      },
-      {
-        text: '算法',
+        text: '算法文档',
         url: '/docs/algorithm',
         active: 'nested-url',
       },
