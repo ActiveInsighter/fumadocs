@@ -17,26 +17,16 @@ type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-// Fumadocs Dynamic Mode compiles the requested file with Node.js filesystem
-// APIs. Keeping this route dynamic ensures Vercel emits a server trace that can
-// include content/docs instead of treating the page as a fully static asset.
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Documents are compiled and prerendered during deployment. Vercel serves the
+// resulting RSC/HTML from its static cache instead of compiling MDX in a
+// regional function on every navigation.
+export const revalidate = false;
 
 export default async function Page({ params }: PageProps) {
   const page = getPageByRouteSlugs((await params).slug);
   if (!page) notFound();
 
-  let loaded: Awaited<ReturnType<typeof page.data.load>>;
-  try {
-    loaded = await page.data.load();
-  } catch (error) {
-    console.error(`[docs] Failed to load dynamic MDX: ${page.path}`, error);
-    throw error;
-  }
-
-  const { body: MDX, toc } = loaded;
+  const { body: MDX, toc } = await page.data.load();
   const markdownUrl = getPageMarkdownUrl(page);
   const githubUrl = `https://github.com/${gitConfig.owner}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
 
@@ -69,4 +59,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: page.data.title,
     description: page.data.description,
   };
+}
+
+export function generateStaticParams() {
+  return source.generateParams();
 }
