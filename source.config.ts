@@ -7,7 +7,10 @@ import stripProvidedComponentImports from './src/remark/strip-provided-component
 export const docs = defineDocs({
   dir: 'content/docs',
   docs: {
-    async: true,
+    // Turbopack does not lazy-bundle async MDX imports. Dynamic mode keeps
+    // frontmatter in the generated collection and compiles the requested page
+    // at runtime instead of adding every document body to the build graph.
+    dynamic: true,
   },
 });
 

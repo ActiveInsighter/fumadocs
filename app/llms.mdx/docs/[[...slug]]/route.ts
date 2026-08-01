@@ -5,9 +5,9 @@ type RouteProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export const dynamic = 'force-static';
-export const dynamicParams = false;
-export const revalidate = false;
+// Do not generate a second static route for every document during deployment.
+// Raw MDX is inexpensive to read and the Vercel CDN caches the response.
+export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: RouteProps) {
   const page = source.getPage((await params).slug);
@@ -19,10 +19,7 @@ export async function GET(_request: Request, { params }: RouteProps) {
   return new Response(await getLLMText(page), {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
+      'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
     },
   });
-}
-
-export function generateStaticParams() {
-  return source.generateParams();
 }
