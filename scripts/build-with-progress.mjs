@@ -48,7 +48,7 @@ async function discoverDocuments(directory) {
   return files;
 }
 
-async function readCompletedDocuments(progressDirectory) {
+async function readMarkerDocuments(progressDirectory, suffix) {
   let entries;
   try {
     entries = await readdir(progressDirectory);
@@ -56,7 +56,7 @@ async function readCompletedDocuments(progressDirectory) {
     return new Set();
   }
 
-  const markerNames = entries.filter((entry) => entry.endsWith('.done'));
+  const markerNames = entries.filter((entry) => entry.endsWith(suffix));
   const documents = await Promise.all(
     markerNames.map(async (markerName) => {
       try {
@@ -68,6 +68,15 @@ async function readCompletedDocuments(progressDirectory) {
   );
 
   return new Set(documents.filter(Boolean));
+}
+
+async function readProgress(progressDirectory) {
+  const [startedDocuments, completedDocuments] = await Promise.all([
+    readMarkerDocuments(progressDirectory, '.started'),
+    readMarkerDocuments(progressDirectory, '.done'),
+  ]);
+
+  return { startedDocuments, completedDocuments };
 }
 
 const documents = await discoverDocuments(contentRoot);
@@ -85,7 +94,7 @@ console.log(
   `[build progress] tracking ${totalDocuments} Markdown/MDX documents under content/docs`,
 );
 console.log(
-  `[build progress] each completed MDX compilation will be printed; heartbeat interval is ${heartbeatSeconds}s`,
+  `[build progress] logs show MDX pipeline start/done events; heartbeat interval is ${heartbeatSeconds}s`,
 );
 
 const nextBinary = process.platform === 'win32' ? 'next.cmd' : 'next';
@@ -109,18 +118,20 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
 }
 
 const heartbeat = setInterval(async () => {
-  const completedDocuments = await readCompletedDocuments(progressDirectory);
+  const { startedDocuments, completedDocuments } = await readProgress(progressDirectory);
+  const started = startedDocuments.size;
   const completed = completedDocuments.size;
+  const active = Math.max(started - completed, 0);
   const remaining = Math.max(totalDocuments - completed, 0);
   const elapsed = formatDuration(Date.now() - startedAt);
 
   if (totalDocuments > 0 && remaining === 0) {
     console.log(
-      `[build heartbeat] all ${totalDocuments} MDX documents compiled; Next.js/Turbopack is still bundling or optimizing | elapsed ${elapsed}`,
+      `[build heartbeat] all ${totalDocuments} MDX documents processed; Next.js/Turbopack is still bundling or optimizing | elapsed ${elapsed}`,
     );
   } else {
     console.log(
-      `[build heartbeat] Next.js build is running | MDX ${completed}/${totalDocuments} | remaining ${remaining} | elapsed ${elapsed}`,
+      `[build heartbeat] Next.js build is running | started ${started}/${totalDocuments} | done ${completed}/${totalDocuments} | active ${active} | remaining ${remaining} | elapsed ${elapsed}`,
     );
   }
 }, heartbeatSeconds * 1000);
@@ -142,7 +153,10 @@ const result = await new Promise((resolve) => {
 });
 clearInterval(heartbeat);
 
-const completedDocuments = await readCompletedDocuments(progressDirectory);
+const { startedDocuments, completedDocuments } = await readProgress(progressDirectory);
+const activeDocuments = documents.filter(
+  (document) => startedDocuments.has(document) && !completedDocuments.has(document),
+);
 const remainingDocuments = documents.filter(
   (document) => !completedDocuments.has(document),
 );
@@ -160,15 +174,26 @@ if (result.code === 0) {
       : `exit code ${result.code ?? 1}`;
 
   console.error(
-    `[build progress] Next.js build failed (${reason}) | MDX ${completedDocuments.size}/${totalDocuments} | remaining ${remainingDocuments.length} | elapsed ${elapsed}`,
+    `[build progress] Next.js build failed (${reason}) | started ${startedDocuments.size}/${totalDocuments} | done ${completedDocuments.size}/${totalDocuments} | active ${activeDocuments.length} | remaining ${remainingDocuments.length} | elapsed ${elapsed}`,
   );
 
+  if (activeDocuments.length > 0) {
+    console.error('[build progress] documents that started but did not finish:');
+    for (const document of activeDocuments.slice(0, 25)) {
+      console.error(`  - ${document}`);
+    }
+    if (activeDocuments.length > 25) {
+      console.error(`  ... and ${activeDocuments.length - 25} more`);
+    }
+  }
+
   if (remainingDocuments.length > 0) {
-    const preview = remainingDocuments.slice(0, 25);
-    console.error('[build progress] first uncompiled documents:');
-    for (const document of preview) console.error(`  - ${document}`);
-    if (remainingDocuments.length > preview.length) {
-      console.error(`  ... and ${remainingDocuments.length - preview.length} more`);
+    console.error('[build progress] first documents not completed:');
+    for (const document of remainingDocuments.slice(0, 25)) {
+      console.error(`  - ${document}`);
+    }
+    if (remainingDocuments.length > 25) {
+      console.error(`  ... and ${remainingDocuments.length - 25} more`);
     }
   }
 }
