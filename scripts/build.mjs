@@ -34,15 +34,47 @@ function lineNumberAt(source, index) {
   return source.slice(0, index).split('\n').length;
 }
 
+function excludeFencedCode(source) {
+  let fenceCharacter;
+  let fenceLength = 0;
+
+  return source
+    .split('\n')
+    .map((line) => {
+      const match = line.match(/^\s*(`{3,}|~{3,})/u);
+
+      if (!fenceCharacter && match) {
+        fenceCharacter = match[1][0];
+        fenceLength = match[1].length;
+        return '';
+      }
+
+      if (
+        fenceCharacter &&
+        match &&
+        match[1][0] === fenceCharacter &&
+        match[1].length >= fenceLength
+      ) {
+        fenceCharacter = undefined;
+        fenceLength = 0;
+        return '';
+      }
+
+      return fenceCharacter ? '' : line;
+    })
+    .join('\n');
+}
+
 async function validateDynamicDocuments() {
   const documents = await collectDocuments(docsRoot);
   const violations = [];
 
   for (const absolutePath of documents) {
     const source = await readFile(absolutePath, 'utf8');
+    const mdxSource = excludeFencedCode(source);
     const relativePath = path.relative(projectRoot, absolutePath).split(path.sep).join('/');
 
-    for (const match of source.matchAll(/^\s*(import|export)\s+([^\n]+)$/gmu)) {
+    for (const match of mdxSource.matchAll(/^\s*(import|export)\s+([^\n]+)$/gmu)) {
       const statement = match[0].trim();
       const isProvidedTabsImport =
         match[1] === 'import' &&
@@ -50,7 +82,7 @@ async function validateDynamicDocuments() {
 
       if (!isProvidedTabsImport) {
         violations.push(
-          `${relativePath}:${lineNumberAt(source, match.index ?? 0)} unsupported MDX ESM: ${statement}`,
+          `${relativePath}:${lineNumberAt(mdxSource, match.index ?? 0)} unsupported MDX ESM: ${statement}`,
         );
       }
     }
@@ -61,9 +93,9 @@ async function validateDynamicDocuments() {
     ];
 
     for (const pattern of relativeImagePatterns) {
-      for (const match of source.matchAll(pattern)) {
+      for (const match of mdxSource.matchAll(pattern)) {
         violations.push(
-          `${relativePath}:${lineNumberAt(source, match.index ?? 0)} relative images are unsupported in dynamic mode: ${match[0]}`,
+          `${relativePath}:${lineNumberAt(mdxSource, match.index ?? 0)} relative images are unsupported in dynamic mode: ${match[0]}`,
         );
       }
     }
