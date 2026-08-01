@@ -1,5 +1,5 @@
 import { getLLMText } from '@/lib/get-llm-text';
-import { source } from '@/lib/source';
+import { getPageByRouteSlugs } from '@/lib/source';
 
 type RouteProps = {
   params: Promise<{ slug?: string[] }>;
@@ -11,7 +11,7 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: RouteProps) {
-  const page = source.getPage((await params).slug);
+  const page = getPageByRouteSlugs((await params).slug);
 
   if (!page) {
     return new Response('Not Found', { status: 404 });
