@@ -7,6 +7,7 @@ type RouteProps = {
 
 // Do not generate a second static route for every document during deployment.
 // Raw MDX is inexpensive to read and the Vercel CDN caches the response.
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(_request: Request, { params }: RouteProps) {
