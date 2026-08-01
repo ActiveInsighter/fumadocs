@@ -5,6 +5,8 @@ type RouteProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
+export const dynamic = 'force-static';
+export const dynamicParams = false;
 export const revalidate = false;
 
 export async function GET(_request: Request, { params }: RouteProps) {
