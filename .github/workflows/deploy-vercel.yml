@@ -1,159 +1,17 @@
-name: Vercel Production Deployment
-run-name: Vercel Production ${{ github.run_id }} · ${{ github.sha }}
+name: Vercel Deployment Information
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: fumadocs-vercel-production
-  cancel-in-progress: true
-
-env:
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  NODE_OPTIONS: --max-old-space-size=12288
-  NEXT_TELEMETRY_DISABLED: "1"
-  BUILD_PROGRESS_HEARTBEAT_SECONDS: "20"
-  CI: "1"
-
 jobs:
-  deploy:
-    name: Build on GitHub and deploy to Vercel
+  info:
+    name: Native Vercel Git Integration
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-          persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 11.5.3
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Install Vercel CLI
-        run: npm install --global vercel@58.4.4
-
-      - name: Validate and normalize Vercel secrets
-        shell: bash
+      - name: Deployment configuration
         run: |
-          set -euo pipefail
-
-          test -n "$VERCEL_TOKEN" || {
-            echo "::error title=Missing secret::VERCEL_TOKEN is empty."
-            exit 1
-          }
-          test -n "$VERCEL_ORG_ID" || {
-            echo "::error title=Missing secret::VERCEL_ORG_ID is empty."
-            exit 1
-          }
-          test -n "$VERCEL_PROJECT_ID" || {
-            echo "::error title=Missing secret::VERCEL_PROJECT_ID is empty."
-            exit 1
-          }
-
-          case "$VERCEL_ORG_ID" in
-            team_*|user_*) ;;
-            *)
-              echo "::error title=Invalid organization ID::VERCEL_ORG_ID must begin with team_ or user_."
-              exit 1
-              ;;
-          esac
-
-          case "$VERCEL_PROJECT_ID" in
-            prj_*) ;;
-            *)
-              echo "::error title=Invalid project ID::VERCEL_PROJECT_ID must begin with prj_."
-              exit 1
-              ;;
-          esac
-
-          normalized_token="$(printf '%s' "$VERCEL_TOKEN" | tr -d '\r\n')"
-          test -n "$normalized_token" || {
-            echo "::error title=Invalid token::VERCEL_TOKEN is empty after normalization."
-            exit 1
-          }
-
-          if [[ "$normalized_token" != "$VERCEL_TOKEN" ]]; then
-            echo "::warning title=Token normalized::Removed an accidental line break from VERCEL_TOKEN."
-          fi
-
-          echo "::add-mask::$normalized_token"
-          echo "VERCEL_TOKEN=$normalized_token" >> "$GITHUB_ENV"
-
-      - name: Verify access to configured Vercel project
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          response_file="$(mktemp)"
-          status="$(curl \
-            --silent \
-            --show-error \
-            --retry 2 \
-            --retry-all-errors \
-            --connect-timeout 10 \
-            --max-time 30 \
-            --output "$response_file" \
-            --write-out '%{http_code}' \
-            --header "Authorization: Bearer $VERCEL_TOKEN" \
-            "https://api.vercel.com/v9/projects/$VERCEL_PROJECT_ID?teamId=$VERCEL_ORG_ID")"
-
-          if [[ "$status" != "200" ]]; then
-            message="$(jq -r '.error.message // .message // "Unknown Vercel API error"' "$response_file" 2>/dev/null || true)"
-            echo "::error title=Vercel project access failed::HTTP $status: $message"
-            exit 1
-          fi
-
-          project_name="$(jq -r '.name // "unknown"' "$response_file")"
-          echo "Authenticated token can access Vercel project: $project_name"
-
-      - name: Configure Vercel project
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf .vercel
-          mkdir -p .vercel
-          jq -n \
-            --arg orgId "$VERCEL_ORG_ID" \
-            --arg projectId "$VERCEL_PROJECT_ID" \
-            '{orgId: $orgId, projectId: $projectId}' \
-            > .vercel/project.json
-
-      - name: Pull Vercel production settings
-        run: vercel pull --yes --environment=production
-
-      - name: Build production output
-        run: vercel build --prod
-
-      - name: Deploy prebuilt production output
-        id: deploy
-        shell: bash
-        run: |
-          set -euo pipefail
-          deployment_url="$(vercel deploy \
-            --prebuilt \
-            --prod \
-            --archive=tgz)"
-          echo "deployment_url=${deployment_url}" >> "$GITHUB_OUTPUT"
-          {
-            echo "### Vercel production deployment"
-            echo
-            echo "${deployment_url}"
-          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Deployments are handled by Vercel's native Git integration."
+          echo "Connect this repository in Vercel to enable preview deployments for branches and production deployments for main."
