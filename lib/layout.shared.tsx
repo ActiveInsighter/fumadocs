@@ -8,8 +8,8 @@ export function baseOptions(): BaseLayoutProps {
     },
     links: [
       {
-        text: '文档',
-        url: '/docs',
+        text: '算法文档',
+        url: '/docs/algorithm',
         active: 'nested-url',
       },
     ],
