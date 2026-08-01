@@ -10,7 +10,7 @@ import {
   ViewOptionsPopover,
 } from 'fumadocs-ui/layouts/docs/page';
 import { getMDXComponents } from '@/components/mdx';
-import { getPageMarkdownUrl, source } from '@/lib/source';
+import { getPageByRouteSlugs, getPageMarkdownUrl, source } from '@/lib/source';
 import { gitConfig } from '@/lib/shared';
 
 type PageProps = {
@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Page({ params }: PageProps) {
-  const page = source.getPage((await params).slug);
+  const page = getPageByRouteSlugs((await params).slug);
   if (!page) notFound();
 
   let loaded: Awaited<ReturnType<typeof page.data.load>>;
@@ -62,7 +62,7 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const page = source.getPage((await params).slug);
+  const page = getPageByRouteSlugs((await params).slug);
   if (!page) notFound();
 
   return {
