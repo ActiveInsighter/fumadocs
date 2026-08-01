@@ -18,16 +18,19 @@ type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 export default async function Page({ params }: PageProps) {
   const page = source.getPage((await params).slug);
   if (!page) notFound();
 
-  const MDX = page.data.body;
+  const { body: MDX, toc, lastModified } = await page.data.load();
   const markdownUrl = getPageMarkdownUrl(page);
   const githubUrl = `https://github.com/${gitConfig.owner}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage toc={toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
 
@@ -44,13 +47,9 @@ export default async function Page({ params }: PageProps) {
         />
       </DocsBody>
 
-      {page.data.lastModified ? <PageLastUpdate date={page.data.lastModified} /> : null}
+      {lastModified ? <PageLastUpdate date={lastModified} /> : null}
     </DocsPage>
   );
-}
-
-export function generateStaticParams() {
-  return source.generateParams();
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
