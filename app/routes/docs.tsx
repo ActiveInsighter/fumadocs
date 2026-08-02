@@ -51,9 +51,11 @@ function Content({
   const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${path}`;
 
   return (
-    <DocsPage toc={toc}>
+    <DocsPage toc={toc} className="DocSearch-content">
       <title>{page.title}</title>
       <meta name="description" content={page.description} />
+      <meta name="docsearch:language" content="zh-CN" />
+      <meta name="docsearch:version" content="latest" />
       <DocsTitle>{page.title}</DocsTitle>
       <DocsDescription>{page.description}</DocsDescription>
       <div className="flex flex-row items-center gap-2 border-b -mt-4 pb-6">
