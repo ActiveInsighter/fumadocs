@@ -56,7 +56,8 @@ export default async function Page({ params }: PageProps) {
   const page = getPageByRouteSlugs((await params).slug);
   if (!page) notFound();
 
-  const { body: MDX, toc } = await page.data.load();
+  const MDX = page.data.body;
+  const toc = page.data.toc;
   const markdownUrl = getPageMarkdownUrl(page);
   const githubUrl = `https://github.com/${gitConfig.owner}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${page.path}`;
 
