@@ -1,6 +1,7 @@
 import type { Config } from '@react-router/dev/config';
 import { glob } from 'node:fs/promises';
-import { createGetUrl, getSlugs } from 'fumadocs-core/source';
+import { createGetUrl } from 'fumadocs-core/source';
+import { getContentSlugs } from './app/lib/content-slugs';
 
 const getUrl = createGetUrl('/docs');
 
@@ -16,7 +17,7 @@ export default {
     const paths = new Set(getStaticPaths().map(toPrerenderPath));
 
     for await (const entry of glob('**/*.mdx', { cwd: 'content/docs' })) {
-      const slugs = getSlugs(entry);
+      const slugs = getContentSlugs(entry);
       paths.add(toPrerenderPath(getUrl(slugs)));
       paths.add(
         toPrerenderPath(`/llms.mdx/docs/${[...slugs, 'content.md'].join('/')}`),
