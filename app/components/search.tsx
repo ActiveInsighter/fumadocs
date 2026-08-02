@@ -85,6 +85,15 @@ function sanitizeHighlight(value?: string | null): string {
     .replace(/<(?!\/?mark(?:\s|>))[^>]*>/giu, '');
 }
 
+function toInternalUrl(value: string): string {
+  try {
+    const url = new URL(value);
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return value;
+  }
+}
+
 function getHighlightValue(
   hit: DocSearchHit,
   level: HierarchyLevel,
@@ -131,7 +140,9 @@ function mapHitsToResults(hits: DocSearchHit[]): SortedResult[] {
   const pages = new Set<string>();
 
   for (const hit of hits) {
-    const pageUrl = hit.url_without_anchor || hit.url.split('#', 1)[0];
+    const rawPageUrl = hit.url_without_anchor || hit.url.split('#', 1)[0];
+    const pageUrl = toInternalUrl(rawPageUrl);
+    const resultUrl = toInternalUrl(hit.url);
     const titleLevel = getPageTitleLevel(hit);
     const deepestLevel = getDeepestLevel(hit);
     const pageTitle = titleLevel
@@ -160,12 +171,12 @@ function mapHitsToResults(hits: DocSearchHit[]): SortedResult[] {
       : '';
     const content = snippet || heading;
 
-    if (!content || (content === pageTitle && hit.url === pageUrl)) continue;
+    if (!content || (content === pageTitle && resultUrl === pageUrl)) continue;
 
     results.push({
       id: hit.objectID,
       type: hit.type === 'content' || snippet ? 'text' : 'heading',
-      url: hit.url,
+      url: resultUrl,
       content,
     });
   }
@@ -235,6 +246,11 @@ export default function AlgoliaSearchDialog(props: SharedProps) {
     : query.error
       ? '搜索服务暂时不可用，请稍后重试。'
       : '没有找到匹配的内容。';
+  const items = query.error
+    ? []
+    : query.data !== 'empty'
+      ? query.data
+      : null;
 
   return (
     <SearchDialog
@@ -251,7 +267,7 @@ export default function AlgoliaSearchDialog(props: SharedProps) {
           <SearchDialogClose />
         </SearchDialogHeader>
         <SearchDialogList
-          items={query.data !== 'empty' ? query.data : null}
+          items={items}
           Empty={() => (
             <div className="px-6 py-12 text-center text-sm text-fd-muted-foreground">
               {emptyMessage}
