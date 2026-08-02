@@ -1,4 +1,3 @@
 {
-  "title": "算法知识库",
-  "pages": ["index", "algorithm"]
+  "pages": ["(framework)", "ui", "headless", "mdx", "cli"]
 }
