@@ -1,40 +1,47 @@
 {
-  "name": "fumadocs",
-  "version": "0.1.0",
+  "name": "fumadocs-react-router",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "postinstall": "fumadocs-mdx",
-    "types:check": "fumadocs-mdx && next typegen && tsc --noEmit",
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "types:check": "react-router typegen && tsc --noEmit",
     "check": "pnpm types:check && pnpm build"
   },
   "dependencies": {
-    "fumadocs-core": "16.13.0",
-    "fumadocs-mdx": "15.2.0",
-    "fumadocs-ui": "npm:@fumadocs/base-ui@16.13.0",
+    "@react-router/node": "^8.3.0",
+    "@react-router/serve": "^8.3.0",
+    "fumadocs-core": "^16.14.0",
+    "fumadocs-mdx": "^15.2.1",
+    "fumadocs-ui": "^16.14.0",
+    "isbot": "^5.2.1",
     "katex": "^0.18.1",
-    "lucide-react": "^1.27.0",
-    "next": "16.2.12",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-router": "^8.3.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
+    "@react-router/dev": "^8.3.0",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/mdx": "^2.0.14",
     "@types/node": "^26.1.2",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "postcss": "^8.5.24",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "tailwindcss": "^4.3.3",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2",
+    "vite": "^8.2.0"
   },
-  "packageManager": "pnpm@11.5.3",
+  "packageManager": "pnpm@10.20.0",
   "engines": {
-    "node": "24.x"
+    "node": ">=22.22.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@tailwindcss/oxide",
+      "esbuild"
+    ]
   }
 }

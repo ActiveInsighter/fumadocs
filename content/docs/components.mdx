@@ -1,0 +1,178 @@
+---
+title: 组件测试
+description: Fumadocs 常用 MDX 组件、排版与交互效果展示。
+---
+
+这个页面用于检查 Fumadocs 在 React Router + Vite 模式下的常用组件。
+
+## Callout 提示框
+
+<Callout title="普通提示" type="info">
+  这是一个信息提示框，适合补充背景信息。
+</Callout>
+
+<Callout title="成功" type="success">
+  类型检查和生产构建均已通过。
+</Callout>
+
+<Callout title="注意" type="warn">
+  React Router 8 要求 Node.js 版本不低于 22.22.0。
+</Callout>
+
+<Callout title="错误示例" type="error">
+  这里仅展示错误提示框的视觉效果。
+</Callout>
+
+## Cards 卡片
+
+<Cards>
+  <Card
+    title="Fumadocs"
+    description="访问 Fumadocs 官方文档"
+    href="https://fumadocs.dev"
+    external
+  />
+  <Card
+    title="React Router"
+    description="了解 React Router Framework Mode"
+    href="https://reactrouter.com"
+    external
+  />
+  <Card
+    title="返回首页"
+    description="打开本站文档首页"
+    href="/docs"
+  />
+</Cards>
+
+## Tabs 标签页
+
+<Tabs items={['pnpm', 'npm', 'bun']}>
+  <Tab>
+    ```bash
+    pnpm dev
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    npm run dev
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    bun run dev
+    ```
+  </Tab>
+</Tabs>
+
+## Accordions 折叠面板
+
+<Accordions type="multiple">
+  <Accordion title="文档放在哪里？">
+    把 `.mdx` 文件放在 `content/docs` 目录中。
+  </Accordion>
+  <Accordion title="如何新增侧边栏页面？">
+    在 `content/docs/meta.json` 的 `pages` 数组中加入文件名。
+  </Accordion>
+  <Accordion title="搜索接口在哪里？">
+    搜索接口位于 `/api/search`，由 Fumadocs Search Server 提供。
+  </Accordion>
+</Accordions>
+
+## Steps 步骤
+
+<Steps>
+  <Step>
+    ### 编写文档
+
+    在 `content/docs` 下创建 MDX 文件。
+  </Step>
+  <Step>
+    ### 本地预览
+
+    运行 `pnpm dev` 并打开浏览器。
+  </Step>
+  <Step>
+    ### 生产构建
+
+    运行 `pnpm build` 生成客户端与 SSR 产物。
+  </Step>
+</Steps>
+
+## Files 文件树
+
+<Files>
+  <Folder name="app" defaultOpen>
+    <Folder name="routes" defaultOpen>
+      <File name="docs.tsx" />
+      <File name="search.ts" />
+    </Folder>
+    <File name="root.tsx" />
+    <File name="routes.ts" />
+  </Folder>
+  <Folder name="content" defaultOpen>
+    <Folder name="docs" defaultOpen>
+      <File name="index.mdx" />
+      <File name="components.mdx" />
+      <File name="meta.json" />
+    </Folder>
+  </Folder>
+  <File name="vite.config.ts" />
+</Files>
+
+## TypeTable 属性表
+
+<TypeTable
+  type={{
+    title: {
+      type: 'string',
+      description: '显示在页面顶部和浏览器标题中的文档标题。',
+      required: true,
+    },
+    description: {
+      type: 'string',
+      description: '用于页面摘要和 SEO 元数据的描述。',
+    },
+    draft: {
+      type: 'boolean',
+      description: '标记文档是否仍处于草稿状态。',
+      default: 'false',
+    },
+  }}
+/>
+
+## Markdown 排版
+
+普通文本支持 **粗体**、*斜体*、`行内代码`、[内部链接](/docs)和[外部链接](https://vite.dev)。
+
+> 这是标准 Markdown 引用块，用于引用文字或补充说明。
+
+- 无序列表第一项
+- 无序列表第二项
+  - 嵌套列表
+
+1. 有序列表第一步
+2. 有序列表第二步
+
+| 功能 | 状态 | 入口 |
+| --- | --- | --- |
+| 首页 | 可用 | `/` |
+| 文档 | 可用 | `/docs` |
+| 搜索 | 可用 | `/api/search` |
+
+## 代码块
+
+```tsx title="app/example.tsx" showLineNumbers
+type GreetingProps = {
+  name: string;
+};
+
+export function Greeting({ name }: GreetingProps) {
+  return <p>Hello, {name}!</p>;
+}
+```
+
+```diff title="配置变化"
+- const framework = 'Next.js';
++ const framework = 'React Router + Vite';
+```

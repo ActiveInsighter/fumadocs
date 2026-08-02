@@ -1,27 +1,9 @@
-# dependencies
-node_modules/
-
-# Next.js
-.next/
-out/
-
-# generated Fumadocs source
-.source/
-
-# local environment
-.env
-.env.*
-!.env.example
-
-# logs
-*.log
-
-# editors and OS
-.vscode/
-.idea/
 .DS_Store
-Thumbs.db
+/node_modules/
+/.pnpm-store/
 
-# TypeScript
-*.tsbuildinfo
-next-env.d.ts
+# React Router
+/.react-router/
+/build/
+.source
+.dev-server*.log

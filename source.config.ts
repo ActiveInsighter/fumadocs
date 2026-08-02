@@ -1,20 +1,11 @@
-import { defineConfig, defineDocs } from 'fumadocs-mdx/config';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
-import stripProvidedComponentImports from './src/remark/strip-provided-component-imports';
-
-export const docs = defineDocs({
-  dir: 'content/docs',
-});
+import { defineConfig } from 'fumadocs-mdx/config';
 
 export default defineConfig({
   mdxOptions: {
-    remarkPlugins: [stripProvidedComponentImports, remarkMath],
-    remarkNpmOptions: {
-      persist: {
-        id: 'package-manager',
-      },
-    },
+    remarkPlugins: [remarkMath],
+    // Render math before Fumadocs sends remaining code blocks to Shiki.
     rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
   },
 });
