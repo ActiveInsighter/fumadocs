@@ -5,31 +5,57 @@ import {
   DocsDescription,
   DocsPage,
   DocsTitle,
+  MarkdownCopyButton,
+  PageLastUpdate,
+  ViewOptionsPopover,
 } from 'fumadocs-ui/layouts/docs/page';
-import { docs, source } from '@/lib/source';
+import { docs, getPageMarkdownUrl, source } from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
+import { gitConfig } from '@/lib/shared';
 import { useFumadocsLoader } from 'fumadocs-core/source/client';
 import { useMDXComponents } from '@/components/mdx';
 import { use } from 'react';
 
+const docsTabs = [
+  {
+    title: '快速开始',
+    description: '项目结构与基础使用',
+    url: '/docs',
+    urls: new Set(['/docs']),
+  },
+  {
+    title: '组件与语法',
+    description: '完整 MDX 与组件示例',
+    url: '/docs/components',
+    urls: new Set(['/docs/components']),
+  },
+  {
+    title: '计算机原理',
+    description: '长篇技术文档示例',
+    url: '/docs/test',
+    urls: new Set(['/docs/test']),
+  },
+];
+
 export async function loader({ params }: Route.LoaderArgs) {
-  const slugs = params['*'].split('/').filter((value) => value.length > 0);
+  const slugs = params['*']?.split('/').filter((value) => value.length > 0) ?? [];
   const page = source.getPage(slugs);
   if (!page) throw new Response('Not found', { status: 404 });
 
   return {
     path: page.path,
-    url: page.url,
+    markdownUrl: getPageMarkdownUrl(page).url,
     pageTree: await source.serializePageTree(source.getPageTree()),
   };
 }
 
-function Content({ path }: { path: string }) {
+function Content({ path, markdownUrl }: { path: string; markdownUrl: string }) {
   const page = docs.getPage(path);
   if (!page) throw new Error(`unknown page: ${path}`);
 
-  const { toc } = use(page.load());
+  const { toc, lastModified } = use(page.load());
   const Mdx = page.body;
+  const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${path}`;
 
   return (
     <DocsPage toc={toc}>
@@ -37,20 +63,24 @@ function Content({ path }: { path: string }) {
       <meta name="description" content={page.description} />
       <DocsTitle>{page.title}</DocsTitle>
       <DocsDescription>{page.description}</DocsDescription>
+      <div className="flex flex-row items-center gap-2 border-b -mt-4 pb-6">
+        <MarkdownCopyButton markdownUrl={markdownUrl} />
+        <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
+      </div>
       <DocsBody>
         <Mdx components={useMDXComponents()} />
       </DocsBody>
+      {lastModified && <PageLastUpdate date={lastModified} />}
     </DocsPage>
   );
 }
 
 export default function Page({ loaderData }: Route.ComponentProps) {
-  const { path, pageTree } = useFumadocsLoader(loaderData);
+  const { path, markdownUrl, pageTree } = useFumadocsLoader(loaderData);
 
   return (
-    <DocsLayout {...baseOptions()} tree={pageTree}>
-      <Content path={path} />
+    <DocsLayout {...baseOptions()} tree={pageTree} tabs={docsTabs}>
+      <Content path={path} markdownUrl={markdownUrl} />
     </DocsLayout>
   );
 }
-
