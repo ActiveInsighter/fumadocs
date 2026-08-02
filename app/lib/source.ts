@@ -17,6 +17,26 @@ export const source = loader({
   baseUrl: docsRoute,
 });
 
+/**
+ * React Router exposes wildcard params as decoded path segments, while
+ * Fumadocs stores generated slugs in their URI-encoded form. Normalize route
+ * params back to the representation used by the source index before lookup.
+ */
+export function getRouteSlugs(path?: string): string[] {
+  return (
+    path
+      ?.split('/')
+      .filter((value) => value.length > 0)
+      .map((value) => {
+        try {
+          return encodeURI(decodeURI(value));
+        } catch {
+          return encodeURI(value);
+        }
+      }) ?? []
+  );
+}
+
 export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'content.md'];
 
