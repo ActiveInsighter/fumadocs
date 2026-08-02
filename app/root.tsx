@@ -7,10 +7,12 @@ import {
   ScrollRestoration,
 } from 'react-router';
 import { RootProvider } from 'fumadocs-ui/provider/react-router';
-import StaticSearchDialog from '@/components/search';
+import AlgoliaSearchDialog from '@/components/search';
 import type { Route } from './+types/root';
 import './app.css';
 import 'katex/dist/katex.min.css';
+
+const algoliaAppId = import.meta.env.VITE_ALGOLIA_APP_ID?.trim();
 
 export const links: Route.LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -19,6 +21,15 @@ export const links: Route.LinksFunction = () => [
     href: 'https://fonts.gstatic.com',
     crossOrigin: 'anonymous',
   },
+  ...(algoliaAppId
+    ? [
+        {
+          rel: 'preconnect',
+          href: `https://${algoliaAppId}-dsn.algolia.net`,
+          crossOrigin: 'anonymous',
+        },
+      ]
+    : []),
   {
     rel: 'stylesheet',
     href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
@@ -27,7 +38,7 @@ export const links: Route.LinksFunction = () => [
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,7 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="flex flex-col min-h-screen">
-        <RootProvider search={{ SearchDialog: StaticSearchDialog }}>
+        <RootProvider search={{ SearchDialog: AlgoliaSearchDialog }}>
           {children}
         </RootProvider>
         <ScrollRestoration />
