@@ -1,0 +1,158 @@
+name: Resolve workflow run metadata
+description: Capture the current GitHub Actions run ID and persist a recent run index.
+
+inputs:
+  phase:
+    description: Logical phase name used in summaries and artifact names.
+    required: false
+    default: snapshot
+  limit:
+    description: Number of recent workflow runs to retain.
+    required: false
+    default: "10"
+
+outputs:
+  run_id:
+    description: Current GitHub Actions run ID.
+    value: ${{ steps.metadata.outputs.run_id }}
+  run_url:
+    description: Current GitHub Actions run URL.
+    value: ${{ steps.metadata.outputs.run_url }}
+  metadata_dir:
+    description: Directory containing generated run metadata.
+    value: ${{ steps.metadata.outputs.metadata_dir }}
+
+runs:
+  using: composite
+  steps:
+    - id: metadata
+      name: Capture current and recent runs
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+        INPUT_PHASE: ${{ inputs.phase }}
+        INPUT_LIMIT: ${{ inputs.limit }}
+      run: |
+        set -euo pipefail
+
+        phase="${INPUT_PHASE:-snapshot}"
+        phase="$(printf '%s' "$phase" | sed -E 's/[^[:alnum:]_.-]+/-/g; s/^-+//; s/-+$//')"
+        [[ -n "$phase" ]] || phase="snapshot"
+
+        limit="${INPUT_LIMIT:-10}"
+        if [[ ! "$limit" =~ ^[1-9][0-9]*$ ]] || (( limit > 100 )); then
+          echo "::warning title=Invalid run history limit::Using the default limit of 10."
+          limit=10
+        fi
+
+        run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+        metadata_dir="${RUNNER_TEMP}/run-metadata-${GITHUB_RUN_ID}-${phase}"
+        mkdir -p "$metadata_dir"
+
+        jq -n \
+          --arg run_id "$GITHUB_RUN_ID" \
+          --arg run_attempt "$GITHUB_RUN_ATTEMPT" \
+          --arg run_number "$GITHUB_RUN_NUMBER" \
+          --arg run_url "$run_url" \
+          --arg workflow "$GITHUB_WORKFLOW" \
+          --arg repository "$GITHUB_REPOSITORY" \
+          --arg branch "$GITHUB_REF_NAME" \
+          --arg sha "$GITHUB_SHA" \
+          --arg event "$GITHUB_EVENT_NAME" \
+          --arg phase "$phase" \
+          --arg captured_at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+          '{
+            run_id: $run_id,
+            run_attempt: $run_attempt,
+            run_number: $run_number,
+            run_url: $run_url,
+            workflow: $workflow,
+            repository: $repository,
+            branch: $branch,
+            sha: $sha,
+            event: $event,
+            phase: $phase,
+            captured_at: $captured_at
+          }' > "$metadata_dir/current-run.json"
+
+        if ! gh run list \
+          --repo "$GITHUB_REPOSITORY" \
+          --limit "$limit" \
+          --json databaseId,workflowName,displayTitle,status,conclusion,headBranch,headSha,event,createdAt,updatedAt,url,attempt \
+          > "$metadata_dir/recent-runs.json"; then
+          echo "::warning title=Run history unavailable::Current metadata was captured, but recent runs could not be queried."
+          printf '[]\n' > "$metadata_dir/recent-runs.json"
+        fi
+
+        jq -n \
+          --slurpfile current "$metadata_dir/current-run.json" \
+          --slurpfile recent "$metadata_dir/recent-runs.json" \
+          '{ current: $current[0], recent: $recent[0] }' \
+          > "$metadata_dir/run-index.json"
+
+        {
+          echo "# Workflow run index"
+          echo
+          echo "Current run: [\`${GITHUB_RUN_ID}\`](${run_url}) · phase \`${phase}\`"
+          echo
+          echo "| Workflow | Run ID | Status | Branch | Event | Updated |"
+          echo "| --- | ---: | --- | --- | --- | --- |"
+          jq -r '.[] | [
+            (.workflowName // "unknown" | gsub("\\|"; "\\|")),
+            ("[" + (.databaseId | tostring) + "](" + .url + ")"),
+            ((if (.conclusion // "") == "" then .status else .conclusion end) // "unknown"),
+            ((.headBranch // "-") | gsub("\\|"; "\\|")),
+            (.event // "-"),
+            (.updatedAt // .createdAt // "-")
+          ] | "| " + join(" | ") + " |"' "$metadata_dir/recent-runs.json"
+        } > "$metadata_dir/run-index.md"
+
+        {
+          echo "## Workflow run metadata"
+          echo
+          echo "- Run ID: [\`${GITHUB_RUN_ID}\`](${run_url})"
+          echo "- Attempt: \`${GITHUB_RUN_ATTEMPT}\`"
+          echo "- Workflow: \`${GITHUB_WORKFLOW}\`"
+          echo "- Phase: \`${phase}\`"
+          echo "- Branch: \`${GITHUB_REF_NAME}\`"
+          echo "- Commit: \`${GITHUB_SHA}\`"
+          echo
+          cat "$metadata_dir/run-index.md"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+        issue_number="$(
+          gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --search '"Workflow run index" in:title' \
+            --json number,title \
+            --jq '.[] | select(.title == "Workflow run index") | .number' \
+            2>/dev/null | head -n 1 || true
+        )"
+
+        if [[ -z "$issue_number" ]]; then
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "Workflow run index" \
+            --body-file "$metadata_dir/run-index.md" \
+            >/dev/null 2>&1 || echo "::warning title=Run index issue not created::Grant issues: write to persist the index as an issue."
+        else
+          gh issue edit "$issue_number" \
+            --repo "$GITHUB_REPOSITORY" \
+            --body-file "$metadata_dir/run-index.md" \
+            >/dev/null 2>&1 || echo "::warning title=Run index issue not updated::Grant issues: write to persist the index as an issue."
+        fi
+
+        {
+          echo "run_id=${GITHUB_RUN_ID}"
+          echo "run_url=${run_url}"
+          echo "metadata_dir=${metadata_dir}"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Upload run metadata
+      uses: actions/upload-artifact@v4
+      with:
+        name: run-metadata-${{ github.run_id }}-${{ inputs.phase }}
+        path: ${{ steps.metadata.outputs.metadata_dir }}
+        if-no-files-found: error
+        retention-days: 14
