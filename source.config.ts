@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [lastModified()],
   mdxOptions: {
     remarkPlugins: [remarkMath],
+    remarkImageOptions: {
+      external: false,
+    },
     // Render math before Fumadocs sends remaining code blocks to Shiki.
     rehypePlugins: (plugins) => [rehypeKatex, ...plugins],
   },
