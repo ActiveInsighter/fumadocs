@@ -1,5 +1,6 @@
 import { loader } from 'fumadocs-core/source';
 import { defineDocs } from 'fumadocs-mdx/macro';
+import { getCustomContentSlugs } from './content-slugs';
 import { docsContentRoute, docsRoute } from './shared';
 
 export const docs = defineDocs({
@@ -15,6 +16,7 @@ export const docs = defineDocs({
 export const source = loader({
   source: docs.toFumadocsSource(),
   baseUrl: docsRoute,
+  slugs: (file) => getCustomContentSlugs(file.path),
 });
 
 /**
