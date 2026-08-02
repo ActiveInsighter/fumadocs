@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from 'react-router';
 import { RootProvider } from 'fumadocs-ui/provider/react-router';
+import StaticSearchDialog from '@/components/search';
 import type { Route } from './+types/root';
 import './app.css';
 import 'katex/dist/katex.min.css';
@@ -34,7 +35,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="flex flex-col min-h-screen">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider search={{ SearchDialog: StaticSearchDialog }}>
+          {children}
+        </RootProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
