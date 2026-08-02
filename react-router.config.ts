@@ -5,20 +5,16 @@ import { createGetUrl, getSlugs } from 'fumadocs-core/source';
 const getUrl = createGetUrl('/docs');
 
 export default {
-  ssr: true,
+  ssr: false,
   async prerender({ getStaticPaths }) {
-    const paths: string[] = [];
-    const excluded: string[] = ['/api/search'];
+    const paths = new Set(getStaticPaths());
 
-    for (const path of getStaticPaths()) {
-      if (!excluded.includes(path)) paths.push(path);
-    }
+    paths.add('/api/search');
 
     for await (const entry of glob('**/*.mdx', { cwd: 'content/docs' })) {
-      paths.push(getUrl(getSlugs(entry)));
+      paths.add(getUrl(getSlugs(entry)));
     }
 
-    return paths;
+    return [...paths];
   },
 } satisfies Config;
-
