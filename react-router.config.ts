@@ -9,8 +9,6 @@ export default {
   async prerender({ getStaticPaths }) {
     const paths = new Set(getStaticPaths());
 
-    paths.add('/api/search');
-
     for await (const entry of glob('**/*.mdx', { cwd: 'content/docs' })) {
       const slugs = getSlugs(entry);
       paths.add(getUrl(slugs));
