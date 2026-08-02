@@ -1,4 +1,4 @@
-export const appName = 'Fumadocs';
+export const appName = '学习资料库';
 export const docsRoute = '/docs';
 export const docsContentRoute = '/llms.mdx/docs';
 

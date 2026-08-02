@@ -1,0 +1,9 @@
+{
+  "title": "算法",
+  "description": "算法专题与题解",
+  "root": true,
+  "pages": [
+    "index",
+    "programmercarl"
+  ]
+}

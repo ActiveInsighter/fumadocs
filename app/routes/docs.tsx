@@ -16,27 +16,6 @@ import { useFumadocsLoader } from 'fumadocs-core/source/client';
 import { useMDXComponents } from '@/components/mdx';
 import { use } from 'react';
 
-const docsTabs = [
-  {
-    title: '快速开始',
-    description: '项目结构与基础使用',
-    url: '/docs',
-    urls: new Set(['/docs']),
-  },
-  {
-    title: '组件与语法',
-    description: '完整 MDX 与组件示例',
-    url: '/docs/components',
-    urls: new Set(['/docs/components']),
-  },
-  {
-    title: '计算机原理',
-    description: '长篇技术文档示例',
-    url: '/docs/test',
-    urls: new Set(['/docs/test']),
-  },
-];
-
 export async function loader({ params }: Route.LoaderArgs) {
   const slugs = params['*']?.split('/').filter((value) => value.length > 0) ?? [];
   const page = source.getPage(slugs);
@@ -93,7 +72,7 @@ export default function Page({ loaderData }: Route.ComponentProps) {
   const { path, markdownUrl, lastModified, pageTree } = useFumadocsLoader(loaderData);
 
   return (
-    <DocsLayout {...baseOptions()} tree={pageTree} tabs={docsTabs}>
+    <DocsLayout {...baseOptions()} tree={pageTree} tabs={{}}>
       <Content
         path={path}
         markdownUrl={markdownUrl}
