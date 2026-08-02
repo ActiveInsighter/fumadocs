@@ -17,10 +17,40 @@ type PageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-// Documents are compiled and prerendered during deployment. Vercel serves the
-// resulting RSC/HTML from its static cache instead of compiling MDX in a
-// regional function on every navigation.
+type StaticParam = ReturnType<typeof source.generateParams>[number];
+
+// Linux filesystems allow at most 255 bytes in one filename. Vercel appends
+// `.rsc.prerender-fallback.rsc` to a prerendered route's final segment, while
+// non-ASCII slugs expand substantially after URL encoding. Keep a small safety
+// margin and let oversized routes use Next.js on-demand static generation.
+const MAX_PRERENDER_DIRECTORY_SEGMENT_LENGTH = 240;
+const MAX_PRERENDER_FINAL_SEGMENT_LENGTH = 220;
+
+function getEncodedSegmentLength(segment: string) {
+  try {
+    return encodeURIComponent(decodeURIComponent(segment).normalize('NFC')).length;
+  } catch {
+    return encodeURIComponent(segment.normalize('NFC')).length;
+  }
+}
+
+function isSafePrerenderParam(param: StaticParam) {
+  const segments = param.slug ?? [];
+
+  return segments.every((segment, index) => {
+    const isFinalSegment = index === segments.length - 1;
+    const limit = isFinalSegment
+      ? MAX_PRERENDER_FINAL_SEGMENT_LENGTH
+      : MAX_PRERENDER_DIRECTORY_SEGMENT_LENGTH;
+
+    return getEncodedSegmentLength(segment) <= limit;
+  });
+}
+
+// Documents selected by generateStaticParams are prerendered during deployment.
+// Longer routes remain valid and are generated on demand, then cached by Next.js.
 export const revalidate = false;
+export const dynamicParams = true;
 
 export default async function Page({ params }: PageProps) {
   const page = getPageByRouteSlugs((await params).slug);
@@ -62,5 +92,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export function generateStaticParams() {
-  return source.generateParams();
+  const params = source.generateParams();
+  const safeParams = params.filter(isSafePrerenderParam);
+  const deferredCount = params.length - safeParams.length;
+
+  if (deferredCount > 0) {
+    console.log(
+      `[docs] deferring ${deferredCount} oversized route${deferredCount === 1 ? '' : 's'} to on-demand static generation`,
+    );
+  }
+
+  return safeParams;
 }
