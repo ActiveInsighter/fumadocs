@@ -4,5 +4,5 @@ export default [
   index('routes/home.tsx'),
   route('docs/*', 'routes/docs.tsx'),
   route('api/search', 'routes/search.ts'),
+  route('llms.mdx/docs/*', 'llms/mdx.ts'),
 ] satisfies RouteConfig;
-

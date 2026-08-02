@@ -1,13 +1,110 @@
 @import 'tailwindcss';
-@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/black.css';
 @import 'fumadocs-ui/css/preset.css';
 
+/*
+ * Fumadocs semantic theme tokens.
+ * Keep the complete fd palette here so light and dark modes can be tuned
+ * without styling individual components.
+ */
+@theme {
+  --color-fd-background: hsl(0 0% 100%);
+  --color-fd-foreground: hsl(0 0% 4%);
+  --color-fd-muted: hsl(0 0% 96%);
+  --color-fd-muted-foreground: hsl(0 0% 42%);
+  --color-fd-popover: hsl(0 0% 100%);
+  --color-fd-popover-foreground: hsl(0 0% 8%);
+  --color-fd-card: hsl(0 0% 99%);
+  --color-fd-card-foreground: hsl(0 0% 4%);
+  --color-fd-border: hsl(0 0% 10% / 0.12);
+  --color-fd-primary: hsl(0 0% 5%);
+  --color-fd-primary-foreground: hsl(0 0% 98%);
+  --color-fd-secondary: hsl(0 0% 94%);
+  --color-fd-secondary-foreground: hsl(0 0% 8%);
+  --color-fd-accent: hsl(0 0% 91%);
+  --color-fd-accent-foreground: hsl(0 0% 5%);
+  --color-fd-ring: hsl(0 0% 22%);
+}
+
+.dark {
+  --color-fd-background: hsl(0 0% 3.5%);
+  --color-fd-foreground: hsl(0 0% 96%);
+  --color-fd-muted: hsl(0 0% 10%);
+  --color-fd-muted-foreground: hsl(0 0% 65%);
+  --color-fd-popover: hsl(0 0% 6%);
+  --color-fd-popover-foreground: hsl(0 0% 96%);
+  --color-fd-card: hsl(0 0% 6%);
+  --color-fd-card-foreground: hsl(0 0% 96%);
+  --color-fd-border: hsl(0 0% 100% / 0.12);
+  --color-fd-primary: hsl(0 0% 98%);
+  --color-fd-primary-foreground: hsl(0 0% 7%);
+  --color-fd-secondary: hsl(0 0% 11%);
+  --color-fd-secondary-foreground: hsl(0 0% 96%);
+  --color-fd-accent: hsl(0 0% 16%);
+  --color-fd-accent-foreground: hsl(0 0% 100%);
+  --color-fd-ring: hsl(0 0% 72%);
+}
+
+:root {
+  /* Public layout width variable documented by Fumadocs UI. */
+  --fd-layout-width: 92rem;
+}
+
 html {
+  color-scheme: light;
   scrollbar-gutter: stable;
+  background: var(--color-fd-background);
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--color-fd-background);
+  color: var(--color-fd-foreground);
+}
+
+::selection {
+  color: var(--color-fd-primary-foreground);
+  background: var(--color-fd-primary);
+}
+
+/* Stable layout selector documented by the Fumadocs grid layout guide. */
+#nd-docs-layout {
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    hsl(0 0% 0% / 0.035),
+    transparent 32rem
+  );
+}
+
+.dark #nd-docs-layout {
+  background-image: radial-gradient(
+    circle at 50% 0%,
+    hsl(0 0% 100% / 0.045),
+    transparent 32rem
+  );
+}
+
+/* Fumadocs typography selector. */
+.prose {
+  text-wrap: pretty;
+}
+
+.prose :where(h2, h3, h4) {
+  letter-spacing: -0.02em;
+}
+
+.prose :where(code):not(:where(pre *)) {
+  border: 1px solid var(--color-fd-border);
+  border-radius: 0.375rem;
+  background: var(--color-fd-muted);
+  padding-inline: 0.3rem;
+  padding-block: 0.08rem;
 }
 
 html > body[data-scroll-locked] {
-  margin-right: 0px !important;
+  margin-right: 0 !important;
   --removed-body-scroll-bar-size: 0px !important;
 }
-

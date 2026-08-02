@@ -1,101 +1,193 @@
 ---
-title: 组件测试
-description: Fumadocs 常用 MDX 组件、排版与交互效果展示。
+title: Fumadocs 语法与组件大全
+description: 集中展示 Markdown、MDX、代码高亮、交互组件、文件树和属性表等常用能力。
 ---
 
-这个页面用于检查 Fumadocs 在 React Router + Vite 模式下的常用组件。
-
-## Callout 提示框
-
-<Callout title="普通提示" type="info">
-  这是一个信息提示框，适合补充背景信息。
-</Callout>
-
-<Callout title="成功" type="success">
-  类型检查和生产构建均已通过。
-</Callout>
-
-<Callout title="注意" type="warn">
-  React Router 8 要求 Node.js 版本不低于 22.22.0。
-</Callout>
-
-<Callout title="错误示例" type="error">
-  这里仅展示错误提示框的视觉效果。
-</Callout>
-
-## Cards 卡片
+这个页面用于验证当前 **React Router + Vite + Fumadocs** 项目支持的主要写作语法和 UI 组件。
 
 <Cards>
   <Card
-    title="Fumadocs"
-    description="访问 Fumadocs 官方文档"
+    title="快速开始"
+    description="返回文档首页查看项目结构和部署说明。"
+    href="/docs"
+  />
+  <Card
+    title="Fumadocs 官方文档"
+    description="查看完整的框架、UI 和 MDX 文档。"
     href="https://fumadocs.dev"
     external
   />
   <Card
-    title="React Router"
-    description="了解 React Router Framework Mode"
-    href="https://reactrouter.com"
+    title="项目仓库"
+    description="查看本站源码与 GitHub Actions。"
+    href="https://github.com/ActiveInsighter/fumadocs"
     external
-  />
-  <Card
-    title="返回首页"
-    description="打开本站文档首页"
-    href="/docs"
   />
 </Cards>
 
+## 标准 Markdown
+
+支持 **粗体**、_斜体_、~~删除线~~、`行内代码`、[内部链接](/docs)与[外部链接](https://vite.dev)。
+
+> 引用块适合放置定义、结论或来自其他资料的内容。
+
+- 无序列表
+  - 支持嵌套项目
+  - 支持 **Markdown** 格式
+- 适合整理并列知识点
+
+1. 第一步：创建 MDX 文件
+2. 第二步：加入 `meta.json`
+3. 第三步：提交并自动部署
+
+| 能力 | 写法 | 当前状态 |
+| --- | --- | --- |
+| GFM 表格 | Markdown 表格 | 可用 |
+| 自动链接 | 直接书写 URL | 可用 |
+| 任务列表 | `- [x]` | 可用 |
+| MDX 组件 | JSX 标签 | 可用 |
+
+- [x] React Router 静态构建
+- [x] Cloudflare Pages 部署
+- [x] Fumadocs 静态搜索
+- [x] Copy Markdown 与 Open 菜单
+
+## 标题、目录与锚点 [#heading-and-toc]
+
+标题会自动出现在右侧目录中，并自动生成可复制的锚点链接。
+
+### 自定义锚点 [#custom-anchor]
+
+这一节的地址固定为 `#custom-anchor`。
+
+### 不显示在目录中的标题 [!toc]
+
+这一标题仍会显示在正文中，但不会加入右侧目录。
+
+## Callout 提示框
+
+<Callout title="信息" type="info">
+  用于补充背景、术语和非阻塞说明。
+</Callout>
+
+<Callout title="成功" type="success">
+  类型检查、静态构建和 Pages 部署可以在同一个工作流中完成。
+</Callout>
+
+<Callout title="注意" type="warn">
+  最后更新时间依赖完整 Git 历史，因此 Actions 使用 `fetch-depth: 0`。
+</Callout>
+
+<Callout title="错误" type="error">
+  适合展示会导致构建失败、数据丢失或行为异常的问题。
+</Callout>
+
+<Callout title="想法" type="idea">
+  可以把实验性方案、优化方向和延伸阅读放在这里。
+</Callout>
+
+## 代码块
+
+### 标题与行号
+
+```tsx title="app/routes/docs.tsx" lineNumbers
+export function PageActions() {
+  const enabled = true;
+
+  return enabled ? <div>Copy Markdown</div> : null;
+}
+```
+
+### 高亮、增删与聚焦
+
+```ts title="theme.ts" lineNumbers
+const framework = 'React Router'; // [!code highlight]
+const oldTheme = 'colorful'; // [!code --]
+const newTheme = 'monochrome'; // [!code ++]
+const deployment = 'Cloudflare Pages'; // [!code word:Cloudflare]
+console.log(deployment); // [!code focus]
+```
+
+### 代码标签组
+
+```bash tab="pnpm" tab-group="package-manager"
+pnpm install
+pnpm dev
+```
+
+```bash tab="npm"
+npm install
+npm run dev
+```
+
+```bash tab="bun"
+bun install
+bun run dev
+```
+
+### NPM 安装命令
+
+```npm
+npm install fumadocs-core fumadocs-ui fumadocs-mdx
+```
+
 ## Tabs 标签页
 
-<Tabs items={['pnpm', 'npm', 'bun']}>
+<Tabs items={['开发', '构建', '部署']}>
   <Tab>
     ```bash
     pnpm dev
     ```
+
+    启动 React Router 开发服务器。
   </Tab>
   <Tab>
     ```bash
-    npm run dev
+    pnpm build
     ```
+
+    生成 `build/client` 静态产物和预渲染资源。
   </Tab>
   <Tab>
     ```bash
-    bun run dev
+    wrangler pages deploy build/client
     ```
+
+    将静态站点发布到 Cloudflare Pages。
   </Tab>
 </Tabs>
 
 ## Accordions 折叠面板
 
 <Accordions type="multiple">
-  <Accordion title="文档放在哪里？">
-    把 `.mdx` 文件放在 `content/docs` 目录中。
+  <Accordion title="文档写在哪里？">
+    页面放在 `content/docs`，目录顺序由同级 `meta.json` 控制。
   </Accordion>
-  <Accordion title="如何新增侧边栏页面？">
-    在 `content/docs/meta.json` 的 `pages` 数组中加入文件名。
+  <Accordion title="搜索是否需要服务器？">
+    当前项目把 `/api/search` 预渲染为静态索引，因此 Pages 不需要额外函数。
   </Accordion>
-  <Accordion title="搜索接口在哪里？">
-    搜索接口位于 `/api/search`，由 Fumadocs Search Server 提供。
+  <Accordion title="Copy Markdown 如何工作？">
+    每篇文档都会生成独立的 `content.md` 静态资源，官方按钮按需获取并复制内容。
   </Accordion>
 </Accordions>
 
-## Steps 步骤
+## Steps 步骤组件
 
 <Steps>
   <Step>
-    ### 编写文档
+    ### 编写内容
 
-    在 `content/docs` 下创建 MDX 文件。
+    使用 Markdown、MDX 和 Fumadocs 组件编写页面。
   </Step>
   <Step>
-    ### 本地预览
+    ### 本地检查
 
-    运行 `pnpm dev` 并打开浏览器。
+    运行 `pnpm types:check` 和 `pnpm build`。
   </Step>
   <Step>
-    ### 生产构建
+    ### 合并部署
 
-    运行 `pnpm build` 生成客户端与 SSR 产物。
+    Pull Request 验证通过后合并到 `main`，工作流自动发布生产站点。
   </Step>
 </Steps>
 
@@ -103,21 +195,31 @@ description: Fumadocs 常用 MDX 组件、排版与交互效果展示。
 
 <Files>
   <Folder name="app" defaultOpen>
+    <Folder name="llms" defaultOpen>
+      <File name="mdx.ts" />
+    </Folder>
     <Folder name="routes" defaultOpen>
       <File name="docs.tsx" />
       <File name="search.ts" />
     </Folder>
-    <File name="root.tsx" />
+    <Folder name="lib" defaultOpen>
+      <File name="layout.shared.tsx" />
+      <File name="shared.ts" />
+      <File name="source.ts" />
+    </Folder>
+    <File name="app.css" />
     <File name="routes.ts" />
   </Folder>
   <Folder name="content" defaultOpen>
     <Folder name="docs" defaultOpen>
       <File name="index.mdx" />
       <File name="components.mdx" />
+      <File name="test.mdx" />
       <File name="meta.json" />
     </Folder>
   </Folder>
-  <File name="vite.config.ts" />
+  <File name="react-router.config.ts" />
+  <File name="source.config.ts" />
 </Files>
 
 ## TypeTable 属性表
@@ -126,53 +228,44 @@ description: Fumadocs 常用 MDX 组件、排版与交互效果展示。
   type={{
     title: {
       type: 'string',
-      description: '显示在页面顶部和浏览器标题中的文档标题。',
+      description: '页面标题，同时用于浏览器标题与侧边栏条目。',
       required: true,
     },
     description: {
       type: 'string',
-      description: '用于页面摘要和 SEO 元数据的描述。',
+      description: '页面摘要，用于标题下方说明和 SEO 元数据。',
     },
-    draft: {
-      type: 'boolean',
-      description: '标记文档是否仍处于草稿状态。',
-      default: 'false',
+    markdownUrl: {
+      type: 'string',
+      description: '页面对应的静态 Markdown 资源地址。',
+      required: true,
+    },
+    lastModified: {
+      type: 'Date',
+      description: '由 Git 历史生成的最后修改时间。',
     },
   }}
 />
 
-## Markdown 排版
+## 数学与技术排版
 
-普通文本支持 **粗体**、*斜体*、`行内代码`、[内部链接](/docs)和[外部链接](https://vite.dev)。
+当前项目已经启用 `remark-math` 与 KaTeX，可在技术文档中编写行内公式和块级公式。
 
-> 这是标准 Markdown 引用块，用于引用文字或补充说明。
+```md title="公式写法"
+行内公式：$a^2+b^2=c^2$
 
-- 无序列表第一项
-- 无序列表第二项
-  - 嵌套列表
-
-1. 有序列表第一步
-2. 有序列表第二步
-
-| 功能 | 状态 | 入口 |
-| --- | --- | --- |
-| 首页 | 可用 | `/` |
-| 文档 | 可用 | `/docs` |
-| 搜索 | 可用 | `/api/search` |
-
-## 代码块
-
-```tsx title="app/example.tsx" showLineNumbers
-type GreetingProps = {
-  name: string;
-};
-
-export function Greeting({ name }: GreetingProps) {
-  return <p>Hello, {name}!</p>;
-}
+块级公式：
+$$
+T(n)=2T(n/2)+n
+$$
 ```
 
-```diff title="配置变化"
-- const framework = 'Next.js';
-+ const framework = 'React Router + Vite';
-```
+## 页面级实用功能
+
+每篇文档顶部现在包含：
+
+- **Copy Markdown**：复制处理后的 Markdown 文本；
+- **Open**：打开 GitHub 源文件、Markdown 版本或 AI 工具；
+- **文档切换器**：在快速开始、组件示例与长文档之间切换；
+- **Last updated on**：根据该文件最后一次 Git 提交显示日期；
+- **GitHub 图标**：位于左侧栏底部，可直接进入仓库。
