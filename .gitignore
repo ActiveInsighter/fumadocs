@@ -2,6 +2,11 @@
 /node_modules/
 /.pnpm-store/
 
+# Local environment files
+.env
+.env.*
+!.env.example
+
 # React Router
 /.react-router/
 /build/

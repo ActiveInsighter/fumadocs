@@ -9,7 +9,12 @@ import {
   PageLastUpdate,
   ViewOptionsPopover,
 } from 'fumadocs-ui/layouts/docs/page';
-import { docs, getPageMarkdownUrl, source } from '@/lib/source';
+import {
+  docs,
+  getPageMarkdownUrl,
+  getRouteSlugs,
+  source,
+} from '@/lib/source';
 import { baseOptions } from '@/lib/layout.shared';
 import { gitConfig } from '@/lib/shared';
 import { useFumadocsLoader } from 'fumadocs-core/source/client';
@@ -17,8 +22,7 @@ import { useMDXComponents } from '@/components/mdx';
 import { use } from 'react';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const slugs = params['*']?.split('/').filter((value) => value.length > 0) ?? [];
-  const page = source.getPage(slugs);
+  const page = source.getPage(getRouteSlugs(params['*']));
   if (!page) throw new Response('Not found', { status: 404 });
 
   // The plugin adds this field at build time, while the current async macro
@@ -51,9 +55,11 @@ function Content({
   const githubUrl = `https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${path}`;
 
   return (
-    <DocsPage toc={toc}>
+    <DocsPage toc={toc} className="DocSearch-content">
       <title>{page.title}</title>
       <meta name="description" content={page.description} />
+      <meta name="docsearch:language" content="zh-CN" />
+      <meta name="docsearch:version" content="latest" />
       <DocsTitle>{page.title}</DocsTitle>
       <DocsDescription>{page.description}</DocsDescription>
       <div className="flex flex-row items-center gap-2 border-b -mt-4 pb-6">
