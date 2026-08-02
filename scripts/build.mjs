@@ -34,10 +34,16 @@ const documentCount = await countDocuments(docsRoot);
 console.log(
   `[content] prerendering ${documentCount} Markdown/MDX documents with the Sätteri compiler`,
 );
+console.log(
+  '[build] using Webpack for production to avoid the current Turbopack Unicode module identifier crash',
+);
 
 const startedAt = Date.now();
 const nextBinary = process.platform === 'win32' ? 'next.cmd' : 'next';
-const child = spawn(nextBinary, ['build', ...process.argv.slice(2)], {
+const forwardedArgs = process.argv
+  .slice(2)
+  .filter((argument) => !['--webpack', '--turbopack', '--turbo'].includes(argument));
+const child = spawn(nextBinary, ['build', '--webpack', ...forwardedArgs], {
   cwd: projectRoot,
   env: process.env,
   stdio: 'inherit',
