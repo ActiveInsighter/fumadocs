@@ -12,7 +12,9 @@ export default {
     paths.add('/api/search');
 
     for await (const entry of glob('**/*.mdx', { cwd: 'content/docs' })) {
-      paths.add(getUrl(getSlugs(entry)));
+      const slugs = getSlugs(entry);
+      paths.add(getUrl(slugs));
+      paths.add(`/llms.mdx/docs/${[...slugs, 'content.md'].join('/')}`);
     }
 
     return [...paths];
