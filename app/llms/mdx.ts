@@ -1,8 +1,8 @@
 import type { Route } from './+types/mdx';
-import { getLLMText, source } from '@/lib/source';
+import { getLLMText, getRouteSlugs, source } from '@/lib/source';
 
 export async function loader({ params }: Route.LoaderArgs) {
-  const slugs = params['*']?.split('/').filter((value) => value.length > 0) ?? [];
+  const slugs = getRouteSlugs(params['*']);
 
   // Every generated Markdown resource ends with /content.md.
   slugs.pop();
