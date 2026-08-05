@@ -87,6 +87,16 @@ body {
   );
 }
 
+/*
+ * Sidebar page links expose Fumadocs' stable data-active attribute.
+ * Keep hover and current-page states on the same subtle grey surface.
+ */
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active]:hover,
+:is(#nd-sidebar, #nd-sidebar-mobile) a[data-active='true'] {
+  background-color: var(--color-fd-muted);
+  color: var(--color-fd-foreground);
+}
+
 /* Fumadocs typography selector. */
 .prose {
   text-wrap: pretty;
