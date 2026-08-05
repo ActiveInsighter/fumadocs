@@ -56,7 +56,7 @@ function Content({
       <meta name="description" content={page.description} />
       <DocsTitle>{page.title}</DocsTitle>
       <DocsDescription>{page.description}</DocsDescription>
-      <div className="flex flex-row items-center gap-2 border-b -mt-4 pb-6">
+      <div className="flex w-full self-start flex-row items-center justify-start gap-2 border-b -mt-4 pb-6">
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover markdownUrl={markdownUrl} githubUrl={githubUrl} />
       </div>
