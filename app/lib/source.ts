@@ -1,5 +1,6 @@
 import { loader } from 'fumadocs-core/source';
 import { defineDocs } from 'fumadocs-mdx/macro';
+import { getCustomContentSlugs } from './content-slugs';
 import { docsContentRoute, docsRoute } from './shared';
 
 export const docs = defineDocs({
@@ -15,7 +16,28 @@ export const docs = defineDocs({
 export const source = loader({
   source: docs.toFumadocsSource(),
   baseUrl: docsRoute,
+  slugs: (file) => getCustomContentSlugs(file.path),
 });
+
+/**
+ * React Router exposes wildcard params as decoded path segments, while
+ * Fumadocs stores generated slugs in their URI-encoded form. Normalize route
+ * params back to the representation used by the source index before lookup.
+ */
+export function getRouteSlugs(path?: string): string[] {
+  return (
+    path
+      ?.split('/')
+      .filter((value) => value.length > 0)
+      .map((value) => {
+        try {
+          return encodeURI(decodeURI(value));
+        } catch {
+          return encodeURI(value);
+        }
+      }) ?? []
+  );
+}
 
 export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
   const segments = [...page.slugs, 'content.md'];

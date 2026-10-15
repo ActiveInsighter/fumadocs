@@ -25,6 +25,9 @@ jobs:
     timeout-minutes: 30
     env:
       NODE_OPTIONS: --max-old-space-size=8192
+      VITE_ALGOLIA_APP_ID: ${{ vars.VITE_ALGOLIA_APP_ID }}
+      VITE_ALGOLIA_SEARCH_API_KEY: ${{ vars.VITE_ALGOLIA_SEARCH_API_KEY }}
+      VITE_ALGOLIA_INDEX_NAME: ${{ vars.VITE_ALGOLIA_INDEX_NAME }}
 
     steps:
       - name: Checkout repository
