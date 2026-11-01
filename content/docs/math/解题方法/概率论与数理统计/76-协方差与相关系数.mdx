@@ -1,0 +1,4345 @@
+---
+title: "协方差与相关系数"
+description: "考研数学一 · 协方差与相关系数的性质、联合正态、条件期望、样本重叠、协方差矩阵与训练｜MyFumadocs MDX 格式重构"
+---
+
+本节的核心目标：掌握随机变量之间的线性关系，并能够利用协方差、相关系数解决分布、独立性、条件期望、样本统计量以及最值问题。
+
+这节知识看起来公式不多，但与概率论其他章节联系非常紧密。真正的难点不是计算相关系数，而是面对新题时，判断随机变量之间究竟有什么关系、哪些公式可以使用，以及哪些条件不能擅自假设。
+
+## 一、资料核对与学习路线
+
+我已下载并读取你提供的《数学分类题目1101.zip》，核对了其中的以下资料：
+
+| 资料      | 阅读范围                  |
+| ------- | --------------------- |
+| 考研核心题目  | 第三章第二节《协方差与相关系数》，共32题 |
+| 分类模拟题   | 对应章节，共22题             |
+| 张宇1000题 | 概率论第四章《随机变量的数字特征》     |
+| 李林880题  | 第十九章《随机变量的数字特征》       |
+| 李正元     | 概率论第四章《随机变量的数字特征》     |
+
+同时参考了分类模拟题中的张宇8套卷、李林六套卷及其他相关试题。
+
+以下优先采用题库标注的数学一历年真题作为母题，数学三真题只在能够补充重要解题方法时选用。题目来源和年份依据压缩包中的标注，未另行逐题与官方原卷核验。
+
+### 1. 本节知识体系
+
+| 知识模块      | 必须掌握的能力        | 代表题目          |
+| --------- | -------------- | ------------- |
+| 协方差及基本运算  | 快速展开线性组合       | 2000年数学一      |
+| 相关系数及完全相关 | 根据相关系数确定线性关系   | 2008年数学一      |
+| 不相关与独立    | 判断逻辑关系、构造反例    | 1993年数学一      |
+| 二维正态与独立性  | 构造独立的线性组合      | 1994年数学一      |
+| 计数变量的相关性  | 利用示性变量求协方差     | 2016、2021年数学一 |
+| 条件期望与协方差  | 用条件矩代替二重积分     | 2022、2024年数学一 |
+| 协方差矩阵与最值  | 把方差问题转化为二次型    | 2025年数学一      |
+| 样本均值与样本重叠 | 识别共享随机变量       | 2004年数学一      |
+| 非线性函数与协方差 | 利用对称性和高阶矩      | 2020年数学一      |
+| 综合创新题     | 最优线性预测、相关矩阵与约束 | 张宇、李林及拓展题     |
+
+其中最关键的学习主线是：
+
+$$
+\boxed{ \begin{gathered} \text{随机变量之间的关系}\\ \Downarrow\\ \text{期望、方差、协方差}\\ \Downarrow\\ \text{相关系数及其性质}\\ \Downarrow\\ \text{不相关、独立、联合正态}\\ \Downarrow\\ \text{条件模型、样本统计量、综合优化} \end{gathered} }
+$$
+
+## 第一部分：基础概念与核心原理
+
+### 二、为什么需要协方差？
+
+#### 1. 从期望、方差到协方差
+
+前面已经学习过两个重要的数字特征：
+
+数学期望描述随机变量的平均水平：
+
+$$
+EX=\mu_X
+$$
+
+方差描述随机变量围绕均值的波动程度：
+
+$$
+DX=E[(X-EX)^2]
+$$
+
+但是，假如现在有两个随机变量 $X,Y$，我们不仅希望知道它们各自如何变化，还希望知道：
+
+当 $X$ 比平均水平大时，$Y$ 通常也会比平均水平大，还是倾向于比平均水平小？
+
+这就是协方差要研究的问题。
+
+#### 2. 协方差的定义
+
+设 $X,Y$ 都具有有限二阶矩，定义：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y) = E[(X-EX)(Y-EY)] }
+$$
+
+展开得到最常用的计算公式：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y)=E(XY)-EX\cdot EY }
+$$
+
+这个公式是全节的起点。
+
+#### 3. 协方差的直观意义
+
+考虑两个随机变量相对于各自均值的偏离。
+
+| $X-EX$ | $Y-EY$ | 乘积的符号 |
+| ---------- | ---------- | ----- |
+| 正          | 正          | 正     |
+| 负          | 负          | 正     |
+| 正          | 负          | 负     |
+| 负          | 正          | 负     |
+
+因此：
+
+- 协方差为正：两个变量整体具有同向线性变化的倾向。
+- 协方差为负：两个变量整体具有反向线性变化的倾向。
+- 协方差为零：两个变量不存在线性相关性，但不代表没有其他依赖关系。
+
+最后一点最重要。
+
+例如，令
+
+$$
+X\sim U(-1,1),\qquad Y=X^2.
+$$
+
+显然，$Y$ 完全由 $X$ 决定。
+
+但是：
+
+$$
+EX=0,
+$$
+
+由于 $X$ 的分布关于原点对称，
+
+$$
+E(XY)=E(X^3)=0.
+$$
+
+所以：
+
+$$
+\boxed{\operatorname{Cov}(X,X^2)=0}
+$$
+
+可见，协方差只能刻画线性相关的程度，不能完整刻画所有随机依赖关系。
+
+### 三、为什么还需要相关系数？
+
+假设两个随机变量的协方差为 $100$，能不能说明它们关系很强？
+
+不能。
+
+因为协方差会随着变量的计量单位变化。
+
+例如：
+
+$$
+\operatorname{Cov}(100X,Y) =100\operatorname{Cov}(X,Y).
+$$
+
+仅仅把 $X$ 的单位改变，协方差就放大了100倍，但两个变量之间的实际关系并没有变化。
+
+因此需要将协方差标准化。
+
+#### 1. 相关系数的定义
+
+设：
+
+$$
+0<DX<\infty,\qquad 0<DY<\infty.
+$$
+
+定义：
+
+$$
+\boxed{ \rho_{XY} = \frac{\operatorname{Cov}(X,Y)} {\sqrt{DX}\sqrt{DY}} }
+$$
+
+或者：
+
+$$
+\boxed{ \rho_{XY} = \frac{E(XY)-EX\cdot EY} {\sqrt{DX\,DY}} }
+$$
+
+必须注意两个细节。
+
+第一，分母是两个标准差的乘积。
+
+第二，相关系数要求两个随机变量的方差都严格大于零。
+
+如果：
+
+$$
+DX=0,
+$$
+
+则 $X$ 几乎必然是常量，$\rho_{XY}$ 无定义。
+
+即使此时：
+
+$$
+\operatorname{Cov}(X,Y)=0,
+$$
+
+也不能说相关系数等于零。
+
+#### 2. 相关系数的取值范围
+
+最重要的结论：
+
+$$
+\boxed{-1\leq\rho_{XY}\leq1}
+$$
+
+为什么？
+
+令：
+
+$$
+U=X-EX,\qquad V=Y-EY.
+$$
+
+由柯西—施瓦茨不等式：
+
+$$
+[E(UV)]^2 \leq E(U^2)E(V^2).
+$$
+
+于是：
+
+$$
+[\operatorname{Cov}(X,Y)]^2 \leq DX\cdot DY.
+$$
+
+两边除以 $DX\cdot DY>0$，得到：
+
+$$
+\rho_{XY}^2\leq1.
+$$
+
+这不仅证明了取值范围，还给出一个极其重要的推论：
+
+$$
+\boxed{ |\operatorname{Cov}(X,Y)| \leq\sqrt{DX\,DY} }
+$$
+
+以后遇到协方差参数、相关系数参数的取值范围问题，可以直接使用。
+
+#### 3. 什么时候相关系数等于1或-1？
+
+柯西—施瓦茨不等式取等号，当且仅当中心化的两个随机变量几乎处处成比例。
+
+因此：
+
+$$
+\boxed{ |\rho_{XY}|=1 \iff P(Y=aX+b)=1 }
+$$
+
+其中 $a\ne0$。
+
+进一步：
+
+$$
+\boxed{ Y-EY = \rho_{XY}\frac{\sigma_Y}{\sigma_X}(X-EX) \quad\text{几乎处处} }
+$$
+
+这里 $\rho_{XY}=\pm1$。
+
+所以：
+
+当 $\rho_{XY}=1$ 时，
+
+$$
+Y-EY=\frac{\sigma_Y}{\sigma_X}(X-EX).
+$$
+
+当 $\rho_{XY}=-1$ 时，
+
+$$
+Y-EY=-\frac{\sigma_Y}{\sigma_X}(X-EX).
+$$
+
+注意：
+
+这个结论不要求随机变量服从正态分布。
+
+正态性不是完全相关的必要条件。
+
+### 四、协方差的六个重要性质
+
+这一部分必须做到看到题目后可以直接使用，而不必每次重新证明。
+
+#### 性质1：对称性
+
+$$
+\boxed{ \operatorname{Cov}(X,Y)=\operatorname{Cov}(Y,X) }
+$$
+
+#### 性质2：自身的协方差就是方差
+
+$$
+\boxed{ \operatorname{Cov}(X,X)=DX }
+$$
+
+#### 性质3：常数不影响协方差
+
+$$
+\operatorname{Cov}(X+a,Y+b) =\operatorname{Cov}(X,Y).
+$$
+
+原因是：
+
+$$
+(X+a)-E(X+a)=X-EX.
+$$
+
+平移不影响随机变量围绕自身均值的波动。
+
+#### 性质4：数乘可以提出来
+
+$$
+\boxed{ \operatorname{Cov}(aX,bY) =ab\operatorname{Cov}(X,Y) }
+$$
+
+#### 性质5：对两个变量分别具有线性性质
+
+$$
+\operatorname{Cov}(X+Y,Z) = \operatorname{Cov}(X,Z) + \operatorname{Cov}(Y,Z).
+$$
+
+同理：
+
+$$
+\operatorname{Cov}(X,Y+Z) = \operatorname{Cov}(X,Y) + \operatorname{Cov}(X,Z).
+$$
+
+这就是协方差的双线性性质。
+
+以后大多数线性组合题，全部依赖这一性质。
+
+#### 性质6：线性组合的协方差公式
+
+设：
+
+$$
+U=aX+bY,\qquad V=cX+dY.
+$$
+
+则：
+
+$$
+\boxed{ \begin{aligned} \operatorname{Cov}(U,V) ={}&ac\,DX+bd\,DY\\ &+(ad+bc)\operatorname{Cov}(X,Y). \end{aligned} }
+$$
+
+推导如下：
+
+$$
+\begin{aligned} \operatorname{Cov}(U,V) &=\operatorname{Cov}(aX+bY,cX+dY)\\ &=ac\operatorname{Cov}(X,X)\\ &\quad+ad\operatorname{Cov}(X,Y)\\ &\quad+bc\operatorname{Cov}(Y,X)\\ &\quad+bd\operatorname{Cov}(Y,Y). \end{aligned}
+$$
+
+整理即可得到结论。
+
+这是本节使用频率最高的综合公式。
+
+### 五、方差公式与协方差的联系
+
+#### 1. 两个随机变量之和的方差
+
+$$
+\boxed{ D(X+Y) = DX+DY+2\operatorname{Cov}(X,Y) }
+$$
+
+#### 2. 两个随机变量之差的方差
+
+$$
+\boxed{ D(X-Y) = DX+DY-2\operatorname{Cov}(X,Y) }
+$$
+
+#### 3. 一般线性组合
+
+$$
+\boxed{ D(aX+bY) = a^2DX+b^2DY + 2ab\operatorname{Cov}(X,Y) }
+$$
+
+注意：
+
+$$
+D(aX)=a^2DX.
+$$
+
+不是 $aDX$。
+
+#### 4. 两个特别重要的推论
+
+第一：
+
+$$
+\boxed{ \operatorname{Cov}(X+Y,X-Y)=DX-DY }
+$$
+
+证明：
+
+$$
+\begin{aligned} \operatorname{Cov}(X+Y,X-Y) &=DX-\operatorname{Cov}(X,Y)\\ &\quad+\operatorname{Cov}(Y,X)-DY\\ &=DX-DY. \end{aligned}
+$$
+
+交叉项恰好抵消。
+
+注意：这个公式完全不需要 $X,Y$ 独立。
+
+第二：
+
+$$
+\boxed{ D(X+Y)-D(X-Y) = 4\operatorname{Cov}(X,Y) }
+$$
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y) = \frac{D(X+Y)-D(X-Y)}4 }
+$$
+
+这类题只给出两个组合的方差，却要求原变量协方差时，可以直接使用。
+
+#### 5. 重要的独立性结论
+
+如果：
+
+$$
+X\perp Y,
+$$
+
+并且二阶矩存在，则：
+
+$$
+\operatorname{Cov}(X,Y)=0.
+$$
+
+于是：
+
+$$
+D(X+Y)=DX+DY.
+$$
+
+但是反过来：
+
+$$
+D(X+Y)=DX+DY
+$$
+
+只能说明：
+
+$$
+\operatorname{Cov}(X,Y)=0.
+$$
+
+不能一般性地推出独立。
+
+这个逻辑区别在选择题里非常重要。
+
+### 六、相关系数的变换性质
+
+设 $a,c\ne0$，则：
+
+$$
+\boxed{ \rho_{aX+b,cY+d} = \operatorname{sgn}(ac)\rho_{XY} }
+$$
+
+其中：
+
+$$
+\operatorname{sgn}(t)= \begin{cases} 1,&t>0,\\ -1,&t<0. \end{cases}
+$$
+
+所以：
+
+$$
+\rho_{X+3,Y-5}=\rho_{XY},
+$$
+
+$$
+\rho_{2X,3Y}=\rho_{XY},
+$$
+
+$$
+\rho_{-2X,3Y}=-\rho_{XY},
+$$
+
+$$
+\rho_{-2X,-3Y}=\rho_{XY}.
+$$
+
+理解起来很简单：正比例缩放不改变相关方向，负比例缩放会反转方向。
+
+同时，相关系数有两个不能忽略的限制：
+
+一是这个性质只对非零线性缩放成立。
+
+二是对一般非线性函数 $g,h$，通常不能认为：
+
+$$
+\rho_{g(X),h(Y)}=\rho_{XY}.
+$$
+
+例如，即使 $X$ 与 $X^2$ 不相关，也不能据此推断 $X$ 与 $|X|$ 的相关性。
+
+### 七、独立、不相关与联合正态的关系
+
+这是本节第一个真正的思维难点。
+
+#### 1. 一般情况下
+
+$$
+\boxed{ X,Y\text{ 独立} \Longrightarrow X,Y\text{ 不相关} }
+$$
+
+但：
+
+$$
+\boxed{ X,Y\text{ 不相关} \not\Longrightarrow X,Y\text{ 独立} }
+$$
+
+原因是：独立性要求整个联合分布可以分解，而不相关只要求一个协方差为零。
+
+#### 2. 二维联合正态的特殊性
+
+当 $(X,Y)$ 服从二维联合正态分布，且两个方差为正时：
+
+$$
+\boxed{ X,Y\text{ 独立} \iff \operatorname{Cov}(X,Y)=0 \iff \rho_{XY}=0 }
+$$
+
+这是联合正态分布非常重要的性质。
+
+更进一步，如果：
+
+$$
+(X,Y)\text{ 联合正态},
+$$
+
+那么任意两个线性组合：
+
+$$
+U=aX+bY,\qquad V=cX+dY
+$$
+
+仍然联合正态。
+
+因此：
+
+$$
+\boxed{ U\perp V \iff \operatorname{Cov}(U,V)=0 }
+$$
+
+在这类题中，求独立性往往可以直接转化为一道代数方程。
+
+#### 3. 一个必须记住的陷阱
+
+下面两种条件不一样：
+
+条件A：
+
+$$
+X\sim N(\mu_1,\sigma_1^2),\qquad Y\sim N(\mu_2,\sigma_2^2).
+$$
+
+条件B：
+
+$$
+(X,Y)\text{ 服从二维联合正态分布}.
+$$
+
+条件A只说明每个随机变量单独服从正态分布，并不能保证它们联合正态。
+
+因此不能仅凭两个边缘正态分布，就断言零相关必然意味着独立。
+
+还有一个特殊情形：两个非退化的伯努利随机变量，如果协方差为零，也可以推出独立。这是因为其联合分布由四个格子的概率确定，协方差为零恰好给出了独立所需的条件。
+
+## 第二部分：历年真题与核心母题精讲
+
+### 八、母题一：和差型随机变量的协方差
+
+原题来源：2000年数学一，核心题目第3题。
+
+#### 题目
+
+设二维随机变量 $(X,Y)$ 服从二维正态分布，令：
+
+$$
+U=X+Y,\qquad V=X-Y.
+$$
+
+求 $U,V$ 不相关的充分必要条件。
+
+<Steps>
+
+  <Step>
+
+### 第一步：识别题型
+
+题目有三个特征：
+
+1. 出现两个随机变量的线性组合。
+2. 问的是“不相关”。
+3. 原变量的方差尚未给出具体数值。
+
+这种题的突破口不是求联合分布，而是：
+
+$$
+U,V\text{ 不相关} \iff \operatorname{Cov}(U,V)=0.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：展开协方差
+
+$$
+\begin{aligned} \operatorname{Cov}(U,V) &=\operatorname{Cov}(X+Y,X-Y)\\ &=DX-DY. \end{aligned}
+$$
+
+因此：
+
+$$
+\operatorname{Cov}(U,V)=0 \iff DX=DY.
+$$
+
+所以答案是：
+
+$$
+\boxed{DX=DY}
+$$
+
+即：
+
+$$
+\boxed{ E(X^2)-(EX)^2 = E(Y^2)-(EY)^2 }
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：思考正态条件有什么作用
+
+刚才的求解过程并没有使用正态性。
+
+这是需要特别注意的地方。
+
+对任意具有有限二阶矩的 $X,Y$：
+
+$$
+DX=DY \Longrightarrow X+Y\text{ 与 }X-Y\text{ 不相关}.
+$$
+
+但若题目进一步问：
+
+> $X+Y$ 与 $X-Y$ 是否独立？
+
+就必须检查联合分布。
+
+本题给出 $(X,Y)$ 联合正态，因此 $(U,V)$ 也联合正态。
+
+于是：
+
+$$
+\boxed{ U\perp V \iff DX=DY }
+$$
+
+如果只知道 $X,Y$ 独立同分布，但不是正态分布，则通常只能得到不相关，不能直接得到独立。
+
+  </Step>
+
+</Steps>
+
+#### 母题推广1：和差型相关系数
+
+考虑：
+
+$$
+U=X+Y,\qquad V=X-Y.
+$$
+
+记：
+
+$$
+DX=\sigma_X^2,\qquad DY=\sigma_Y^2,\qquad \operatorname{Cov}(X,Y)=c.
+$$
+
+则：
+
+$$
+\operatorname{Cov}(U,V) =\sigma_X^2-\sigma_Y^2,
+$$
+
+$$
+DU=\sigma_X^2+\sigma_Y^2+2c,
+$$
+
+$$
+DV=\sigma_X^2+\sigma_Y^2-2c.
+$$
+
+所以：
+
+$$
+\boxed{ \rho_{UV} = \frac{\sigma_X^2-\sigma_Y^2} {\sqrt{(\sigma_X^2+\sigma_Y^2)^2-4c^2}} }
+$$
+
+前提是 $DU,DV>0$。
+
+如果 $X,Y$ 独立，则 $c=0$，公式进一步简化：
+
+$$
+\boxed{ \rho_{X+Y,X-Y} = \frac{DX-DY}{DX+DY} }
+$$
+
+这就是一类填空题的通解。
+
+#### 母题推广2：参数型和差
+
+设 $X,Y$ 独立，且：
+
+$$
+DX=2,\qquad DY=8.
+$$
+
+令：
+
+$$
+U=aX+Y,\qquad V=X-aY.
+$$
+
+求 $U,V$ 不相关时的 $a$。
+
+直接计算：
+
+$$
+\operatorname{Cov}(U,V) =aDX-aDY.
+$$
+
+因此：
+
+$$
+\operatorname{Cov}(U,V)=2a-8a=-6a.
+$$
+
+于是：
+
+$$
+\boxed{a=0}
+$$
+
+这说明：当两个组合具有这种对称系数结构时，协方差可能高度简化。
+
+如果改成：
+
+$$
+U=aX+Y,\qquad V=X-bY,
+$$
+
+则：
+
+$$
+\operatorname{Cov}(U,V)=2a-8b.
+$$
+
+所以：
+
+$$
+\boxed{a=4b}
+$$
+
+以后遇到线性组合求参数，不必建立完整分布，只需要：
+
+写组合 → 展开协方差 → 利用不相关或独立条件建立方程。
+
+### 九、母题二：相关系数达到边界时的完全相关
+
+原题来源：2008年数学一、数学三，核心题目第1题。
+
+#### 题目
+
+设：
+
+$$
+X\sim N(0,1),\qquad Y\sim N(1,4),
+$$
+
+并且：
+
+$$
+\rho_{XY}=1.
+$$
+
+求 $X,Y$ 之间几乎必然成立的线性关系。
+
+<Steps>
+
+  <Step>
+
+### 第一步：识别核心条件
+
+看到：
+
+$$
+\rho_{XY}=1
+$$
+
+就应该立即想到：
+
+$$
+\frac{Y-EY}{\sqrt{DY}} = \frac{X-EX}{\sqrt{DX}} \quad\text{几乎处处}.
+$$
+
+这是比协方差展开更快的方法。
+
+  </Step>
+
+  <Step>
+
+### 第二步：代入期望和方差
+
+题目中：
+
+$$
+EX=0,\quad EY=1,
+$$
+
+$$
+DX=1,\quad DY=4.
+$$
+
+所以：
+
+$$
+\frac{Y-1}{2} = \frac X1.
+$$
+
+因此：
+
+$$
+\boxed{Y=2X+1\quad\text{几乎处处}}
+$$
+
+也就是：
+
+$$
+\boxed{P(Y=2X+1)=1}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：理解为什么不是其他关系
+
+完全相关的直线：
+
+$$
+Y=aX+b
+$$
+
+有两个决定因素。
+
+斜率：
+
+$$
+a=\rho_{XY}\frac{\sigma_Y}{\sigma_X}.
+$$
+
+截距：
+
+$$
+b=EY-aEX.
+$$
+
+所以统一公式：
+
+$$
+\boxed{ Y=EY+\rho_{XY} \frac{\sigma_Y}{\sigma_X}(X-EX) }
+$$
+
+仅在 $\rho_{XY}=\pm1$ 时作为几乎必然成立的关系使用。
+
+  </Step>
+
+</Steps>
+
+#### 母题推广：完全负相关
+
+假设：
+
+$$
+EX=2,\quad EY=-1,
+$$
+
+$$
+DX=4,\quad DY=9,
+$$
+
+$$
+\rho_{XY}=-1.
+$$
+
+那么：
+
+$$
+Y+1=-\frac32(X-2).
+$$
+
+所以：
+
+$$
+\boxed{Y=2-\frac32X}
+$$
+
+不用知道 $X,Y$ 的具体分布。
+
+#### 更深一层：完全相关与方差为零
+
+当：
+
+$$
+\rho_{XY}=1
+$$
+
+时，
+
+$$
+D\left( \frac{X-EX}{\sigma_X} - \frac{Y-EY}{\sigma_Y} \right)=0.
+$$
+
+因此标准化后的两个变量相等。
+
+当：
+
+$$
+\rho_{XY}=-1
+$$
+
+时，
+
+$$
+D\left( \frac{X-EX}{\sigma_X} + \frac{Y-EY}{\sigma_Y} \right)=0.
+$$
+
+因此标准化后的两个变量互为相反数。
+
+这种处理方法还可以推广到：
+
+- 已知线性组合的方差为零；
+- 判断相关系数是否达到边界；
+- 求协方差矩阵奇异时的确定性关系；
+- 判断某个随机变量能否由另一个变量完全线性预测。
+
+### 十、母题三：不相关但不独立
+
+原题来源：1993年数学一，核心题目第9题。
+
+这道题对于理解本节概念非常关键。
+
+#### 题目
+
+设随机变量 $X$ 的概率密度：
+
+$$
+f_X(x)=\frac12e^{-|x|}, \qquad -\infty<x<+\infty.
+$$
+
+求：
+
+（1）$EX,DX$；
+
+（2）$\operatorname{Cov}(X,|X|)$；
+
+（3）判断 $X$ 与 $|X|$ 是否独立。
+
+<Steps>
+
+  <Step>
+
+### 第一步：利用对称性计算期望
+
+密度函数满足：
+
+$$
+f_X(-x)=f_X(x).
+$$
+
+所以 $X$ 关于原点对称：
+
+$$
+\boxed{EX=0}
+$$
+
+而：
+
+$$
+E(X^2) = \int_{-\infty}^{+\infty} x^2\frac12e^{-|x|}\,dx.
+$$
+
+利用偶函数：
+
+$$
+E(X^2)=\int_0^\infty x^2e^{-x}\,dx=2.
+$$
+
+因此：
+
+$$
+\boxed{DX=2}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：求协方差
+
+$$
+\operatorname{Cov}(X,|X|) = E[X|X|]-EX\cdot E|X|.
+$$
+
+由于：
+
+$$
+EX=0,
+$$
+
+所以：
+
+$$
+\operatorname{Cov}(X,|X|) = E[X|X|].
+$$
+
+注意函数：
+
+$$
+g(x)=x|x|
+$$
+
+是奇函数。
+
+而 $f_X(x)$ 为偶函数，因此：
+
+$$
+x|x|f_X(x)
+$$
+
+是奇函数。
+
+在整个实数轴上积分：
+
+$$
+E[X|X|]=0.
+$$
+
+于是：
+
+$$
+\boxed{\operatorname{Cov}(X,|X|)=0}
+$$
+
+即：
+
+$$
+\boxed{X\text{ 与 }|X|\text{ 不相关}}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：判断是否独立
+
+这里最容易产生错误：
+
+> 协方差已经是零，为什么还需要证明不独立？
+
+因为 $Y=|X|$ 是 $X$ 的确定函数。
+
+我们构造事件：
+
+$$
+A=\{|X|\le1\}.
+$$
+
+这个事件既可以由 $X$ 判断，也可以由 $|X|$ 判断。
+
+如果 $X$ 和 $|X|$ 独立，那么事件 $A$ 必须与自身独立。
+
+即：
+
+$$
+P(A)=P(A)^2.
+$$
+
+因此：
+
+$$
+P(A)=0\quad\text{或}\quad P(A)=1.
+$$
+
+但是：
+
+$$
+P(A)=\int_{-1}^{1}\frac12e^{-|x|}\,dx =1-e^{-1}.
+$$
+
+显然：
+
+$$
+0<P(A)<1.
+$$
+
+产生矛盾。
+
+所以：
+
+$$
+\boxed{X\text{ 与 }|X|\text{ 不独立}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 母题总结
+
+这道题建立了三个重要认识。
+
+第一，对称分布中的奇函数期望经常为零。
+
+第二，两个随机变量存在强烈的非线性依赖关系，协方差仍然可能为零。
+
+第三，判断非独立时，不一定需要求完整联合分布，可以寻找两个边缘概率为正、联合概率为零的事件。
+
+#### 同类重要变式：圆盘均匀分布
+
+核心题目中还收录了1991年数学三的圆盘均匀分布问题。
+
+设 $(X,Y)$ 在：
+
+$$
+x^2+y^2\le r^2
+$$
+
+上均匀分布。
+
+由对称性：
+
+$$
+EX=EY=E(XY)=0.
+$$
+
+所以：
+
+$$
+\boxed{\rho_{XY}=0}
+$$
+
+但 $X,Y$ 不独立。
+
+例如考虑：
+
+$$
+A=\left\{X>\frac{3r}{4}\right\}, \qquad B=\left\{Y>\frac{3r}{4}\right\}.
+$$
+
+两个事件分别都有正概率。
+
+但是如果同时发生：
+
+$$
+X^2+Y^2> 2\left(\frac{3r}{4}\right)^2 =\frac{9r^2}{8}>r^2,
+$$
+
+与圆盘区域矛盾。
+
+故：
+
+$$
+P(A\cap B)=0 \ne P(A)P(B).
+$$
+
+从而不独立。
+
+以后只要二维随机变量在三角形、圆盘、椭圆等受约束区域上均匀分布，就应该警惕：对称性可能使协方差为零，但区域约束仍然造成依赖。
+
+### 十一、母题四：二维正态与线性组合独立性
+
+原题来源：1994年数学一，核心题目第14题。
+
+#### 题目
+
+设 $(X,Y)$ 服从二维正态分布，且：
+
+$$
+X\sim N(1,9), \qquad Y\sim N(0,16),
+$$
+
+$$
+\rho_{XY}=-\frac12.
+$$
+
+令：
+
+$$
+Z=\frac X3+\frac Y2.
+$$
+
+求：
+
+（1）$EZ,DZ$；
+
+（2）$\rho_{XZ}$；
+
+（3）判断 $X,Z$ 是否独立。
+
+<Steps>
+
+  <Step>
+
+### 第一步：将相关系数转化为协方差
+
+$$
+\operatorname{Cov}(X,Y) = \rho_{XY}\sqrt{DX\,DY}.
+$$
+
+所以：
+
+$$
+\operatorname{Cov}(X,Y) = -\frac12\sqrt{9\cdot16} =-6.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：求 $Z$ 的数学期望
+
+$$
+EZ=\frac13EX+\frac12EY.
+$$
+
+因此：
+
+$$
+\boxed{EZ=\frac13}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：计算方差
+
+$$
+DZ= \frac19DX+\frac14DY + 2\cdot\frac13\cdot\frac12 \operatorname{Cov}(X,Y).
+$$
+
+代入：
+
+$$
+DZ=1+4-2.
+$$
+
+于是：
+
+$$
+\boxed{DZ=3}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第四步：求相关系数
+
+先求：
+
+$$
+\begin{aligned} \operatorname{Cov}(X,Z) &=\operatorname{Cov} \left(X,\frac X3+\frac Y2\right)\\ &=\frac13DX+\frac12\operatorname{Cov}(X,Y)\\ &=3-3\\ &=0. \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{\rho_{XZ}=0}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第五步：判断独立性
+
+由于：
+
+$$
+(X,Y)\text{ 联合正态},
+$$
+
+而：
+
+$$
+Z=\frac X3+\frac Y2
+$$
+
+是线性组合，所以：
+
+$$
+(X,Z)\text{ 联合正态}.
+$$
+
+再结合：
+
+$$
+\operatorname{Cov}(X,Z)=0,
+$$
+
+得到：
+
+$$
+\boxed{X\perp Z}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 从这道真题提炼通法
+
+假设一般情况下：
+
+$$
+(X,Y)\text{ 联合正态},
+$$
+
+希望构造：
+
+$$
+Z=Y-aX
+$$
+
+使 $X,Z$ 相互独立。
+
+因为：
+
+$$
+\operatorname{Cov}(X,Z) = \operatorname{Cov}(X,Y)-aDX,
+$$
+
+令其为零：
+
+$$
+\operatorname{Cov}(X,Y)-aDX=0.
+$$
+
+所以：
+
+$$
+\boxed{ a=\frac{\operatorname{Cov}(X,Y)}{DX} }
+$$
+
+从而：
+
+$$
+\boxed{ Z=Y- \frac{\operatorname{Cov}(X,Y)}{DX}X }
+$$
+
+与 $X$ 不相关；在联合正态条件下，它们还相互独立。
+
+这就是构造与已知正态变量独立的线性组合的标准方法。
+
+若还要求新变量服从标准正态分布，则继续进行中心化与标准化：
+
+$$
+W=\frac{Z-EZ}{\sqrt{DZ}}.
+$$
+
+只要 $DZ>0$，便有：
+
+$$
+W\sim N(0,1),\qquad W\perp X.
+$$
+
+#### 进阶：从线性组合到旋转变换
+
+张宇1000题的相应练习还涉及：
+
+$$
+U=X\cos\alpha+Y\sin\alpha,
+$$
+
+$$
+V=-X\sin\alpha+Y\cos\alpha.
+$$
+
+设：
+
+$$
+DX=\sigma_X^2,\quad DY=\sigma_Y^2,\quad \operatorname{Cov}(X,Y)=c.
+$$
+
+展开协方差：
+
+$$
+\begin{aligned} \operatorname{Cov}(U,V) ={}& \frac{\sigma_Y^2-\sigma_X^2}{2}\sin2\alpha\\ &+c\cos2\alpha. \end{aligned}
+$$
+
+若 $U,V$ 要求不相关，且 $\cos2\alpha\ne0$，则：
+
+$$
+\boxed{ \tan2\alpha = \frac{2c}{\sigma_X^2-\sigma_Y^2} }
+$$
+
+如果原变量联合正态，这个条件又能保证两个旋转后的分量独立。
+
+这实际上就是线性代数中的实对称矩阵正交对角化在概率论中的应用。
+
+### 十二、母题五：分类计数与示性变量
+
+原题来源：2016年数学一，核心题目第22题。
+
+#### 题目
+
+某试验只有三种两两不相容的结果：
+
+$$
+A_1,A_2,A_3,
+$$
+
+且：
+
+$$
+P(A_1)=P(A_2)=P(A_3)=\frac13.
+$$
+
+将该试验独立重复2次。
+
+记：
+
+- $X$ 为结果 $A_1$ 出现的次数；
+- $Y$ 为结果 $A_2$ 出现的次数。
+
+求：
+
+$$
+\rho_{XY}.
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：先识别随机变量之间的关系
+
+这是一个容易误判的问题。
+
+虽然两次试验相互独立，但同一次试验中的 $A_1,A_2$ 是互斥的。
+
+所以 $X,Y$ 并不独立。
+
+一个试验出现 $A_1$，就不可能同时出现 $A_2$。
+
+这意味着两个计数之间存在负向关联。
+
+  </Step>
+
+  <Step>
+
+### 第二步：建立示性变量
+
+对第 $i$ 次试验，定义：
+
+$$
+I_i= \begin{cases} 1,&\text{出现 }A_1,\\ 0,&\text{其他}, \end{cases}
+$$
+
+$$
+J_i= \begin{cases} 1,&\text{出现 }A_2,\\ 0,&\text{其他}. \end{cases}
+$$
+
+则：
+
+$$
+X=I_1+I_2,
+$$
+
+$$
+Y=J_1+J_2.
+$$
+
+由于同一次试验中 $A_1,A_2$ 互斥：
+
+$$
+I_iJ_i=0.
+$$
+
+所以：
+
+$$
+E(I_iJ_i)=0.
+$$
+
+而：
+
+$$
+EI_i=EJ_i=\frac13.
+$$
+
+因此：
+
+$$
+\operatorname{Cov}(I_i,J_i) = 0-\frac13\cdot\frac13 =-\frac19.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：求总协方差
+
+由不同次试验相互独立：
+
+$$
+\operatorname{Cov}(I_i,J_j)=0 \qquad(i\ne j).
+$$
+
+所以：
+
+$$
+\begin{aligned} \operatorname{Cov}(X,Y) &=\operatorname{Cov}(I_1+I_2,J_1+J_2)\\ &=\operatorname{Cov}(I_1,J_1) +\operatorname{Cov}(I_2,J_2)\\ &=-\frac29. \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第四步：求方差
+
+显然：
+
+$$
+X,Y\sim B\left(2,\frac13\right).
+$$
+
+所以：
+
+$$
+DX=DY = 2\cdot\frac13\cdot\frac23 =\frac49.
+$$
+
+最终：
+
+$$
+\rho_{XY} = \frac{-2/9}{4/9}.
+$$
+
+得到：
+
+$$
+\boxed{\rho_{XY}=-\frac12}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 从真题推广到多项分布
+
+假设独立重复试验 $n$ 次。
+
+每次试验的各类概率为：
+
+$$
+p_1,p_2,\ldots,p_k, \qquad \sum_{i=1}^{k}p_i=1.
+$$
+
+令 $N_i$ 表示第 $i$ 类出现的次数。
+
+那么：
+
+$$
+\boxed{ D(N_i)=np_i(1-p_i) }
+$$
+
+对于 $i\ne j$：
+
+$$
+\boxed{ \operatorname{Cov}(N_i,N_j) =-np_ip_j }
+$$
+
+因此：
+
+$$
+\boxed{ \rho_{N_iN_j} = -\sqrt{ \frac{p_ip_j} {(1-p_i)(1-p_j)} } }
+$$
+
+这里默认 $0<p_i,p_j<1$，使相关系数有定义。
+
+这个结论非常值得掌握。
+
+尤其需要注意：
+
+同一批试验中不同类别的计数，一般存在负协方差，而不是零协方差。
+
+### 十三、母题六：条件概率与两个伯努利变量的相关系数
+
+原题来源：2021年数学一，核心题目第23题。
+
+#### 题目
+
+甲、乙两个盒子中各有2个红球、2个白球。
+
+从甲盒随机取出1球，放入乙盒；随后从乙盒取1球。
+
+定义：
+
+$$
+X= \begin{cases} 1,&\text{第一次取到红球},\\ 0,&\text{第一次取到白球}, \end{cases}
+$$
+
+$$
+Y= \begin{cases} 1,&\text{第二次取到红球},\\ 0,&\text{第二次取到白球}. \end{cases}
+$$
+
+求：
+
+$$
+\rho_{XY}.
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：求边缘概率
+
+第一次取红球的概率：
+
+$$
+P(X=1)=\frac12.
+$$
+
+因此：
+
+$$
+EX=\frac12,\qquad DX=\frac14.
+$$
+
+第二次取球的概率取决于第一次的颜色。
+
+若第一次是红球：
+
+$$
+P(Y=1\mid X=1)=\frac35.
+$$
+
+若第一次是白球：
+
+$$
+P(Y=1\mid X=0)=\frac25.
+$$
+
+于是由全概率公式：
+
+$$
+\begin{aligned} P(Y=1) &=\frac12\cdot\frac35 +\frac12\cdot\frac25\\ &=\frac12. \end{aligned}
+$$
+
+因此：
+
+$$
+EY=\frac12,\qquad DY=\frac14.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：计算交叉期望
+
+由于 $X,Y$ 都只取0或1：
+
+$$
+XY=1
+$$
+
+当且仅当两次都取到红球。
+
+所以：
+
+$$
+E(XY)=P(X=1,Y=1).
+$$
+
+由条件概率：
+
+$$
+E(XY) = P(X=1)P(Y=1\mid X=1) =\frac12\cdot\frac35 =\frac3{10}.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：求协方差与相关系数
+
+$$
+\operatorname{Cov}(X,Y) = \frac3{10}-\frac14 =\frac1{20}.
+$$
+
+所以：
+
+$$
+\rho_{XY} = \frac{1/20}{\sqrt{(1/4)(1/4)}}.
+$$
+
+最终：
+
+$$
+\boxed{\rho_{XY}=\frac15}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 母题总结：二值随机变量求协方差的捷径
+
+如果：
+
+$$
+X,Y\in\{0,1\},
+$$
+
+那么：
+
+$$
+EX=P(X=1),
+$$
+
+$$
+EY=P(Y=1),
+$$
+
+$$
+E(XY)=P(X=1,Y=1).
+$$
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y) = P(X=1,Y=1) -P(X=1)P(Y=1) }
+$$
+
+根本不需要先构造完整的联合分布表。
+
+#### 更深的推论
+
+对两个非退化的0-1随机变量：
+
+$$
+\operatorname{Cov}(X,Y)=0
+$$
+
+等价于：
+
+$$
+P(X=1,Y=1)=P(X=1)P(Y=1).
+$$
+
+再结合两个边缘概率，就能确定其余三个联合概率也满足独立条件。
+
+因此：
+
+$$
+\boxed{ \text{两个伯努利变量不相关} \iff \text{两个伯努利变量独立} }
+$$
+
+这属于特殊结论，不可随意推广到多值随机变量。
+
+### 十四、母题七：给定条件分布，求协方差
+
+这一类题代表着近年真题中非常值得重视的综合方向。
+
+它把条件分布、数学期望、方差、协方差连接起来。
+
+#### 先建立一个重要工具
+
+设：
+
+$$
+E(Y\mid X)=g(X).
+$$
+
+那么：
+
+$$
+E(XY)=E[Xg(X)].
+$$
+
+证明很简单：
+
+$$
+E(XY) = E\{E(XY\mid X)\}.
+$$
+
+由于在给定 $X$ 的条件下，$X$ 可以看作已知量：
+
+$$
+E(XY\mid X)=X E(Y\mid X).
+$$
+
+所以：
+
+$$
+E(XY)=E[Xg(X)].
+$$
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y) = \operatorname{Cov}(X,E[Y\mid X]) }
+$$
+
+这是本节最重要的综合推论之一。
+
+尤其当：
+
+$$
+E(Y\mid X)=aX+b
+$$
+
+时：
+
+$$
+\boxed{ \operatorname{Cov}(X,Y)=aDX }
+$$
+
+这是一个非常强大的简化公式。
+
+#### 真题A：2022年数学一
+
+设：
+
+$$
+X\sim N(0,1),
+$$
+
+且：
+
+$$
+Y\mid X=x\sim N(x,1).
+$$
+
+求 $X,Y$ 的相关系数。
+
+第一步：从条件分布提取信息。
+
+$$
+E(Y\mid X)=X,
+$$
+
+$$
+D(Y\mid X)=1.
+$$
+
+所以：
+
+$$
+EY=E[E(Y\mid X)]=EX=0.
+$$
+
+第二步：计算协方差。
+
+利用前面的公式：
+
+$$
+\begin{aligned} \operatorname{Cov}(X,Y) &=\operatorname{Cov}(X,E[Y\mid X])\\ &=\operatorname{Cov}(X,X)\\ &=DX\\ &=1. \end{aligned}
+$$
+
+第三步：计算 $DY$。
+
+使用全方差公式：
+
+$$
+\boxed{ DY=E[D(Y\mid X)] +D[E(Y\mid X)] }
+$$
+
+于是：
+
+$$
+DY=E(1)+D(X)=2.
+$$
+
+第四步：求相关系数。
+
+$$
+\rho_{XY} = \frac1{\sqrt{1\cdot2}}.
+$$
+
+所以：
+
+$$
+\boxed{\rho_{XY}=\frac1{\sqrt2}}
+$$
+
+#### 真题B：2024年数学一
+
+设：
+
+$$
+f_X(x)= \begin{cases} 2(1-x),&0<x<1,\\ 0,&\text{其他}. \end{cases}
+$$
+
+并且在给定 $X=x$ 时：
+
+$$
+Y\mid X=x\sim U(x,1).
+$$
+
+求：
+
+$$
+\operatorname{Cov}(X,Y).
+$$
+
+第一步：先求条件期望。
+
+由于均匀分布的期望等于区间中点：
+
+$$
+E(Y\mid X=x)=\frac{x+1}{2}.
+$$
+
+因此：
+
+$$
+E(Y\mid X)=\frac{X+1}{2}.
+$$
+
+第二步：将协方差转化为方差。
+
+$$
+\begin{aligned} \operatorname{Cov}(X,Y) &=\operatorname{Cov} \left(X,\frac{X+1}{2}\right)\\ &=\frac12DX. \end{aligned}
+$$
+
+所以问题变为计算 $DX$。
+
+第三步：计算 $X$ 的前两阶矩。
+
+$$
+EX=\int_0^1 2x(1-x)\,dx=\frac13.
+$$
+
+$$
+E(X^2)=\int_0^1 2x^2(1-x)\,dx=\frac16.
+$$
+
+因此：
+
+$$
+DX=\frac16-\frac19=\frac1{18}.
+$$
+
+最终：
+
+$$
+\operatorname{Cov}(X,Y)=\frac12\cdot\frac1{18}.
+$$
+
+得到：
+
+$$
+\boxed{\operatorname{Cov}(X,Y)=\frac1{36}}
+$$
+
+#### 两道题的统一母题
+
+以后遇到：
+
+$$
+E(Y\mid X)=aX+b,
+$$
+
+且：
+
+$$
+D(Y\mid X)=c
+$$
+
+其中 $c\ge0$ 为常数，就可以直接得到：
+
+$$
+EY=aEX+b,
+$$
+
+$$
+\boxed{ \operatorname{Cov}(X,Y)=aDX }
+$$
+
+$$
+\boxed{ DY=c+a^2DX }
+$$
+
+因此，只要 $DX>0,DY>0$：
+
+$$
+\boxed{ \rho_{XY} = \frac{a\sqrt{DX}} {\sqrt{c+a^2DX}} }
+$$
+
+这已经把两道真题统一成了一个公式。
+
+#### 再进一步：条件方差不是常数怎么办？
+
+假设：
+
+$$
+E(Y\mid X)=aX+b,
+$$
+
+但：
+
+$$
+D(Y\mid X)=h(X).
+$$
+
+那么：
+
+$$
+\operatorname{Cov}(X,Y)=aDX
+$$
+
+仍然成立。
+
+而：
+
+$$
+DY=E[h(X)]+a^2DX.
+$$
+
+所以：
+
+$$
+\boxed{ \rho_{XY} = \frac{a\sqrt{DX}} {\sqrt{E[h(X)]+a^2DX}} }
+$$
+
+这就是可以用来解决未来新题的一般方法。
+
+### 十五、母题八：协方差矩阵与方差最值
+
+原题来源：2025年数学一，核心题目第18题。
+
+这道题体现了概率论与线性代数的结合。
+
+#### 题目
+
+设：
+
+$$
+(X,Y)\sim N(0,0;1,1;\rho), \qquad -1<\rho<1.
+$$
+
+其中：
+
+$$
+DX=DY=1.
+$$
+
+若：
+
+$$
+a^2+b^2=1,
+$$
+
+求：
+
+$$
+D(aX+bY)
+$$
+
+的最大值。
+
+<Tabs items={["初等方法 · 基本不等式", "矩阵方法 · 特征值"]} defaultIndex={0}>
+
+  <Tab value="初等方法 · 基本不等式">
+
+#### 方法一：基本不等式
+
+由方差公式：
+
+$$
+D(aX+bY) = a^2DX+b^2DY+2ab\operatorname{Cov}(X,Y).
+$$
+
+因为：
+
+$$
+DX=DY=1, \qquad \operatorname{Cov}(X,Y)=\rho,
+$$
+
+所以：
+
+$$
+D(aX+bY)=a^2+b^2+2ab\rho.
+$$
+
+结合：
+
+$$
+a^2+b^2=1,
+$$
+
+得到：
+
+$$
+D(aX+bY)=1+2ab\rho.
+$$
+
+又因为：
+
+$$
+2|ab|\le a^2+b^2=1,
+$$
+
+因此：
+
+$$
+2ab\rho\le|\rho|.
+$$
+
+所以：
+
+$$
+D(aX+bY)\le1+|\rho|.
+$$
+
+当 $\rho>0$ 时，取：
+
+$$
+a=b=\frac1{\sqrt2}.
+$$
+
+当 $\rho<0$ 时，取：
+
+$$
+a=-b=\frac1{\sqrt2}.
+$$
+
+可以达到最大值。
+
+故：
+
+$$
+\boxed{ \max D(aX+bY)=1+|\rho| }
+$$
+
+同理：
+
+$$
+\boxed{ \min D(aX+bY)=1-|\rho| }
+$$
+
+  </Tab>
+
+  <Tab value="矩阵方法 · 特征值">
+
+#### 方法二：协方差矩阵
+
+引入协方差矩阵：
+
+$$
+\boxed{ \Sigma= \begin{pmatrix} DX&\operatorname{Cov}(X,Y)\\ \operatorname{Cov}(X,Y)&DY \end{pmatrix} }
+$$
+
+本题：
+
+$$
+\Sigma= \begin{pmatrix} 1&\rho\\ \rho&1 \end{pmatrix}.
+$$
+
+设：
+
+$$
+\boldsymbol a= \begin{pmatrix}a\\b\end{pmatrix}.
+$$
+
+则：
+
+$$
+D(aX+bY)=\boldsymbol a^T\Sigma\boldsymbol a.
+$$
+
+条件：
+
+$$
+a^2+b^2=1
+$$
+
+意味着：
+
+$$
+\boldsymbol a^T\boldsymbol a=1.
+$$
+
+所以原题等价于：
+
+$$
+\max_{\boldsymbol a^T\boldsymbol a=1} \boldsymbol a^T\Sigma\boldsymbol a.
+$$
+
+线性代数告诉我们：
+
+$$
+\boxed{ \max_{\|\boldsymbol a\|=1} \boldsymbol a^T\Sigma\boldsymbol a =\lambda_{\max}(\Sigma) }
+$$
+
+计算：
+
+$$
+\det(\lambda I-\Sigma) = (\lambda-1)^2-\rho^2.
+$$
+
+两个特征值：
+
+$$
+\lambda_1=1+\rho, \qquad \lambda_2=1-\rho.
+$$
+
+最大特征值：
+
+$$
+\boxed{\lambda_{\max}=1+|\rho|}
+$$
+
+与第一种方法完全一致。
+
+  </Tab>
+
+</Tabs>
+
+#### 母题推广：一般二维协方差矩阵
+
+设：
+
+$$
+DX=u,\quad DY=v,\quad \operatorname{Cov}(X,Y)=c.
+$$
+
+则：
+
+$$
+\Sigma= \begin{pmatrix} u&c\\ c&v \end{pmatrix}.
+$$
+
+特征值满足：
+
+$$
+\lambda^2-(u+v)\lambda+(uv-c^2)=0.
+$$
+
+所以：
+
+$$
+\boxed{ \lambda_{\pm} = \frac{ u+v\pm\sqrt{(u-v)^2+4c^2} }{2} }
+$$
+
+因此：
+
+$$
+\boxed{ \max_{a^2+b^2=1} D(aX+bY) = \frac{ u+v+\sqrt{(u-v)^2+4c^2} }{2} }
+$$
+
+最小值对应负号。
+
+这个公式适用于所有具有有限二阶矩的随机变量，不要求正态分布。
+
+#### 进一步：协方差矩阵必须半正定
+
+对任意实数 $a,b$：
+
+$$
+D(aX+bY)\ge0.
+$$
+
+因此：
+
+$$
+\begin{pmatrix}a&b\end{pmatrix} \Sigma \begin{pmatrix}a\\b\end{pmatrix} \ge0.
+$$
+
+这说明协方差矩阵一定是半正定矩阵。
+
+对于二维情形：
+
+$$
+u\ge0,\quad v\ge0,\quad uv-c^2\ge0.
+$$
+
+即：
+
+$$
+\boxed{c^2\le uv}
+$$
+
+这又回到了：
+
+$$
+|\operatorname{Cov}(X,Y)| \le\sqrt{DX\,DY}.
+$$
+
+概率论中的协方差不等式，本质上就是协方差矩阵半正定性的体现。
+
+### 十六、母题九：样本均值与单个样本的协方差
+
+原题来源：2004年数学一，核心题目第27题。
+
+#### 题目
+
+设：
+
+$$
+X_1,X_2,\ldots,X_n
+$$
+
+独立同分布，且：
+
+$$
+DX_i=\sigma^2>0.
+$$
+
+令：
+
+$$
+\overline X=\frac1n\sum_{i=1}^{n}X_i.
+$$
+
+求：
+
+$$
+\operatorname{Cov}(X_1,\overline X).
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：识别共享项
+
+注意，$\overline X$ 包含 $X_1$。
+
+因此 $X_1$ 与 $\overline X$ 一般不独立。
+
+不能直接令协方差等于零。
+
+  </Step>
+
+  <Step>
+
+### 第二步：展开
+
+$$
+\begin{aligned} \operatorname{Cov}(X_1,\overline X) &=\operatorname{Cov} \left(X_1,\frac1n\sum_{i=1}^nX_i\right)\\ &=\frac1n\sum_{i=1}^n \operatorname{Cov}(X_1,X_i). \end{aligned}
+$$
+
+由于样本彼此独立：
+
+$$
+\operatorname{Cov}(X_1,X_i)=0 \qquad(i\ne1).
+$$
+
+而：
+
+$$
+\operatorname{Cov}(X_1,X_1)=DX_1=\sigma^2.
+$$
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(X_1,\overline X) =\frac{\sigma^2}{n} }
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：求相关系数
+
+$$
+D(\overline X)=\frac{\sigma^2}{n}.
+$$
+
+所以：
+
+$$
+\begin{aligned} \rho_{X_1,\overline X} &= \frac{\sigma^2/n} {\sqrt{\sigma^2\cdot\sigma^2/n}}\\ &=\frac1{\sqrt n}. \end{aligned}
+$$
+
+得到：
+
+$$
+\boxed{ \rho_{X_i,\overline X} =\frac1{\sqrt n} }
+$$
+
+只要样本具有相同的有限正方差，这个结论就成立。
+
+它不要求总体正态。
+
+  </Step>
+
+</Steps>
+
+#### 母题推广1：样本离均差
+
+定义：
+
+$$
+Y_i=X_i-\overline X.
+$$
+
+首先：
+
+$$
+\begin{aligned} D(Y_i) &=D(X_i-\overline X)\\ &=\sigma^2+\frac{\sigma^2}{n} -2\frac{\sigma^2}{n}. \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{ D(Y_i)=\frac{n-1}{n}\sigma^2 }
+$$
+
+对于 $i\ne j$：
+
+$$
+\begin{aligned} \operatorname{Cov}(Y_i,Y_j) &=\operatorname{Cov} (X_i-\overline X,X_j-\overline X)\\ &=0-\frac{\sigma^2}{n} -\frac{\sigma^2}{n} +\frac{\sigma^2}{n}. \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{ \operatorname{Cov}(Y_i,Y_j) =-\frac{\sigma^2}{n} \quad(i\ne j) }
+$$
+
+因此：
+
+$$
+\boxed{ \rho_{Y_iY_j} =-\frac1{n-1} \quad(i\ne j) }
+$$
+
+这条结果很值得记忆。
+
+原始样本 $X_i,X_j$ 相互独立，但减去共同样本均值后，离均差之间反而出现了负相关。
+
+直观原因是：
+
+$$
+Y_1+\cdots+Y_n=0.
+$$
+
+某一个离均差偏大，其他离均差就必须共同进行补偿。
+
+#### 母题推广2：样本均值与离均差
+
+$$
+\begin{aligned} \operatorname{Cov} (\overline X,X_i-\overline X) &=\operatorname{Cov}(\overline X,X_i) -D(\overline X)\\ &=\frac{\sigma^2}{n} -\frac{\sigma^2}{n}\\ &=0. \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{ \overline X \text{ 与 } X_i-\overline X \text{ 不相关} }
+$$
+
+如果样本来自正态总体，则样本均值与离均差联合正态，因此还可以推出独立。
+
+一般非正态总体不能这样推断。
+
+### 十七、母题十：重叠样本和的相关系数
+
+来源：李正元《随机变量的数字特征》对应练习，核心题目第31题。
+
+#### 题目
+
+设 $X_1,\ldots,X_{12}$ 独立同分布，且：
+
+$$
+DX_i=\sigma^2>0.
+$$
+
+定义：
+
+$$
+Y_1=X_1+X_2+\cdots+X_8,
+$$
+
+$$
+Y_2=X_5+X_6+\cdots+X_{12}.
+$$
+
+求：
+
+$$
+\rho_{Y_1Y_2}.
+$$
+
+#### 解题关键：找重叠部分
+
+第一个随机和包含：
+
+$$
+X_1,\ldots,X_8.
+$$
+
+第二个随机和包含：
+
+$$
+X_5,\ldots,X_{12}.
+$$
+
+共同出现的变量为：
+
+$$
+X_5,X_6,X_7,X_8.
+$$
+
+一共4个。
+
+因此：
+
+$$
+\operatorname{Cov}(Y_1,Y_2)=4\sigma^2.
+$$
+
+同时：
+
+$$
+DY_1=8\sigma^2,
+$$
+
+$$
+DY_2=8\sigma^2.
+$$
+
+所以：
+
+$$
+\rho_{Y_1Y_2} = \frac{4\sigma^2} {\sqrt{8\sigma^2\cdot8\sigma^2}}.
+$$
+
+得到：
+
+$$
+\boxed{\rho_{Y_1Y_2}=\frac12}
+$$
+
+#### 一般母题公式
+
+若：
+
+$$
+U=\sum_{i\in A}X_i, \qquad V=\sum_{j\in B}X_j,
+$$
+
+其中 $X_i$ 相互独立，方差均为 $\sigma^2>0$。
+
+假设：
+
+$$
+|A|=m,\quad |B|=n,\quad |A\cap B|=k.
+$$
+
+则：
+
+$$
+DU=m\sigma^2,
+$$
+
+$$
+DV=n\sigma^2,
+$$
+
+$$
+\operatorname{Cov}(U,V)=k\sigma^2.
+$$
+
+因此：
+
+$$
+\boxed{ \rho_{UV}=\frac{k}{\sqrt{mn}} }
+$$
+
+这是重叠样本题的通用公式。
+
+理解这个结论以后，不仅可以处理两组样本和，还可以处理滑动窗口统计量、部分和、样本均值和共享观测值的问题。
+
+### 十八、母题十一：非线性函数的协方差
+
+原题来源：2020年数学一，核心题目第29题。
+
+#### 题目
+
+设：
+
+$$
+X\sim U\left(-\frac\pi2,\frac\pi2\right),
+$$
+
+$$
+Y=\sin X.
+$$
+
+求：
+
+$$
+\operatorname{Cov}(X,Y).
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：观察对称性
+
+由于均匀分布区间关于原点对称：
+
+$$
+EX=0.
+$$
+
+而 $\sin x$ 是奇函数，所以：
+
+$$
+E(\sin X)=0.
+$$
+
+因此：
+
+$$
+\operatorname{Cov}(X,\sin X) = E(X\sin X).
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：正确判断乘积的奇偶性
+
+注意：
+
+$$
+x\sin x
+$$
+
+是偶函数，因为两个奇函数相乘得到偶函数。
+
+因此：
+
+$$
+\begin{aligned} E(X\sin X) &=\frac1\pi \int_{-\pi/2}^{\pi/2}x\sin x\,dx\\ &=\frac2\pi\int_0^{\pi/2}x\sin x\,dx. \end{aligned}
+$$
+
+利用分部积分：
+
+$$
+\int x\sin x\,dx=-x\cos x+\sin x.
+$$
+
+所以：
+
+$$
+\begin{aligned} E(X\sin X) &=\frac2\pi [-x\cos x+\sin x]_0^{\pi/2}\\ &=\frac2\pi. \end{aligned}
+$$
+
+最终：
+
+$$
+\boxed{ \operatorname{Cov}(X,\sin X)=\frac2\pi }
+$$
+
+  </Step>
+
+</Steps>
+
+#### 这一类题的通用思路
+
+遇到：
+
+$$
+\operatorname{Cov}(X,g(X))
+$$
+
+时，优先检查三个问题：
+
+1. $X$ 的分布是否关于某个点对称？
+2. $g(x)$ 是奇函数、偶函数还是分段函数？
+3. 能否通过平移变量，把积分区域转化为关于原点对称的区域？
+
+尤其要避免：
+
+$$
+EX=0,\quad Eg(X)=0
+$$
+
+就误认为：
+
+$$
+\operatorname{Cov}(X,g(X))=0.
+$$
+
+均值都为零，只能说明：
+
+$$
+\operatorname{Cov}(X,g(X))=E[Xg(X)].
+$$
+
+后者仍然可能不为零。
+
+## 第三部分：模拟题与高阶母题
+
+### 十九、母题十二：最优线性预测与相关系数
+
+来源：张宇8套卷第1套第9题。
+
+这是一道非常有代表性的综合题。
+
+它把多元函数极值、期望、方差和相关系数联系在一起。
+
+#### 题目
+
+设 $X,Y$ 具有有限二阶矩，且 $DX>0$。
+
+定义：
+
+$$
+G(a,b)=E[(Y-a-bX)^2].
+$$
+
+求：
+
+$$
+\min_{a,b}G(a,b).
+$$
+
+#### 直观理解
+
+我们希望用一个线性函数：
+
+$$
+\widehat Y=a+bX
+$$
+
+来预测 $Y$。
+
+误差为：
+
+$$
+Y-\widehat Y=Y-a-bX.
+$$
+
+目标是让平均平方误差最小：
+
+$$
+E[(Y-\widehat Y)^2].
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：分离均值误差和随机波动
+
+根据方差定义：
+
+$$
+E(Z^2)=DZ+(EZ)^2.
+$$
+
+取：
+
+$$
+Z=Y-a-bX,
+$$
+
+得到：
+
+$$
+\begin{aligned} G(a,b) &=D(Y-bX)+(EY-a-bEX)^2. \end{aligned}
+$$
+
+展开第一项：
+
+$$
+D(Y-bX)=DY+b^2DX-2b\operatorname{Cov}(X,Y).
+$$
+
+因此：
+
+$$
+\begin{aligned} G(a,b) ={}&DY+b^2DX-2b\operatorname{Cov}(X,Y)\\ &+(EY-a-bEX)^2. \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：先确定最优截距
+
+对于固定的 $b$，显然：
+
+$$
+(EY-a-bEX)^2
+$$
+
+在：
+
+$$
+a=EY-bEX
+$$
+
+时达到最小值零。
+
+所以：
+
+$$
+\boxed{a^*=EY-bEX}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：确定最优斜率
+
+剩下：
+
+$$
+G(b)=DY+b^2DX-2b\operatorname{Cov}(X,Y).
+$$
+
+由于 $DX>0$，这是关于 $b$ 的开口向上的二次函数。
+
+完成平方：
+
+$$
+\begin{aligned} G(b) ={}&DX\left( b-\frac{\operatorname{Cov}(X,Y)}{DX} \right)^2\\ &+DY-\frac{[\operatorname{Cov}(X,Y)]^2}{DX}. \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{ b^*=\frac{\operatorname{Cov}(X,Y)}{DX} }
+$$
+
+$$
+\boxed{ a^*=EY- \frac{\operatorname{Cov}(X,Y)}{DX}EX }
+$$
+
+  </Step>
+
+  <Step>
+
+### 第四步：求最小误差
+
+$$
+\boxed{ G_{\min} = DY-\frac{[\operatorname{Cov}(X,Y)]^2}{DX} }
+$$
+
+如果 $DY>0$，利用：
+
+$$
+\rho_{XY}^2 = \frac{[\operatorname{Cov}(X,Y)]^2}{DX\,DY},
+$$
+
+得到：
+
+$$
+\boxed{ G_{\min}=DY(1-\rho_{XY}^2) }
+$$
+
+  </Step>
+
+</Steps>
+
+#### 深层理解
+
+这个公式说明，最优线性预测的剩余均方误差由相关系数的平方决定。
+
+当：
+
+$$
+|\rho_{XY}|=1
+$$
+
+时：
+
+$$
+G_{\min}=0.
+$$
+
+说明 $Y$ 可以由 $X$ 完全线性预测。
+
+当：
+
+$$
+\rho_{XY}=0
+$$
+
+时：
+
+$$
+G_{\min}=DY.
+$$
+
+说明在线性预测这一限定下，观察 $X$ 并不能降低预测误差，最优预测只是常数：
+
+$$
+\widehat Y=EY.
+$$
+
+但这不意味着 $X$ 对预测 $Y$ 完全没有价值。
+
+例如：
+
+$$
+Y=X^2,\qquad X\sim N(0,1).
+$$
+
+此时：
+
+$$
+\operatorname{Cov}(X,Y)=0,
+$$
+
+最优线性预测不能利用 $X$ 的信息，但非线性预测：
+
+$$
+\widehat Y=X^2
+$$
+
+误差为零。
+
+这再次说明，相关系数刻画的是线性关系，而不是所有依赖关系。
+
+### 二十、母题十三：多个等相关随机变量的相关系数
+
+来源：张宇8套卷第3套第8题。
+
+#### 题目
+
+设：
+
+$$
+X_1,X_2,\ldots,X_{2n}
+$$
+
+满足：
+
+$$
+EX_i=0,\qquad DX_i=1.
+$$
+
+任意不同的 $X_i,X_j$ 的相关系数均为 $\rho$。
+
+令：
+
+$$
+U=X_1+\cdots+X_n,
+$$
+
+$$
+V=X_{n+1}+\cdots+X_{2n}.
+$$
+
+求：
+
+$$
+\rho_{UV}.
+$$
+
+<Steps>
+
+  <Step>
+
+### 第一步：把相关系数转化为协方差
+
+因为：
+
+$$
+DX_i=1,
+$$
+
+所以对于 $i\ne j$：
+
+$$
+\operatorname{Cov}(X_i,X_j)=\rho.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：求 $U,V$ 的协方差
+
+展开：
+
+$$
+\operatorname{Cov}(U,V) = \sum_{i=1}^{n}\sum_{j=n+1}^{2n} \operatorname{Cov}(X_i,X_j).
+$$
+
+一共有：
+
+$$
+n^2
+$$
+
+项。
+
+每一项都是 $\rho$。
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(U,V)=n^2\rho }
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：求方差
+
+$$
+DU = \sum_{i=1}^nDX_i+ 2\sum_{1\le i<j\le n}\operatorname{Cov}(X_i,X_j).
+$$
+
+所以：
+
+$$
+DU=n+2\binom n2\rho.
+$$
+
+即：
+
+$$
+\boxed{ DU=n+n(n-1)\rho }
+$$
+
+同理：
+
+$$
+DV=n+n(n-1)\rho.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第四步：求相关系数
+
+$$
+\rho_{UV} = \frac{n^2\rho} {n+n(n-1)\rho}.
+$$
+
+因此：
+
+$$
+\boxed{ \rho_{UV} = \frac{n\rho}{1+(n-1)\rho} }
+$$
+
+  </Step>
+
+</Steps>
+
+#### 本题最重要的陷阱
+
+<Callout type="warn" title="已知等相关不等于相互独立">
+
+注意，题目并没有给出这些随机变量相互独立。
+
+</Callout>
+
+恰恰相反，它告诉我们任意不同随机变量之间的相关系数为 $\rho$。
+
+因此：
+
+$$
+D(X_1+\cdots+X_n)
+$$
+
+不能简单写成：
+
+$$
+n.
+$$
+
+必须考虑交叉协方差。
+
+#### 创新推广：$\rho$ 的取值范围
+
+对 $m$ 个单位方差、两两相关系数均为 $\rho$ 的随机变量，其相关矩阵为：
+
+$$
+R= \begin{pmatrix} 1&\rho&\cdots&\rho\\ \rho&1&\cdots&\rho\\ \vdots&\vdots&\ddots&\vdots\\ \rho&\rho&\cdots&1 \end{pmatrix}.
+$$
+
+它的特征值是：
+
+$$
+1+(m-1)\rho
+$$
+
+以及：
+
+$$
+1-\rho
+$$
+
+其中后者重复 $m-1$ 次。
+
+相关矩阵必须半正定，因此：
+
+$$
+1+(m-1)\rho\ge0,
+$$
+
+$$
+1-\rho\ge0.
+$$
+
+所以：
+
+$$
+\boxed{ -\frac1{m-1}\le\rho\le1 }
+$$
+
+本题一共有 $2n$ 个随机变量，因此：
+
+$$
+\boxed{ -\frac1{2n-1}\le\rho\le1 }
+$$
+
+这说明，多个随机变量两两具有同样的负相关系数时，$\rho$ 不能任意接近 $-1$。
+
+这类参数范围问题可以与线性代数中的矩阵半正定、特征值结合起来考查。
+
+### 二十一、母题十四：乘积变量的协方差
+
+参考来源：题库标注的2026年数学三真题第25题，以及李林880相关综合练习。
+
+#### 题目
+
+设：
+
+$$
+X\sim N(0,1),
+$$
+
+$$
+Y\sim B\left(2,\frac12\right),
+$$
+
+且 $X,Y$ 独立。
+
+求：
+
+$$
+\rho_{XY,X+Y}.
+$$
+
+注意下标 $XY$ 表示乘积随机变量。
+
+<Steps>
+
+  <Step>
+
+### 第一步：求基础矩
+
+$$
+EX=0,\qquad DX=1.
+$$
+
+因此：
+
+$$
+E(X^2)=1.
+$$
+
+而：
+
+$$
+EY=2\cdot\frac12=1,
+$$
+
+$$
+DY=2\cdot\frac12\cdot\frac12=\frac12.
+$$
+
+所以：
+
+$$
+E(Y^2)=DY+(EY)^2=\frac32.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：求乘积变量的方差
+
+因为 $X,Y$ 独立：
+
+$$
+E(XY)=EX\cdot EY=0.
+$$
+
+于是：
+
+$$
+\begin{aligned} D(XY) &=E(X^2Y^2)-[E(XY)]^2\\ &=E(X^2)E(Y^2)\\ &=\frac32. \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：求协方差
+
+$$
+\begin{aligned} \operatorname{Cov}(XY,X+Y) &=E[XY(X+Y)]\\ &\quad-E(XY)E(X+Y). \end{aligned}
+$$
+
+由于：
+
+$$
+E(XY)=0,
+$$
+
+故：
+
+$$
+\operatorname{Cov}(XY,X+Y) = E(X^2Y)+E(XY^2).
+$$
+
+利用独立性：
+
+$$
+E(X^2Y)=E(X^2)EY=1,
+$$
+
+$$
+E(XY^2)=EX\cdot E(Y^2)=0.
+$$
+
+因此：
+
+$$
+\boxed{ \operatorname{Cov}(XY,X+Y)=1 }
+$$
+
+  </Step>
+
+  <Step>
+
+### 第四步：求相关系数
+
+$$
+D(X+Y)=DX+DY=\frac32.
+$$
+
+所以：
+
+$$
+\rho_{XY,X+Y} = \frac1{\sqrt{\frac32\cdot\frac32}}.
+$$
+
+得到：
+
+$$
+\boxed{\rho_{XY,X+Y}=\frac23}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 这一类题的母题公式
+
+若 $X,Y$ 独立，并且有关矩存在，则：
+
+$$
+\boxed{ D(XY) = DX\cdot DY + DX(EY)^2 + DY(EX)^2 }
+$$
+
+另外：
+
+$$
+\begin{aligned} \operatorname{Cov}(XY,X+Y) ={}&DX\cdot EY\\ &+DY\cdot EX. \end{aligned}
+$$
+
+即：
+
+$$
+\boxed{ \operatorname{Cov}(XY,X+Y) =DX\cdot EY+DY\cdot EX }
+$$
+
+这两个公式非常适合处理涉及乘积随机变量的综合题。
+
+特别要注意：
+
+$$
+E(Y^2)\ne DY
+$$
+
+除非 $EY=0$。
+
+## 第四部分：更一般的知识推广
+
+### 二十二、全协方差公式
+
+前面已经学习：
+
+$$
+\operatorname{Cov}(X,Y) = \operatorname{Cov}(X,E[Y\mid X]).
+$$
+
+下面进一步推广。
+
+设 $X,Y,Z$ 都有有限二阶矩，那么：
+
+$$
+\boxed{ \begin{aligned} \operatorname{Cov}(X,Y) ={}&E[\operatorname{Cov}(X,Y\mid Z)]\\ &+\operatorname{Cov} (E[X\mid Z],E[Y\mid Z]). \end{aligned} }
+$$
+
+它称为全协方差公式。
+
+#### 直观解释
+
+总协方差可以分为两个部分：
+
+一部分是在给定 $Z$ 的条件下，$X,Y$ 内部仍然存在的协方差。
+
+另一部分是当 $Z$ 改变时，两个变量的条件均值共同变化而产生的协方差。
+
+#### 为什么这个公式重要？
+
+假设：
+
+$$
+X\perp Y\mid Z.
+$$
+
+也就是说，$X,Y$ 在给定 $Z$ 的条件下独立。
+
+那么：
+
+$$
+\operatorname{Cov}(X,Y\mid Z)=0.
+$$
+
+于是：
+
+$$
+\operatorname{Cov}(X,Y) = \operatorname{Cov} (E[X\mid Z],E[Y\mid Z]).
+$$
+
+所以：
+
+条件独立并不代表无条件不相关。
+
+例如设：
+
+$$
+X=Z+\varepsilon_1,
+$$
+
+$$
+Y=Z+\varepsilon_2,
+$$
+
+其中 $Z,\varepsilon_1,\varepsilon_2$ 相互独立，且都具有有限方差。
+
+给定 $Z$ 后，$X,Y$ 独立。
+
+但：
+
+$$
+\operatorname{Cov}(X,Y) = \operatorname{Cov}(Z+\varepsilon_1,Z+\varepsilon_2).
+$$
+
+所以：
+
+$$
+\boxed{\operatorname{Cov}(X,Y)=DZ}
+$$
+
+只要 $DZ>0$，它们就正相关。
+
+这类共同随机因素造成的相关性，是未来综合题可以采用的一种命题结构。
+
+### 二十三、相关系数与概率积分变换
+
+张宇1000题中还有一类具有代表性的综合题。
+
+设 $X,Y$ 独立同分布于连续分布 $F$，且 $E|X|<\infty$。
+
+求：
+
+$$
+\operatorname{Cov}(X,F(X)).
+$$
+
+这类题的难点是 $F(X)$ 是一个非线性函数。
+
+<Steps>
+
+  <Step>
+
+### 第一步：概率积分变换
+
+当 $F$ 连续时：
+
+$$
+F(X)\sim U(0,1).
+$$
+
+因此：
+
+$$
+E[F(X)]=\frac12.
+$$
+
+  </Step>
+
+  <Step>
+
+### 第二步：引入独立同分布的 $Y$
+
+由条件概率：
+
+$$
+F(X)=P(Y\le X\mid X).
+$$
+
+所以：
+
+$$
+E[XF(X)] = E[X\boldsymbol1_{\{Y\le X\}}].
+$$
+
+利用对称性和连续性：
+
+$$
+E[\max(X,Y)] = 2E[X\boldsymbol1_{\{Y\le X\}}].
+$$
+
+于是：
+
+$$
+E[XF(X)] = \frac12E[\max(X,Y)].
+$$
+
+  </Step>
+
+  <Step>
+
+### 第三步：使用最大值恒等式
+
+$$
+\max(X,Y)=\frac{X+Y+|X-Y|}{2}.
+$$
+
+取期望：
+
+$$
+E[\max(X,Y)] = EX+\frac12E|X-Y|.
+$$
+
+因此：
+
+$$
+E[XF(X)] = \frac12EX+\frac14E|X-Y|.
+$$
+
+最终：
+
+$$
+\begin{aligned} \operatorname{Cov}(X,F(X)) &=E[XF(X)]-EX\cdot\frac12\\ &=\frac14E|X-Y|. \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{ \operatorname{Cov}(X,F(X)) = \frac14E|X-Y| }
+$$
+
+这是一个很漂亮的恒等式。
+
+如果题目给出：
+
+$$
+E|X-Y|=1,
+$$
+
+就可以立即得到：
+
+$$
+\boxed{ \operatorname{Cov}(X,F(X))=\frac14 }
+$$
+
+不需要知道 $X$ 的具体密度函数。
+
+这说明：高质量创新题不一定要求复杂积分，有时关键在于找到合适的恒等式，将陌生问题转化为已知的数字特征。
+
+  </Step>
+
+</Steps>
+
+## 第五部分：题型识别与标准解题方法
+
+### 二十四、看到题目，应该先判断什么？
+
+建议建立下面这套题型识别体系。
+
+| 题目特征                  | 最优先想到的方法         | 核心提醒              |
+| --------------------- | ---------------- | ----------------- |
+| $X+Y,X-Y$         | 和差协方差恒等式         | 交叉项抵消             |
+| $aX+bY,cX+dY$     | 协方差双线性展开         | 四项不能漏             |
+| $\rho=\pm1$       | 完全线性相关           | 用均值和标准差确定直线       |
+| 不相关、独立的判断             | 先看是否联合正态         | 不相关一般不推出独立        |
+| $Y=g(X)$          | 求 $E[Xg(X)]$ | 检查奇偶性和对称性         |
+| 二维均匀分布                | 看积分区域与对称性        | 对称不代表独立           |
+| 计数变量                  | 示性变量法            | 区分同次互斥与跨次独立       |
+| $X_i,\overline X$ | 展开样本均值           | 共享样本产生协方差         |
+| 两个样本和                 | 数重叠项             | 不要误认为独立           |
+| 给定 $Y\mid X$      | 条件期望、全方差         | 优先避免二重积分          |
+| 正态线性组合独立              | 令协方差为零           | 必须有联合正态性          |
+| 方差最大最小                | 二次型或特征值          | 使用协方差矩阵           |
+| $XY$ 与其他变量        | 展开乘积矩            | 区分原点矩和方差          |
+| 最小均方误差                | 配方或求偏导           | 与 $\rho^2$ 相关 |
+
+#### 一个统一的标准解题流程
+
+对于绝大多数求相关系数的题，可以使用：
+
+第一步：确定变量之间的关系。
+
+重点检查：
+
+$$
+X\perp Y?
+$$
+
+$$
+(X,Y)\text{ 是否联合正态？}
+$$
+
+$$
+Y=g(X)?
+$$
+
+是否有共同样本、共同随机因素或条件依赖关系？
+
+第二步：优先求协方差。
+
+根据题型选择：
+
+$$
+\operatorname{Cov}(X,Y)=E(XY)-EX\cdot EY,
+$$
+
+或者使用线性性质、条件期望、示性变量。
+
+第三步：求两个方差。
+
+必要时使用：
+
+$$
+D(aX+bY) = a^2DX+b^2DY+2ab\operatorname{Cov}(X,Y).
+$$
+
+第四步：检查方差是否为正。
+
+如果有一个方差为零，相关系数就没有定义。
+
+第五步：代入公式。
+
+$$
+\boxed{ \rho_{XY} = \frac{\operatorname{Cov}(X,Y)} {\sqrt{DX\,DY}} }
+$$
+
+第六步：检查结果。
+
+必须满足：
+
+$$
+-1\le\rho_{XY}\le1.
+$$
+
+<Callout type="warn" title="相关系数范围检验">
+
+如果结果大于1或小于-1，计算一定有问题。
+
+</Callout>
+
+## 第六部分：容易导致失分的关键陷阱
+
+### 二十五、十二个重点易错点
+
+| 易错认识                            | 正确认识                           |
+| ------------------------------- | ------------------------------ |
+| 协方差为零，所以独立                      | 一般只能得到不相关                      |
+| 两个变量都正态，所以零相关必独立                | 必须具有联合正态性                      |
+| 两次试验独立，所以不同类别计数独立               | 同一次试验的类别互斥，会产生负相关              |
+| 两个样本和来自同一组独立样本，所以独立             | 可能存在重叠项                        |
+| 相关系数为零，所以没有任何关系                 | 可能存在非线性依赖                      |
+| 方差为零时，相关系数也为零                   | 相关系数无定义                        |
+| $E(XY)=EXEY$ 必然说明独立         | 只说明不相关                         |
+| $D(X+Y)=DX+DY$ 必然说明独立       | 只说明协方差为零                       |
+| $EX=EY=0$，所以协方差为零           | 仍需计算 $E(XY)$               |
+| $\rho=-1$ 表示 $X=-Y$     | 一般是负斜率仿射关系                     |
+| $D(XY)=DX\cdot DY$          | 只有附加条件下才成立                     |
+| $\rho_{aX+b,Y}=\rho_{XY}$ | 还要判断 $a$ 的正负，且 $a\ne0$ |
+
+特别是第二点，属于概率论考试中最容易混淆的逻辑条件之一。
+
+## 第七部分：配套训练——真正检验是否会做一类题
+
+下面的题目根据已阅读资料中的主要题型设计或改编，按难度逐步递进。它们不是额外核验过的历年真题。
+
+建议先独立完成，再核对答案。
+
+### 二十六、基础巩固
+
+#### 练习1：线性组合
+
+设 $X,Y$ 独立，且：
+
+$$
+DX=2,\qquad DY=8.
+$$
+
+令：
+
+$$
+U=2X+Y,\qquad V=X-Y.
+$$
+
+求：
+
+$$
+\rho_{UV}.
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+计算：
+
+$$
+\operatorname{Cov}(U,V)=2DX-DY=4-8=-4.
+$$
+
+$$
+DU=4DX+DY=16, \qquad DV=DX+DY=10.
+$$
+
+所以：
+
+$$
+\boxed{\rho_{UV}=-\frac1{\sqrt{10}}}
+$$
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习2：不相关与独立
+
+设：
+
+$$
+X\sim U(-1,1), \qquad Y=X^2.
+$$
+
+判断：
+
+（1）是否不相关？
+
+（2）是否独立？
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+答案：
+
+$$
+\boxed{\operatorname{Cov}(X,Y)=0}
+$$
+
+但：
+
+$$
+\boxed{X,Y\text{ 不独立}}
+$$
+
+因为 $Y$ 是 $X$ 的非恒定确定函数。
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习3：伯努利相关
+
+设 $X,Y$ 均为0-1随机变量，并且：
+
+$$
+P(X=1)=0.3,
+$$
+
+$$
+P(Y=1)=0.4,
+$$
+
+$$
+P(X=1,Y=1)=0.15.
+$$
+
+求：
+
+$$
+\operatorname{Cov}(X,Y).
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+直接使用：
+
+$$
+\operatorname{Cov}(X,Y) =0.15-0.3\cdot0.4.
+$$
+
+所以：
+
+$$
+\boxed{\operatorname{Cov}(X,Y)=0.03}
+$$
+
+  </Accordion>
+
+</Accordions>
+
+### 二十七、中等综合
+
+#### 练习4：条件期望
+
+设 $DX=4$，并且：
+
+$$
+E(Y\mid X)=3X+2.
+$$
+
+求：
+
+$$
+\operatorname{Cov}(X,Y).
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+答案：
+
+$$
+\begin{aligned} \operatorname{Cov}(X,Y) &=\operatorname{Cov}(X,3X+2)\\ &=3DX\\ &=12. \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{12}
+$$
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习5：协方差矩阵参数范围
+
+已知：
+
+$$
+\Sigma= \begin{pmatrix} 2&t\\ t&3 \end{pmatrix}
+$$
+
+是某二维随机变量的协方差矩阵。
+
+求 $t$ 的取值范围。
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+答案：
+
+由于协方差矩阵必须半正定：
+
+$$
+\det\Sigma=6-t^2\ge0.
+$$
+
+因此：
+
+$$
+\boxed{ -\sqrt6\le t\le\sqrt6 }
+$$
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习6：样本重叠
+
+设：
+
+$$
+X_1,\ldots,X_{15}
+$$
+
+独立同分布，方差为 $\sigma^2>0$。
+
+令：
+
+$$
+U=X_1+\cdots+X_{10},
+$$
+
+$$
+V=X_6+\cdots+X_{15}.
+$$
+
+求相关系数。
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+答案：
+
+两个和分别包含10项，共同包含5项。
+
+所以：
+
+$$
+\boxed{\rho_{UV}=\frac5{10}=\frac12}
+$$
+
+  </Accordion>
+
+</Accordions>
+
+### 二十八、提高与创新
+
+#### 练习7：条件分布综合
+
+设：
+
+$$
+X\sim U(0,1),
+$$
+
+在给定 $X=x$ 时：
+
+$$
+Y\mid X=x\sim U(0,x).
+$$
+
+求：
+
+$$
+\rho_{XY}.
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+解题提示： 使用全方差公式，而不是求联合密度后二重积分。
+
+因为：
+
+$$
+E(Y\mid X)=\frac X2,
+$$
+
+所以：
+
+$$
+\operatorname{Cov}(X,Y)=\frac12DX=\frac1{24}.
+$$
+
+又：
+
+$$
+DX=\frac1{12}.
+$$
+
+以及：
+
+$$
+D(Y\mid X)=\frac{X^2}{12}.
+$$
+
+因此：
+
+$$
+\begin{aligned} DY &=E\left(\frac{X^2}{12}\right) +D\left(\frac X2\right)\\ &=\frac1{36}+\frac1{48}\\ &=\frac7{144}. \end{aligned}
+$$
+
+最终：
+
+$$
+\boxed{ \rho_{XY}=\sqrt{\frac37} }
+$$
+
+这道题综合了条件期望、全方差和相关系数的标准化计算。
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习8：最优线性预测
+
+已知：
+
+$$
+EX=EY=0,
+$$
+
+$$
+DX=4,\qquad DY=9,
+$$
+
+$$
+\operatorname{Cov}(X,Y)=3.
+$$
+
+求：
+
+$$
+\min_{a,b}E[(Y-a-bX)^2].
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+利用最优预测公式：
+
+$$
+b^*=\frac34, \qquad a^*=0.
+$$
+
+最小误差：
+
+$$
+G_{\min} =9-\frac{3^2}{4}.
+$$
+
+因此：
+
+$$
+\boxed{ G_{\min}=\frac{27}{4} }
+$$
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习9：共同随机因素
+
+设：
+
+$$
+X=Z+\varepsilon_1,
+$$
+
+$$
+Y=2Z+\varepsilon_2,
+$$
+
+其中：
+
+$$
+DZ=2,\qquad D\varepsilon_1=1,\qquad D\varepsilon_2=3,
+$$
+
+且三个随机变量相互独立。
+
+求：
+
+$$
+\rho_{XY}.
+$$
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+因为：
+
+$$
+\operatorname{Cov}(X,Y)=2DZ=4,
+$$
+
+$$
+DX=DZ+D\varepsilon_1=3,
+$$
+
+$$
+DY=4DZ+D\varepsilon_2=11.
+$$
+
+所以：
+
+$$
+\boxed{ \rho_{XY}=\frac4{\sqrt{33}} }
+$$
+
+这道题的关键在于识别共同的随机因素 $Z$。
+
+  </Accordion>
+
+</Accordions>
+
+#### 练习10：独立差变量
+
+设：
+
+$$
+X\sim P(1),\qquad Y\sim P(3),
+$$
+
+并且：
+
+$$
+X\perp(Y-X).
+$$
+
+求：
+
+$$
+E(XY).
+$$
+
+这与题库标注的2026年数学一、数学三综合题结构相近。
+
+<Accordions>
+
+  <Accordion title="展开参考解答与方法提示">
+
+令：
+
+$$
+Z=Y-X.
+$$
+
+则：
+
+$$
+Y=X+Z.
+$$
+
+因此：
+
+$$
+XY=X^2+XZ.
+$$
+
+由于 $X,Z$ 独立：
+
+$$
+E(XZ)=EX\cdot EZ.
+$$
+
+而：
+
+$$
+EX=1,\quad DX=1,
+$$
+
+$$
+E(X^2)=DX+(EX)^2=2.
+$$
+
+并且：
+
+$$
+EZ=EY-EX=3-1=2.
+$$
+
+所以：
+
+$$
+E(XY)=2+1\cdot2.
+$$
+
+最终：
+
+$$
+\boxed{E(XY)=4}
+$$
+
+这道题提醒我们：题目给出的独立关系是：
+
+$$
+X\perp(Y-X),
+$$
+
+并不是：
+
+$$
+X\perp Y.
+$$
+
+必须先转换变量，再使用独立性。
+
+  </Accordion>
+
+</Accordions>
+
+## 第八部分：面向未来考研数学一的命题预测与综合训练方向
+
+这里讨论的是根据数学结构推导出的可能变式，不是对未来试卷的确定预测。
+
+### 二十九、最值得掌握的五种综合方向
+
+方向一：条件分布与协方差相结合。
+
+题目可能只提供：
+
+$$
+E(Y\mid X),\qquad D(Y\mid X),
+$$
+
+不再给完整联合密度。
+
+要求：
+
+$$
+\operatorname{Cov}(X,Y),\quad DY,\quad \rho_{XY}.
+$$
+
+核心方法：
+
+$$
+\operatorname{Cov}(X,Y) = \operatorname{Cov}(X,E[Y\mid X]).
+$$
+
+方向二：联合正态与线性代数结合。
+
+题目可能要求找到系数，使两个线性组合独立；或者求方差的最大值与最小值。
+
+核心方法：
+
+$$
+\operatorname{Cov}(AX)=A\Sigma A^T.
+$$
+
+对于联合正态向量，协方差矩阵为对角矩阵时，各分量相互独立。
+
+方向三：样本统计量与独立性结合。
+
+包括：
+
+$$
+X_i,\quad \overline X,\quad X_i-\overline X.
+$$
+
+要求判断协方差、相关系数或独立性。
+
+核心是：
+
+$$
+\operatorname{Cov}(X_i,\overline X) =\frac{\sigma^2}{n}.
+$$
+
+还需要熟悉：
+
+$$
+\operatorname{Cov}(X_i-\overline X,X_j-\overline X) =-\frac{\sigma^2}{n}.
+$$
+
+方向四：非线性函数与数字特征结合。
+
+例如：
+
+$$
+X,\quad X^2,\quad |X|,\quad \sin X,\quad F(X).
+$$
+
+重点不是套线性组合公式，而是使用：
+
+$$
+\operatorname{Cov}(X,g(X)) = E[Xg(X)]-EX\cdot Eg(X).
+$$
+
+结合对称性、概率积分变换、奇偶性和期望恒等式简化。
+
+方向五：多变量共同相关与协方差矩阵约束。
+
+例如多个随机变量具有相同相关系数，要求某个和的方差、相关系数或参数范围。
+
+核心工具包括：
+
+$$
+D\left(\sum_{i=1}^{n}X_i\right) = \sum_{i=1}^{n}DX_i + 2\sum_{i<j}\operatorname{Cov}(X_i,X_j),
+$$
+
+以及协方差矩阵半正定性。
+
+## 第九部分：考前必须掌握的公式与方法
+
+### 三十、核心公式汇总
+
+| 内容       | 关键公式                                                                |
+| -------- | ------------------------------------------------------------------- |
+| 协方差定义    | $\operatorname{Cov}(X,Y)=E(XY)-EX\cdot EY$                      |
+| 相关系数     | $\rho_{XY}=\dfrac{\operatorname{Cov}(X,Y)}{\sqrt{DX\,DY}}$    |
+| 相关系数范围   | $-1\le\rho_{XY}\le1$                                           |
+| 协方差上界    | $\operatorname{Cov}^2(X,Y)\le DX\cdot DY$                       |
+| 线性组合方差   | $D(aX+bY)=a^2DX+b^2DY+2ab\operatorname{Cov}(X,Y)$               |
+| 和差协方差    | $\operatorname{Cov}(X+Y,X-Y)=DX-DY$                             |
+| 和差方差之差   | $D(X+Y)-D(X-Y)=4\operatorname{Cov}(X,Y)$                        |
+| 完全相关     | $Y-EY=\rho\dfrac{\sigma_Y}{\sigma_X}(X-EX)$，其中 $\rho=\pm1$  |
+| 条件协方差    | $\operatorname{Cov}(X,Y)=\operatorname{Cov}(X,E[Y\mid X])$      |
+| 全方差      | $DY=E[D(Y\mid X)]+D[E(Y\mid X)]$                                |
+| 伯努利示性变量  | $\operatorname{Cov}(I_A,I_B)=P(A\cap B)-P(A)P(B)$               |
+| 多项计数     | $\operatorname{Cov}(N_i,N_j)=-np_ip_j$，$i\ne j$             |
+| 样本均值     | $\operatorname{Cov}(X_i,\overline X)=\dfrac{\sigma^2}{n}$       |
+| 样本离均差    | $\operatorname{Cov}(Y_i,Y_j)=-\dfrac{\sigma^2}{n}$，$i\ne j$ |
+| 重叠样本和    | $\rho=\dfrac{k}{\sqrt{mn}}$                                     |
+| 最优线性预测   | $b^*=\dfrac{\operatorname{Cov}(X,Y)}{DX}$                      |
+| 最小线性预测误差 | $G_{\min}=DY(1-\rho^2)$                                        |
+| 多维线性组合   | $\operatorname{Cov}(A\boldsymbol X)=A\Sigma A^T$                |
+
+<Callout type="info" title="公式成立的前提">
+
+这里的公式都应在相应方差、矩存在且相关系数分母不为零的条件下使用。
+
+</Callout>
+
+### 三十一、学习本节应达到的三个层次
+
+#### 第一层：基础熟练
+
+看到协方差、相关系数，能够准确计算。
+
+要求：
+
+- 熟悉期望、方差、协方差之间的转换；
+- 能展开任意两个线性组合的协方差；
+- 不混淆不相关和独立；
+- 能快速处理 $\rho=\pm1$。
+
+这一层是拿到基础分的前提。
+
+#### 第二层：题型迁移
+
+看到新题，能准确识别其中隐藏的结构。
+
+例如：
+
+看到两个样本和，先找共享项。
+
+看到条件分布，先求条件期望。
+
+看到联合正态，考虑用零协方差处理独立性。
+
+看到非线性函数，检查奇偶性、对称性或特殊恒等式。
+
+看到方差最值，考虑二次型和特征值。
+
+这一层决定能否稳定解决中等难度题。
+
+#### 第三层：综合创新
+
+题目可能没有直接出现协方差或相关系数公式，而是从其他数学对象间接提出问题。
+
+例如：
+
+- 求最优预测误差；
+- 求满足独立性的线性变换参数；
+- 求相关系数的可行范围；
+- 判断某个协方差矩阵能否存在；
+- 利用条件分布推导一个未知数字特征；
+- 利用样本离均差构造新的统计量；
+- 利用非线性函数关系判断独立性。
+
+这种题目不能单靠记忆公式。
+
+必须理解：
+
+$$
+\boxed{ \text{协方差是中心化随机变量的内积} }
+$$
+
+$$
+\boxed{ \text{相关系数是标准化后的内积} }
+$$
+
+$$
+\boxed{ \text{协方差矩阵是半正定矩阵} }
+$$
+
+$$
+\boxed{ \text{联合正态使不相关与独立等价} }
+$$
+
+这四个原理能把本节许多看似不同的题型联系起来。
+
+### 三十二、最后的复习建议
+
+按照你提供的题库，我建议采用下面的训练顺序：
+
+| 复习阶段        | 优先练习的题目                      |
+| ----------- | ---------------------------- |
+| 第一轮：公式与基本性质 | 2000年数学一、2008年数学一、李林880线性组合题 |
+| 第二轮：独立性判断   | 1993年数学一、圆盘均匀分布题、张宇1000题相关反例 |
+| 第三轮：二维正态    | 1994年数学一、张宇1000题旋转正态向量       |
+| 第四轮：计数与条件分布 | 2016、2021、2022、2024年数学一      |
+| 第五轮：样本统计量   | 2004年数学一、李正元重叠样本题            |
+| 第六轮：综合提升    | 2025年数学一、张宇8套卷最优预测及等相关变量题    |
+
+每完成一道代表题，建议重点复盘三件事：这道题的识别信号是什么，解答中哪一步真正利用了题目条件，如果删除或改变某一个条件，原来的结论是否仍然成立。
+
+尤其要尝试把“联合正态”删掉，把“独立”换成“不相关”，把“线性函数”换成“非线性函数”，或者把“两变量”推广到“多变量”。这种条件变化训练，比重复计算同一道题更有助于理解考研综合题。
+
+本节最终需要建立的解题主线是：
+
+$$
+\boxed{ \begin{gathered} \text{识别随机变量之间的依赖结构}\\[3pt] \Downarrow\\[3pt] \text{选择协方差的计算方式}\\[3pt] \Downarrow\\[3pt] \text{结合方差、条件期望或联合正态性质}\\[3pt] \Downarrow\\[3pt] \text{完成相关性判断、参数求解或综合优化} \end{gathered} }
+$$
+
+掌握这条主线以后，协方差与相关系数就不再是一组孤立的公式，而会成为连接随机变量分布、数字特征、独立性、数理统计和线性代数的一套统一工具。

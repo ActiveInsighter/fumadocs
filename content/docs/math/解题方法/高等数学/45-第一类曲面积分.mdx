@@ -1,0 +1,4343 @@
+---
+title: "第一类曲面积分"
+description: "考研数学一 · 高等数学｜面积元、投影、曲面分片、球面对称、球冠、薄壳与质心｜MyFumadocs MDX 格式重构"
+---
+
+本节主题：第一类曲面积分的概念、计算、对称性、曲面面积、薄壳质量、质心及综合应用
+
+本讲依据你提供的 Google Drive 压缩包《数学分类题目1101.zip》，重点阅读并整理了以下资料：
+
+- 核心题目：《考研核心题目 → 高等数学 → 第九模块 → 第五节 第一类曲面积分》，共18道题。
+- 分类模拟题：《数学模拟题分类1031 → 高等数学 → 第九模块 → 第五节》，共11道题。
+- 张宇1000题：第18章《多元函数积分学》中的对应题目。
+- 李林880题：第九章《曲线积分与曲面积分》中的对应题目。
+- 李正元练习题：第九章《多元函数积分的概念、计算及其应用》中的对应题目。
+- 综合模拟卷：资料中收录的张宇8套卷、李林六套卷、汤家凤八套卷相关题目。
+
+核心资料标注的1989、1995、1999、2000、2007、2010、2012、2017、2019年考研数学一真题，将作为重点讲解对象。这里的年份与出处按资料标注使用，并不等同于已逐题通过官方原卷独立核验。
+
+本讲不按题目顺序机械刷题，而是把这些题目重新组织为一套可迁移的方法体系。
+
+## 一、本节究竟要掌握什么？
+
+第一类曲面积分的核心不是复杂积分，而是：
+
+如何将空间中的曲面面积积分，转化为容易计算的二重积分。
+
+其完整解题思路可以概括为：
+
+$$
+\boxed{ \text{识别曲面} \longrightarrow \text{确定实际曲面片} \longrightarrow \text{选择投影或参数化} \longrightarrow \text{计算面积元} \longrightarrow \text{利用对称性} \longrightarrow \text{积分计算} }
+$$
+
+真正容易拉开分数的地方，在于前面四步。
+
+例如，同样给出一个球面：
+
+$$
+x^2+y^2+z^2=R^2
+$$
+
+以下几种题目的方法可能完全不同：
+
+- 求整个球面的积分：优先考虑球面对称性。
+- 求上半球的积分：考虑球坐标或投影。
+- 求球冠的积分：优先考虑以高度 $z$ 为变量。
+- 求球面被偏心圆柱截取的面积：先研究投影区域。
+- 求球面与其他曲面拼成的封闭薄壳质量：必须分片。
+- 被积函数含有曲面法向量模长：优先考虑隐式曲面公式，寻找根号约分。
+
+如果看到球面就立即使用球坐标，看到锥面就立即使用极坐标，往往不是最优方法。
+
+### 1. 题型知识图谱
+
+| 题型       | 识别信号                    | 优先方法            |
+| -------- | ----------------------- | --------------- |
+| 图形曲面计算   | $z=f(x,y)$          | 投影到 $xy$ 平面 |
+| 隐式曲面积分   | $F(x,y,z)=0$        | 隐函数投影公式         |
+| 锥面截取     | $z=k\sqrt{x^2+y^2}$ | 极坐标与常数面积因子      |
+| 球面、椭球面积分 | 平方和、整体对称                | 平移、反射、轮换对称      |
+| 球冠积分     | 球面与水平面相截                | 球坐标、高度变量        |
+| 竖直圆柱侧面   | $x^2+y^2=R^2$       | 圆柱参数化           |
+| 封闭薄壳     | “全表面”“完整边界”             | 分片计算            |
+| 质量与质心    | 给定面密度 $\rho$        | 面积分与质量矩         |
+| 曲面面积最值   | 球冠、切割、参数变化              | 建立面积函数再求极值      |
+| 创新综合题    | 梯度、切平面、隐函数              | 先解决前置条件，再计算     |
+
+下面从这些题型共同依赖的基础知识开始。
+
+## 第一部分：基础知识与核心公式
+
+### 二、第一类曲面积分的定义
+
+#### 1. 几何定义
+
+设 $\Sigma$ 是空间中的一片光滑或分片光滑曲面，函数 $f(x,y,z)$ 在曲面上连续。
+
+将曲面分成许多小曲面片：
+
+$$
+\Delta S_1,\Delta S_2,\ldots,\Delta S_n
+$$
+
+在第 $i$ 片上任取一点：
+
+$$
+(\xi_i,\eta_i,\zeta_i)
+$$
+
+构造和式：
+
+$$
+\sum_{i=1}^{n} f(\xi_i,\eta_i,\zeta_i)\Delta S_i
+$$
+
+当曲面分割越来越细，并且和式存在与分割方式及取点方式无关的极限时，定义：
+
+$$
+\boxed{ \iint_\Sigma f(x,y,z)\,\mathrm dS = \lim_{\lambda\to0} \sum_{i=1}^{n} f(\xi_i,\eta_i,\zeta_i)\Delta S_i }
+$$
+
+这里：
+
+- $\Sigma$ 是积分曲面；
+- $f(x,y,z)$ 是被积函数；
+- $\mathrm dS$ 是曲面的面积微元；
+- $\lambda$ 表示分割的最大直径。
+
+#### 2. 直观理解
+
+可以把曲面想象成一张非常薄、可能弯曲的金属片。
+
+如果单位面积的质量为：
+
+$$
+\rho(x,y,z)
+$$
+
+那么一小块面积为 $\Delta S$ 的金属片，其质量近似为：
+
+$$
+\Delta m\approx\rho(x,y,z)\Delta S
+$$
+
+对整个金属片求和：
+
+$$
+\boxed{ M=\iint_\Sigma\rho(x,y,z)\,\mathrm dS }
+$$
+
+这就是第一类曲面积分最重要的物理意义。
+
+如果 $f=1$，则：
+
+$$
+\boxed{ S_\Sigma=\iint_\Sigma1\,\mathrm dS }
+$$
+
+表示曲面的面积。
+
+因此，第一类曲面积分可以理解为：
+
+对空间曲面上的某个数量，按真实曲面面积进行加权求和。
+
+<Callout type="warn" title="第一类曲面积分与投影面积不同">
+
+注意是曲面的真实面积，而不是其在坐标平面上的投影面积。
+
+</Callout>
+
+### 三、第一类曲面积分的重要性质
+
+#### 1. 与曲面的方向无关
+
+第一类曲面积分：
+
+$$
+\iint_\Sigma f(x,y,z)\,\mathrm dS
+$$
+
+不涉及曲面的法向方向。
+
+同一曲面取上侧还是下侧、外侧还是内侧，积分值不变。
+
+因为：
+
+$$
+\mathrm dS\ge0
+$$
+
+它表示面积大小，不包含方向。
+
+这与第二类曲面积分：
+
+$$
+\iint_\Sigma P\,\mathrm dy\,\mathrm dz + Q\,\mathrm dz\,\mathrm dx + R\,\mathrm dx\,\mathrm dy
+$$
+
+存在根本区别。
+
+第二类曲面积分包含方向信息，改变曲面方向，积分通常会改变符号。
+
+考研陷阱： 题目在第一类曲面积分中出现“取上侧”“取外侧”时，方向不会影响结果，不要额外添加正负号。
+
+#### 2. 线性性质
+
+$$
+\iint_\Sigma(af+bg)\,\mathrm dS = a\iint_\Sigma f\,\mathrm dS + b\iint_\Sigma g\,\mathrm dS
+$$
+
+这是拆分复杂被积函数的理论基础。
+
+例如：
+
+$$
+\iint_\Sigma(x^2+y^2+z^2)\,\mathrm dS
+$$
+
+可以分别计算三项，也可以利用球面方程直接化简。
+
+考试中一般应优先选择后者。
+
+#### 3. 曲面可加性
+
+如果：
+
+$$
+\Sigma=\Sigma_1\cup\Sigma_2
+$$
+
+并且两片曲面没有正面积的重叠，则：
+
+$$
+\boxed{ \iint_\Sigma f\,\mathrm dS = \iint_{\Sigma_1}f\,\mathrm dS + \iint_{\Sigma_2}f\,\mathrm dS }
+$$
+
+注意这里是加法。
+
+即使两片曲面的法向方向相反，也不会产生相互抵消。
+
+这条性质是解决封闭薄壳、圆锥加封顶圆盘、柱体完整表面等题目的关键。
+
+#### 4. 正性与估值
+
+如果：
+
+$$
+f(x,y,z)\ge0
+$$
+
+则：
+
+$$
+\iint_\Sigma f\,\mathrm dS\ge0
+$$
+
+如果曲面上：
+
+$$
+m\le f(x,y,z)\le M
+$$
+
+那么：
+
+$$
+\boxed{ mS_\Sigma \le \iint_\Sigma f\,\mathrm dS \le MS_\Sigma }
+$$
+
+例如，若球面上：
+
+$$
+0\le z\le R
+$$
+
+则：
+
+$$
+0\le\iint_\Sigma z\,\mathrm dS \le R S_\Sigma
+$$
+
+这些不等式可以快速检查答案的数量级是否合理。
+
+### 四、最重要的公式：曲面面积元
+
+这一部分必须真正理解，而不能只背公式。
+
+#### 1. 图形曲面 $z=f(x,y)$
+
+设：
+
+$$
+\Sigma:\quad z=f(x,y),\qquad (x,y)\in D
+$$
+
+其中 $D$ 是该曲面在 $xy$ 平面上的投影区域。
+
+使用参数化：
+
+$$
+\boldsymbol r(x,y) = \bigl(x,y,f(x,y)\bigr)
+$$
+
+对两个参数求偏导：
+
+$$
+\boldsymbol r_x=(1,0,f_x)
+$$
+
+$$
+\boldsymbol r_y=(0,1,f_y)
+$$
+
+叉积为：
+
+$$
+\boldsymbol r_x\times\boldsymbol r_y = (-f_x,-f_y,1)
+$$
+
+其长度为：
+
+$$
+\left| \boldsymbol r_x\times\boldsymbol r_y \right| = \sqrt{1+f_x^2+f_y^2}
+$$
+
+因此：
+
+$$
+\boxed{ \mathrm dS = \sqrt{1+f_x^2+f_y^2}\, \mathrm dx\,\mathrm dy }
+$$
+
+从而：
+
+$$
+\boxed{ \iint_\Sigma g(x,y,z)\,\mathrm dS = \iint_D g(x,y,f(x,y)) \sqrt{1+f_x^2+f_y^2} \,\mathrm dx\,\mathrm dy }
+$$
+
+这是本节使用频率最高的公式。
+
+#### 为什么需要根号？
+
+如果曲面是水平面：
+
+$$
+z=c
+$$
+
+那么：
+
+$$
+f_x=f_y=0
+$$
+
+因此：
+
+$$
+\mathrm dS=\mathrm dx\,\mathrm dy
+$$
+
+真实面积与水平投影面积相等。
+
+如果曲面倾斜：
+
+$$
+z=x+y
+$$
+
+那么：
+
+$$
+f_x=f_y=1
+$$
+
+于是：
+
+$$
+\mathrm dS=\sqrt3\,\mathrm dx\,\mathrm dy
+$$
+
+说明斜面的真实面积是其水平投影面积的 $\sqrt3$ 倍。
+
+面积因子本质上就是由曲面的倾斜程度决定的面积放大倍数。
+
+#### 推广到其他投影平面
+
+若：
+
+$$
+x=x(y,z)
+$$
+
+则：
+
+$$
+\boxed{ \mathrm dS = \sqrt{1+x_y^2+x_z^2}\, \mathrm dy\,\mathrm dz }
+$$
+
+若：
+
+$$
+y=y(x,z)
+$$
+
+则：
+
+$$
+\boxed{ \mathrm dS = \sqrt{1+y_x^2+y_z^2}\, \mathrm dx\,\mathrm dz }
+$$
+
+所以并非所有第一类曲面积分都必须投影到 $xy$ 平面。
+
+原则是：
+
+<Callout type="idea" title="投影选择策略">
+
+哪个投影能把曲面描述成简单的单值函数，并使积分区域简单，就优先选择哪个投影。
+
+</Callout>
+
+#### 2. 隐式曲面 $F(x,y,z)=0$
+
+这是考研数学一综合题中特别重要的公式。
+
+设：
+
+$$
+\Sigma:\quad F(x,y,z)=0
+$$
+
+假设在所研究的曲面片上：
+
+$$
+F_z\ne0
+$$
+
+那么由隐函数定理，局部可将 $z$ 写成 $x,y$ 的函数。
+
+对方程：
+
+$$
+F(x,y,z(x,y))=0
+$$
+
+分别求偏导：
+
+$$
+F_x+F_z z_x=0
+$$
+
+$$
+F_y+F_z z_y=0
+$$
+
+得到：
+
+$$
+z_x=-\frac{F_x}{F_z}
+$$
+
+$$
+z_y=-\frac{F_y}{F_z}
+$$
+
+代入面积元：
+
+$$
+\begin{aligned} \mathrm dS &= \sqrt{1+\frac{F_x^2}{F_z^2}+\frac{F_y^2}{F_z^2}}\, \mathrm dx\,\mathrm dy\\ &= \frac{\sqrt{F_x^2+F_y^2+F_z^2}} {|F_z|} \,\mathrm dx\,\mathrm dy \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{ \mathrm dS= \frac{|\nabla F|}{|F_z|} \,\mathrm dx\,\mathrm dy }
+$$
+
+类似地：
+
+$$
+\boxed{ \mathrm dS= \frac{|\nabla F|}{|F_x|} \,\mathrm dy\,\mathrm dz }
+$$
+
+$$
+\boxed{ \mathrm dS= \frac{|\nabla F|}{|F_y|} \,\mathrm dx\,\mathrm dz }
+$$
+
+#### 为什么这个公式重要？
+
+因为很多考研题会故意设计被积函数：
+
+$$
+g(x,y,z) = \frac{h(x,y,z)|F_z|}{|\nabla F|}
+$$
+
+这样：
+
+$$
+g\,\mathrm dS = h(x,y,z)\,\mathrm dx\,\mathrm dy
+$$
+
+复杂的根号全部消失。
+
+所以当你看到被积函数分母中包含：
+
+$$
+\sqrt{F_x^2+F_y^2+F_z^2}
+$$
+
+或者与它成比例的表达式时，应立即联想到隐式曲面面积元。
+
+这是1999年、2010年资料标注真题，以及创新模拟题的重要命题方式。
+
+<Callout type="warn" title="隐式曲面投影的前提与分片">
+
+适用条件： $F_z\ne0$，并且所取曲面片能够作为关于 $x,y$ 的单值图形处理。若投影对应上下两片，需要分别计算，不能把两片当作一片。
+
+</Callout>
+
+#### 3. 一般参数曲面
+
+设曲面由两个参数 $u,v$ 给出：
+
+$$
+\boldsymbol r(u,v) = \bigl(x(u,v),y(u,v),z(u,v)\bigr)
+$$
+
+则：
+
+$$
+\boxed{ \mathrm dS = \left| \frac{\partial\boldsymbol r}{\partial u} \times \frac{\partial\boldsymbol r}{\partial v} \right| \mathrm du\,\mathrm dv }
+$$
+
+所以：
+
+$$
+\boxed{ \iint_\Sigma f\,\mathrm dS = \iint_D f(\boldsymbol r(u,v)) |\boldsymbol r_u\times\boldsymbol r_v| \,\mathrm du\,\mathrm dv }
+$$
+
+这是所有常见面积元公式的共同来源。
+
+它特别适合：
+
+- 球面；
+- 圆柱侧面；
+- 旋转曲面；
+- 不能方便地表示为 $z=f(x,y)$ 的曲面。
+
+### 五、考研常见曲面的面积元速查
+
+以下公式应熟练掌握，但必须知道适用条件。
+
+| 曲面                             | 曲面面积元                                                     |
+| ------------------------------ | --------------------------------------------------------- |
+| $z=ax+by+c$                | $\sqrt{1+a^2+b^2}\,\mathrm dx\,\mathrm dy$          |
+| $z=k\sqrt{x^2+y^2}$        | $\sqrt{1+k^2}\,\mathrm dx\,\mathrm dy$              |
+| $z=x^2+y^2$                | $\sqrt{1+4x^2+4y^2}\,\mathrm dx\,\mathrm dy$        |
+| $z=\frac12(x^2+y^2)$       | $\sqrt{1+x^2+y^2}\,\mathrm dx\,\mathrm dy$          |
+| 上半球 $z=\sqrt{R^2-x^2-y^2}$ | $\frac{R}{z}\,\mathrm dx\,\mathrm dy$               |
+| 球面参数化                          | $R^2\sin\varphi\,\mathrm d\varphi\,\mathrm d\theta$ |
+| 圆柱侧面 $x^2+y^2=R^2$         | $R\,\mathrm d\theta\,\mathrm dz$                    |
+
+#### 两个容易混淆的面积因子
+
+例如在锥面：
+
+$$
+z=\sqrt{x^2+y^2}=r
+$$
+
+上：
+
+$$
+\mathrm dS = \sqrt2\,\mathrm dx\,\mathrm dy
+$$
+
+若继续使用极坐标：
+
+$$
+\mathrm dx\,\mathrm dy = r\,\mathrm dr\,\mathrm d\theta
+$$
+
+所以：
+
+$$
+\boxed{ \mathrm dS = \sqrt2\,r\,\mathrm dr\,\mathrm d\theta }
+$$
+
+这里的 $\sqrt2$ 来自曲面的倾斜程度，$r$ 来自平面极坐标换元。
+
+它们是两个不同的因子，都不能遗漏。
+
+## 第二部分：从真题中建立解题方法
+
+### 六、母题一：锥面与偏心圆柱——投影区域决定成败
+
+#### 资料标注：1995年考研数学一
+
+这是本节必须掌握的基础母题，也是2017年相关真题和多道模拟题的共同原型。
+
+题目
+
+设 $\Sigma$ 为锥面：
+
+$$
+z=\sqrt{x^2+y^2}
+$$
+
+在柱体：
+
+$$
+x^2+y^2\le2x
+$$
+
+内部的部分，计算：
+
+$$
+I=\iint_\Sigma z\,\mathrm dS
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：判断曲面的形状
+
+这是一个以 $z$ 轴为对称轴、顶点位于原点、向上开口的圆锥面。
+
+令：
+
+$$
+r=\sqrt{x^2+y^2}
+$$
+
+则：
+
+$$
+z=r
+$$
+
+注意，这里只涉及圆锥侧面，不存在额外的封顶圆盘。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：求投影区域
+
+柱体条件为：
+
+$$
+x^2+y^2\le2x
+$$
+
+配方：
+
+$$
+(x-1)^2+y^2\le1
+$$
+
+说明投影区域是以 $(1,0)$ 为圆心、半径为1的圆盘。
+
+特别注意：
+
+<Callout type="warn" title="偏心圆盘的投影范围">
+
+这不是以原点为圆心的单位圆盘！
+
+</Callout>
+
+如果使用极坐标：
+
+$$
+x=r\cos\theta,\qquad y=r\sin\theta
+$$
+
+则：
+
+$$
+r^2\le2r\cos\theta
+$$
+
+在 $r\ge0$ 下，得到：
+
+$$
+0\le r\le2\cos\theta
+$$
+
+并且：
+
+$$
+-\frac{\pi}{2}\le\theta\le\frac{\pi}{2}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：计算曲面面积元
+
+因为：
+
+$$
+z_x=\frac{x}{\sqrt{x^2+y^2}}
+$$
+
+$$
+z_y=\frac{y}{\sqrt{x^2+y^2}}
+$$
+
+所以：
+
+$$
+z_x^2+z_y^2=1
+$$
+
+因此：
+
+$$
+\mathrm dS=\sqrt2\,\mathrm dx\,\mathrm dy
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：转化为二重积分
+
+由于 $z=r$，因此：
+
+$$
+\begin{aligned} I &=\sqrt2\iint_D\sqrt{x^2+y^2}\,\mathrm dx\,\mathrm dy\\ &=\sqrt2 \int_{-\pi/2}^{\pi/2} \int_0^{2\cos\theta} r^2\,\mathrm dr\,\mathrm d\theta \end{aligned}
+$$
+
+计算：
+
+$$
+\begin{aligned} I &=\frac{\sqrt2}{3} \int_{-\pi/2}^{\pi/2} 8\cos^3\theta\,\mathrm d\theta\\ &=\frac{8\sqrt2}{3}\cdot\frac43 \end{aligned}
+$$
+
+最终：
+
+$$
+\boxed{I=\frac{32\sqrt2}{9}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 这道题真正要学什么？
+
+不是只记住答案，而是建立以下通用规律。
+
+对锥面：
+
+$$
+z=kr,\qquad k>0
+$$
+
+有：
+
+$$
+\boxed{ \mathrm dS=\sqrt{1+k^2}\,\mathrm dx\,\mathrm dy }
+$$
+
+如果投影区域满足：
+
+$$
+x^2+y^2\le2ax,\qquad a>0
+$$
+
+则：
+
+$$
+\boxed{ -\frac\pi2\le\theta\le\frac\pi2,\qquad 0\le r\le2a\cos\theta }
+$$
+
+因此对任意适当的被积函数 $g$：
+
+$$
+\boxed{ \begin{aligned} \iint_\Sigma g(x,y,z)\,\mathrm dS ={}&\sqrt{1+k^2} \int_{-\pi/2}^{\pi/2} \int_0^{2a\cos\theta}\\ &g(r\cos\theta,r\sin\theta,kr)\, r\,\mathrm dr\,\mathrm d\theta \end{aligned} }
+$$
+
+这就是一整类锥面积分题的统一模型。
+
+### 七、母题二：斜平面与三角区域——面积因子不能遗漏
+
+#### 资料标注：2012年考研数学一
+
+设：
+
+$$
+\Sigma: \begin{cases} x+y+z=1\\ x\ge0,\quad y\ge0,\quad z\ge0 \end{cases}
+$$
+
+求：
+
+$$
+I=\iint_\Sigma y^2\,\mathrm dS
+$$
+
+#### 解题思路
+
+这道题表面上是三维曲面积分，实际上只需计算一个简单的平面二重积分。
+
+由：
+
+$$
+z=1-x-y
+$$
+
+得到：
+
+$$
+z_x=z_y=-1
+$$
+
+所以：
+
+$$
+\mathrm dS=\sqrt3\,\mathrm dx\,\mathrm dy
+$$
+
+另一方面：
+
+$$
+z\ge0 \iff x+y\le1
+$$
+
+因此投影区域为：
+
+$$
+D: \begin{cases} x\ge0\\ y\ge0\\ x+y\le1 \end{cases}
+$$
+
+所以：
+
+$$
+\begin{aligned} I &=\sqrt3\int_0^1 \int_0^{1-y}y^2\,\mathrm dx\,\mathrm dy\\ &=\sqrt3\int_0^1y^2(1-y)\,\mathrm dy\\ &=\sqrt3\left(\frac13-\frac14\right) \end{aligned}
+$$
+
+最终：
+
+$$
+\boxed{I=\frac{\sqrt3}{12}}
+$$
+
+#### 方法升级：三角域上的矩积分
+
+这道题值得进一步推广。
+
+对于：
+
+$$
+D=\{(x,y):x\ge0,\ y\ge0,\ x+y\le1\}
+$$
+
+有：
+
+$$
+\boxed{ \iint_Dx^my^n\,\mathrm dx\,\mathrm dy = \frac{m!n!}{(m+n+2)!} }
+$$
+
+其中 $m,n$ 为非负整数。
+
+证明并不复杂。
+
+先对 $x$ 积分：
+
+$$
+\begin{aligned} \iint_Dx^my^n\,\mathrm dx\,\mathrm dy &=\int_0^1y^n \left[\int_0^{1-y}x^m\,\mathrm dx\right]\mathrm dy\\ &=\frac1{m+1} \int_0^1y^n(1-y)^{m+1}\,\mathrm dy \end{aligned}
+$$
+
+后一积分可用分部积分或 Beta 积分公式求出。
+
+本题取：
+
+$$
+m=0,\qquad n=2
+$$
+
+得到：
+
+$$
+\iint_Dy^2\,\mathrm dx\,\mathrm dy =\frac{2!}{4!}=\frac1{12}
+$$
+
+于是直接得到答案。
+
+这种方法适合斜平面、三角形薄片的面积矩、质量与质心问题。
+
+### 八、母题三：切平面距离与曲面积分——识别根号约分
+
+#### 资料标注：1999年考研数学一
+
+设 $S$ 为上半椭球面：
+
+$$
+\frac{x^2}{2}+\frac{y^2}{2}+z^2=1,\qquad z\ge0
+$$
+
+点 $P(x,y,z)$ 处的切平面为 $\Pi$，原点到切平面 $\Pi$ 的距离为 $\rho(x,y,z)$。
+
+求：
+
+$$
+I=\iint_S\frac{z}{\rho(x,y,z)}\,\mathrm dS
+$$
+
+这是一道典型的综合题。
+
+它把三个知识点结合起来：
+
+隐函数求导、空间点面距离、第一类曲面积分。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：求切平面
+
+令：
+
+$$
+F(x,y,z)=\frac{x^2}{2}+\frac{y^2}{2}+z^2-1
+$$
+
+则：
+
+$$
+\nabla F=(x,y,2z)
+$$
+
+在曲面上，切平面可写成：
+
+$$
+xX+yY+2zZ=2
+$$
+
+因此原点到此平面的距离为：
+
+$$
+\boxed{ \rho=\frac2{\sqrt{x^2+y^2+4z^2}} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：求面积元
+
+由椭球方程：
+
+$$
+z=\sqrt{1-\frac{x^2+y^2}{2}}
+$$
+
+可得：
+
+$$
+z_x=-\frac{x}{2z}
+$$
+
+$$
+z_y=-\frac{y}{2z}
+$$
+
+故：
+
+$$
+\begin{aligned} \mathrm dS &=\sqrt{1+z_x^2+z_y^2}\,\mathrm dx\,\mathrm dy\\ &=\frac{\sqrt{x^2+y^2+4z^2}}{2z}\, \mathrm dx\,\mathrm dy \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：先化简，再积分
+
+注意：
+
+$$
+\frac{z}{\rho} = \frac{z\sqrt{x^2+y^2+4z^2}}2
+$$
+
+因此：
+
+$$
+\frac{z}{\rho}\,\mathrm dS = \frac{x^2+y^2+4z^2}{4}\, \mathrm dx\,\mathrm dy
+$$
+
+复杂根号全部消失。
+
+由椭球约束：
+
+$$
+z^2=1-\frac{x^2+y^2}{2}
+$$
+
+得到：
+
+$$
+\frac{x^2+y^2+4z^2}{4} = 1-\frac{x^2+y^2}{4}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：积分
+
+投影区域为：
+
+$$
+D:x^2+y^2\le2
+$$
+
+所以：
+
+$$
+\begin{aligned} I &=\iint_D\left(1-\frac{x^2+y^2}{4}\right) \,\mathrm dx\,\mathrm dy\\ &=2\pi\int_0^{\sqrt2} \left(1-\frac{r^2}{4}\right)r\,\mathrm dr\\ &=2\pi\left[\frac{r^2}{2}-\frac{r^4}{16}\right]_0^{\sqrt2} \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{I=\frac{3\pi}{2}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 这类题的识别技巧
+
+看到以下信息组合：
+
+$$
+\text{切平面} + \text{点到平面的距离} + \text{曲面积分}
+$$
+
+就应该主动寻找：
+
+$$
+|\nabla F|
+$$
+
+因为曲面切平面的法向量正是：
+
+$$
+\nabla F
+$$
+
+而面积元又包含：
+
+$$
+\frac{|\nabla F|}{|F_z|}
+$$
+
+这意味着切平面距离公式与曲面面积元很可能相互配合，产生代数约分。
+
+这类题的核心能力不是积分运算，而是发现不同知识点中存在同一个法向量。
+
+### 九、母题四：隐式椭球、切平面垂直与上下分片
+
+#### 资料标注：2010年考研数学一
+
+这是本节综合性较强的一道母题。
+
+设椭球面：
+
+$$
+S:x^2+y^2+z^2-yz=1
+$$
+
+点 $P$ 处的切平面与 $xOy$ 面垂直。
+
+求满足条件的点 $P$ 的轨迹 $C$，并计算椭球面位于 $C$ 上方的曲面片 $\Sigma$ 上的积分：
+
+$$
+I=\iint_\Sigma \frac{(x+\sqrt3)|y-2z|} {\sqrt{4+y^2+z^2-4yz}} \,\mathrm dS
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一关：判断两平面垂直
+
+令：
+
+$$
+F=x^2+y^2+z^2-yz-1
+$$
+
+则：
+
+$$
+\nabla F=(2x,2y-z,2z-y)
+$$
+
+这是椭球面在 $P$ 处的法向量。
+
+而 $xOy$ 面的法向量是：
+
+$$
+\boldsymbol n_0=(0,0,1)
+$$
+
+两平面垂直等价于法向量垂直：
+
+$$
+\nabla F\cdot\boldsymbol n_0=0
+$$
+
+故：
+
+$$
+2z-y=0
+$$
+
+所以轨迹：
+
+$$
+\boxed{ C: \begin{cases} x^2+y^2+z^2-yz=1\\ 2z-y=0 \end{cases} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二关：确定曲面片与投影区域
+
+将椭球方程整理为关于 $z$ 的二次方程：
+
+$$
+z^2-yz+x^2+y^2-1=0
+$$
+
+解得：
+
+$$
+z_\pm= \frac{y\pm\sqrt{4-4x^2-3y^2}}2
+$$
+
+这里必须观察：
+
+$$
+2z-y
+$$
+
+在上片上：
+
+$$
+2z_+-y=\sqrt{4-4x^2-3y^2}\ge0
+$$
+
+在下片上：
+
+$$
+2z_--y=-\sqrt{4-4x^2-3y^2}\le0
+$$
+
+因此，题目所说的 $C$ 上方的曲面，正好是：
+
+$$
+z=z_+(x,y)
+$$
+
+投影区域为：
+
+$$
+\boxed{ D:4x^2+3y^2\le4 }
+$$
+
+这是一个椭圆。
+
+  </Step>
+
+  <Step>
+
+#### 第三关：使用隐式曲面面积元
+
+注意：
+
+$$
+F_z=2z-y
+$$
+
+因此：
+
+$$
+\mathrm dS= \frac{|\nabla F|}{|2z-y|} \,\mathrm dx\,\mathrm dy
+$$
+
+接下来计算：
+
+$$
+|\nabla F|^2 = 4x^2+(2y-z)^2+(2z-y)^2
+$$
+
+展开：
+
+$$
+|\nabla F|^2 = 4x^2+5y^2+5z^2-8yz
+$$
+
+而椭球方程给出：
+
+$$
+x^2=1-y^2-z^2+yz
+$$
+
+代入：
+
+$$
+\boxed{ |\nabla F|^2 = 4+y^2+z^2-4yz }
+$$
+
+你应该已经发现：被积函数的分母正好是 $|\nabla F|$。
+
+于是：
+
+$$
+\begin{aligned} I &=\iint_D \frac{(x+\sqrt3)|2z-y|}{|\nabla F|} \frac{|\nabla F|}{|2z-y|} \,\mathrm dx\,\mathrm dy\\ &=\iint_D(x+\sqrt3)\,\mathrm dx\,\mathrm dy \end{aligned}
+$$
+
+所有复杂因子都被消去。
+
+  </Step>
+
+  <Step>
+
+#### 第四关：利用椭圆对称性
+
+椭圆：
+
+$$
+4x^2+3y^2\le4
+$$
+
+关于 $y$ 轴对称。
+
+所以：
+
+$$
+\iint_Dx\,\mathrm dx\,\mathrm dy=0
+$$
+
+该椭圆半轴分别为：
+
+$$
+a=1,\qquad b=\frac2{\sqrt3}
+$$
+
+面积：
+
+$$
+S_D=\pi ab=\frac{2\pi}{\sqrt3}
+$$
+
+故：
+
+$$
+I=\sqrt3 S_D
+$$
+
+最终：
+
+$$
+\boxed{I=2\pi}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 本题的完整知识链
+
+$$
+\boxed{ \begin{gathered} \text{空间切平面}\\ \Downarrow\\ \text{法向量垂直条件}\\ \Downarrow\\ \text{确定曲面分界线}\\ \Downarrow\\ \text{选择单值曲面片}\\ \Downarrow\\ \text{隐式面积元}\\ \Downarrow\\ \text{根号消去}\\ \Downarrow\\ \text{椭圆区域对称性} \end{gathered} }
+$$
+
+以后遇到综合题，即使题目换了椭球方程、换了被积函数、换了切平面条件，也应首先寻找这个逻辑结构。
+
+### 十、母题五：方向导数与曲面面积的综合
+
+#### 资料标注：2019年考研数学一
+
+设：
+
+$$
+z=2+ax^2+by^2
+$$
+
+在点 $(3,4)$ 处，沿方向：
+
+$$
+\boldsymbol l=(-3,-4)
+$$
+
+的方向导数取得最大值10。
+
+求：
+
+（1）$a,b$；
+
+（2）该曲面在 $z\ge0$ 部分的面积。
+
+<Steps>
+
+  <Step>
+
+#### 第一问：由方向导数确定参数
+
+函数梯度：
+
+$$
+\nabla z=(2ax,2by)
+$$
+
+在 $(3,4)$ 处：
+
+$$
+\nabla z(3,4)=(6a,8b)
+$$
+
+方向 $\boldsymbol l$ 对应的单位向量为：
+
+$$
+\boldsymbol e_l = \left(-\frac35,-\frac45\right)
+$$
+
+方向导数公式：
+
+$$
+\frac{\partial z}{\partial l} = \nabla z\cdot\boldsymbol e_l
+$$
+
+对于单位方向向量，有：
+
+$$
+\nabla z\cdot\boldsymbol e_l \le|\nabla z|
+$$
+
+并且等号成立当且仅当：
+
+$$
+\boldsymbol e_l = \frac{\nabla z}{|\nabla z|}
+$$
+
+题目说该方向就是最大方向导数方向，最大值为10，所以：
+
+$$
+\nabla z(3,4)=10\boldsymbol e_l
+$$
+
+得到：
+
+$$
+(6a,8b)=(-6,-8)
+$$
+
+因此：
+
+$$
+\boxed{a=b=-1}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二问：曲面面积
+
+函数成为：
+
+$$
+z=2-x^2-y^2
+$$
+
+由：
+
+$$
+z\ge0
+$$
+
+得到：
+
+$$
+D:x^2+y^2\le2
+$$
+
+曲面偏导：
+
+$$
+z_x=-2x,\qquad z_y=-2y
+$$
+
+面积元：
+
+$$
+\mathrm dS = \sqrt{1+4x^2+4y^2}\, \mathrm dx\,\mathrm dy
+$$
+
+所以：
+
+$$
+S = 2\pi\int_0^{\sqrt2} r\sqrt{1+4r^2}\,\mathrm dr
+$$
+
+令：
+
+$$
+u=1+4r^2
+$$
+
+则：
+
+$$
+\mathrm du=8r\,\mathrm dr
+$$
+
+于是：
+
+$$
+\begin{aligned} S &=\frac\pi4\int_1^9u^{1/2}\,\mathrm du\\ &=\frac\pi6\left(9^{3/2}-1\right) \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{S=\frac{13\pi}{3}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 迁移到一般旋转抛物面
+
+对：
+
+$$
+z=h-kr^2,\qquad h,k>0
+$$
+
+在 $z\ge0$ 部分：
+
+$$
+0\le r\le\sqrt{\frac hk}
+$$
+
+曲面面积为：
+
+$$
+S=2\pi\int_0^{\sqrt{h/k}} r\sqrt{1+4k^2r^2}\,\mathrm dr
+$$
+
+直接得到：
+
+$$
+\boxed{ S= \frac{\pi}{6k^2} \left[(1+4kh)^{3/2}-1\right] }
+$$
+
+这个公式适用于旋转抛物面在水平面 $z=0$ 上方的部分。
+
+更重要的是它背后的方法：
+
+先由前置知识确定函数参数，再由空间限制确定投影域，最后进行曲面面积计算。
+
+## 第三部分：对称性——减少计算量的核心工具
+
+### 十一、为什么对称性如此重要？
+
+第一类曲面积分中的对称性包含两个条件：
+
+第一，曲面区域在某种几何变换下保持不变。
+
+第二，曲面面积元在相应变换下保持不变。
+
+例如，对曲面进行反射：
+
+$$
+(x,y,z)\longmapsto(-x,y,z)
+$$
+
+反射不改变面积。
+
+因此，如果 $\Sigma$ 关于 $x=0$ 对称：
+
+$$
+\iint_\Sigma f(x,y,z)\,\mathrm dS = \iint_\Sigma f(-x,y,z)\,\mathrm dS
+$$
+
+如果：
+
+$$
+f(-x,y,z)=-f(x,y,z)
+$$
+
+则：
+
+$$
+\boxed{ \iint_\Sigma f\,\mathrm dS=0 }
+$$
+
+但这里特别要注意：
+
+必须是整个积分曲面保持对称，而不能只看到曲面方程含 $x^2$ 就认为可以消去关于 $x$ 的奇函数。
+
+例如：
+
+$$
+x^2+y^2+z^2=1,\quad x\ge0
+$$
+
+虽然球面方程含 $x^2$，但实际积分区域只取 $x\ge0$，不关于 $x=0$ 对称。
+
+此时：
+
+$$
+\iint_\Sigma x\,\mathrm dS>0
+$$
+
+而不是零。
+
+### 十二、母题六：八面体与分片对称
+
+#### 资料标注：2007年考研数学一
+
+设：
+
+$$
+\Sigma:|x|+|y|+|z|=1
+$$
+
+求：
+
+$$
+I=\iint_\Sigma(x+|y|)\,\mathrm dS
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：识别空间几何体
+
+该曲面是一个正八面体的完整表面，共有8个全等三角形面。
+
+关于：
+
+$$
+x=0,\quad y=0,\quad z=0
+$$
+
+均对称。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：消去奇函数
+
+由于曲面关于 $x=0$ 对称：
+
+$$
+\iint_\Sigma x\,\mathrm dS=0
+$$
+
+因此：
+
+$$
+I=\iint_\Sigma|y|\,\mathrm dS
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：只算第一卦限中的一个三角面
+
+在：
+
+$$
+x,y,z\ge0
+$$
+
+时：
+
+$$
+z=1-x-y
+$$
+
+其中：
+
+$$
+D:x\ge0,\ y\ge0,\ x+y\le1
+$$
+
+面积元：
+
+$$
+\mathrm dS=\sqrt3\,\mathrm dx\,\mathrm dy
+$$
+
+由于 $|y|=y$，所以：
+
+$$
+\begin{aligned} I_1 &=\sqrt3\int_0^1\int_0^{1-y}y\, \mathrm dx\,\mathrm dy\\ &=\sqrt3\int_0^1y(1-y)\,\mathrm dy\\ &=\frac{\sqrt3}{6} \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：利用8个面的对称性
+
+因为 $|y|$ 在各坐标符号变换下保持不变，8个面的积分相等：
+
+$$
+I=8I_1
+$$
+
+因此：
+
+$$
+\boxed{I=\frac{4\sqrt3}{3}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 一个常见错误
+
+不能写成：
+
+$$
+I=8\iint_{\Sigma_1}(x+y)\,\mathrm dS
+$$
+
+因为 $x$ 在其他象限会变号。
+
+正确做法是先消去整个曲面积分中关于 $x$ 的奇函数项，再对非负的 $|y|$ 使用8倍对称。
+
+### 十三、母题七：平移球面的线性与二次函数积分
+
+这类题在李林880、李林六套卷以及其他模拟题中反复出现。
+
+#### 1. 球面平移的基本思想
+
+考虑球面：
+
+$$
+\Sigma:(x-a)^2+(y-b)^2+(z-c)^2=R^2
+$$
+
+令：
+
+$$
+u=x-a,\qquad v=y-b,\qquad w=z-c
+$$
+
+则：
+
+$$
+u^2+v^2+w^2=R^2
+$$
+
+由于平移不改变面积元：
+
+$$
+\iint_\Sigma u\,\mathrm dS=0
+$$
+
+类似地：
+
+$$
+\iint_\Sigma v\,\mathrm dS = \iint_\Sigma w\,\mathrm dS=0
+$$
+
+所以：
+
+$$
+\boxed{ \iint_\Sigma x\,\mathrm dS=4\pi R^2a }
+$$
+
+$$
+\boxed{ \iint_\Sigma y\,\mathrm dS=4\pi R^2b }
+$$
+
+$$
+\boxed{ \iint_\Sigma z\,\mathrm dS=4\pi R^2c }
+$$
+
+即：
+
+整个球面上线性坐标函数的面积平均值，等于球心对应的坐标。
+
+进一步，对仿射函数：
+
+$$
+f(x,y,z)=Ax+By+Cz+D
+$$
+
+有：
+
+$$
+\boxed{ \iint_\Sigma f\,\mathrm dS = 4\pi R^2(Aa+Bb+Cc+D) }
+$$
+
+这一结论只要求积分区域为完整球面；对任意球冠不能直接使用。
+
+#### 2. 二次矩公式
+
+对球心在原点、半径为 $R$ 的整个球面：
+
+$$
+u^2+v^2+w^2=R^2
+$$
+
+有轮换对称性：
+
+$$
+\iint_\Sigma u^2\,\mathrm dS = \iint_\Sigma v^2\,\mathrm dS = \iint_\Sigma w^2\,\mathrm dS
+$$
+
+三者相加：
+
+$$
+\iint_\Sigma(u^2+v^2+w^2)\,\mathrm dS = R^2\cdot4\pi R^2
+$$
+
+故：
+
+$$
+\boxed{ \iint_\Sigma u^2\,\mathrm dS = \frac{4\pi R^4}{3} }
+$$
+
+对于以 $(a,b,c)$ 为球心的球面，得到：
+
+$$
+\boxed{ \iint_\Sigma x^2\,\mathrm dS = 4\pi R^2\left(a^2+\frac{R^2}{3}\right) }
+$$
+
+以及：
+
+$$
+\boxed{ \iint_\Sigma xy\,\mathrm dS = 4\pi R^2ab }
+$$
+
+后者来自：
+
+$$
+xy=(u+a)(v+b)
+$$
+
+其中：
+
+$$
+\iint_\Sigma u\,\mathrm dS = \iint_\Sigma v\,\mathrm dS = \iint_\Sigma uv\,\mathrm dS=0
+$$
+
+#### 3. 代表模拟题：李林六套卷第2套第18题
+
+设：
+
+$$
+\Sigma:x^2+y^2+z^2=2x
+$$
+
+求：
+
+$$
+I=\iint_\Sigma(2x^2+y^2+3z^2)\,\mathrm dS
+$$
+
+先配方：
+
+$$
+(x-1)^2+y^2+z^2=1
+$$
+
+令：
+
+$$
+u=x-1,\qquad v=y,\qquad w=z
+$$
+
+则：
+
+$$
+\begin{aligned} 2x^2+y^2+3z^2 &=2(u+1)^2+v^2+3w^2\\ &=2u^2+v^2+3w^2+4u+2 \end{aligned}
+$$
+
+由对称性：
+
+$$
+\iint_\Sigma4u\,\mathrm dS=0
+$$
+
+而：
+
+$$
+\iint_\Sigma u^2\,\mathrm dS = \iint_\Sigma v^2\,\mathrm dS = \iint_\Sigma w^2\,\mathrm dS =\frac{4\pi}{3}
+$$
+
+因此：
+
+$$
+\begin{aligned} I &=(2+1+3)\frac{4\pi}{3} +2\cdot4\pi\\ &=8\pi+8\pi \end{aligned}
+$$
+
+最终：
+
+$$
+\boxed{I=16\pi}
+$$
+
+#### 如何迁移到创新题？
+
+只要遇到：
+
+$$
+\iint_\Sigma (Ax^2+By^2+Cz^2+Dxy+Ex+Fy+Gz+H) \,\mathrm dS
+$$
+
+而 $\Sigma$ 是完整球面，就应先平移到球心，再使用线性矩和二次矩公式。
+
+通常根本不需要球坐标积分。
+
+## 第四部分：球面、球冠与曲面面积最值
+
+### 十四、球面参数化与球冠面积公式
+
+对半径为 $R$、球心位于原点的球面：
+
+$$
+x^2+y^2+z^2=R^2
+$$
+
+采用球坐标：
+
+$$
+\begin{cases} x=R\sin\varphi\cos\theta\\ y=R\sin\varphi\sin\theta\\ z=R\cos\varphi \end{cases}
+$$
+
+曲面面积元为：
+
+$$
+\boxed{ \mathrm dS = R^2\sin\varphi\, \mathrm d\varphi\,\mathrm d\theta }
+$$
+
+注意，这不是三重积分的球坐标体积元。
+
+球面半径已经固定为 $R$，不需要再对径向变量积分。
+
+#### 球冠面积公式
+
+考虑球面顶部：
+
+$$
+z\ge h,\qquad -R\le h\le R
+$$
+
+其中 $h$ 表示截平面的高度坐标。
+
+其球冠的实际高度为：
+
+$$
+H=R-h
+$$
+
+由：
+
+$$
+z=R\cos\varphi
+$$
+
+得到：
+
+$$
+\varphi_0=\arccos\frac hR
+$$
+
+所以：
+
+$$
+\begin{aligned} S &=\int_0^{2\pi}\int_0^{\varphi_0} R^2\sin\varphi\,\mathrm d\varphi\,\mathrm d\theta\\ &=2\pi R^2(1-\cos\varphi_0)\\ &=2\pi R(R-h) \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{ S_{\text{球冠}}=2\pi RH }
+$$
+
+其中 $H$ 是球冠高度。
+
+这个公式非常重要，因为它能直接解决球冠面积及其最值问题。
+
+#### 一个更实用的公式
+
+在球面上：
+
+$$
+\mathrm dS=R\left|\mathrm dz\right|\mathrm d\theta
+$$
+
+因此，如果被积函数只依赖 $z$，并且区域是完整的水平球冠：
+
+$$
+\boxed{ \iint_{\Sigma}f(z)\,\mathrm dS = 2\pi R\int_h^R f(z)\,\mathrm dz }
+$$
+
+这是一个非常值得记住的简化公式。
+
+例如：
+
+$$
+\iint_\Sigma z^2\,\mathrm dS = 2\pi R\int_h^Rz^2\,\mathrm dz = \boxed{\frac{2\pi R}{3}(R^3-h^3)}
+$$
+
+对于只含高度 $z$ 的球冠积分，这种方法常常比直接使用两个球坐标变量更快。
+
+### 十五、母题八：两个相交球的球冠面积最值
+
+#### 资料标注：1989年考研数学一
+
+设一个固定球的半径为 $a$，另一个动球的球心位于固定球面上，动球半径为 $R$。
+
+问：当 $R$ 为何值时，动球面位于固定球内部的那一部分面积最大？
+
+<Steps>
+
+  <Step>
+
+#### 第一步：明确几何关系
+
+记固定球心为 $O$，动球心为 $C$。
+
+因为 $C$ 位于固定球面上：
+
+$$
+OC=a
+$$
+
+设两个球的交圆所在平面到动球心 $C$ 的距离为 $d$，方向指向固定球心 $O$。
+
+由两个球方程相减，或利用三角形余弦定理，得到：
+
+$$
+d=\frac{R^2}{2a}
+$$
+
+因此动球位于固定球内的部分是一个球冠，其高度为：
+
+$$
+H=R-d
+$$
+
+即：
+
+$$
+\boxed{ H=R-\frac{R^2}{2a} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：确定参数范围
+
+球冠高度必须为正：
+
+$$
+R-\frac{R^2}{2a}>0
+$$
+
+解得：
+
+$$
+\boxed{0<R<2a}
+$$
+
+不能忽略这个条件。
+
+当 $R\ge2a$ 时，两个球不再具有所需的非退化交圆，不能继续把原来的球冠公式机械套用下去。
+
+  </Step>
+
+  <Step>
+
+#### 第三步：建立面积函数
+
+球冠面积：
+
+$$
+S(R)=2\pi RH
+$$
+
+所以：
+
+$$
+\begin{aligned} S(R) &=2\pi R\left(R-\frac{R^2}{2a}\right)\\ &=2\pi R^2-\frac{\pi R^3}{a} \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：求最值
+
+求导：
+
+$$
+S'(R)=4\pi R-\frac{3\pi R^2}{a}
+$$
+
+令：
+
+$$
+S'(R)=0
+$$
+
+得到：
+
+$$
+R=0
+$$
+
+或者：
+
+$$
+R=\frac{4a}{3}
+$$
+
+由于 $R>0$，只考虑：
+
+$$
+R=\frac{4a}{3}
+$$
+
+进一步：
+
+$$
+S'(R)=\pi R\left(4-\frac{3R}{a}\right)
+$$
+
+所以在：
+
+$$
+0<R<\frac{4a}{3}
+$$
+
+时，$S'(R)>0$；
+
+而在：
+
+$$
+\frac{4a}{3}<R<2a
+$$
+
+时，$S'(R)<0$。
+
+因此面积在：
+
+$$
+\boxed{R=\frac{4a}{3}}
+$$
+
+时取得最大值。
+
+对应最大面积：
+
+$$
+\boxed{S_{\max}=\frac{32\pi a^2}{27}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 本题的迁移价值
+
+这类题本质是：
+
+$$
+\boxed{ \text{空间几何约束} \rightarrow \text{交圆位置} \rightarrow \text{曲面面积} \rightarrow \text{一元函数最值} }
+$$
+
+其难点通常不是最后求导，而是建立正确的面积函数。
+
+未来如果题目将固定球改成椭球、将球心距离改成参数，或者要求面积比而不是单个面积，你仍然应该先求交线与截取范围。
+
+### 十六、母题九：球冠上的奇函数与高度积分
+
+#### 张宇1000题 · 第18章对应题
+
+设：
+
+$$
+\Sigma:x^2+y^2+z^2=m,\qquad z\ge\frac{\sqrt m}{3}
+$$
+
+其中 $m>0$，计算：
+
+$$
+I=\iint_\Sigma \left(|x|y+\frac1z\right)\mathrm dS
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：判断对称性
+
+球冠关于：
+
+$$
+y=0
+$$
+
+对称。
+
+而：
+
+$$
+|x|y
+$$
+
+在反射 $y\mapsto-y$ 下改变符号。
+
+所以：
+
+$$
+\iint_\Sigma|x|y\,\mathrm dS=0
+$$
+
+于是：
+
+$$
+I=\iint_\Sigma\frac1z\,\mathrm dS
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：直接使用高度积分
+
+记：
+
+$$
+R=\sqrt m
+$$
+
+则：
+
+$$
+\frac R3\le z\le R
+$$
+
+由球冠积分公式：
+
+$$
+\begin{aligned} I &=2\pi R\int_{R/3}^R\frac1z\,\mathrm dz\\ &=2\pi R\ln\frac{R}{R/3}\\ &=2\pi R\ln3 \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{I=2\pi\sqrt m\ln3}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 两个关键点
+
+首先，$|x|y$ 并不是关于 $x$ 的奇函数，而是关于 $y$ 的奇函数。要准确识别哪个变量引起符号变化。
+
+其次，虽然存在：
+
+$$
+\frac1z
+$$
+
+但是积分区域满足：
+
+$$
+z\ge\frac R3>0
+$$
+
+因此没有奇点，不需要讨论广义积分收敛性。
+
+如果题目改成整个上半球 $z\ge0$，情况就不同了。
+
+## 第五部分：薄壳质量、质心与转动惯量
+
+### 十七、曲面积分的三个物理应用公式
+
+设薄壳 $\Sigma$ 的面密度为：
+
+$$
+\rho(x,y,z)
+$$
+
+#### 1. 质量
+
+$$
+\boxed{ M=\iint_\Sigma\rho\,\mathrm dS }
+$$
+
+#### 2. 质心
+
+$$
+\boxed{ \bar x= \frac{\iint_\Sigma x\rho\,\mathrm dS}{M} }
+$$
+
+$$
+\boxed{ \bar y= \frac{\iint_\Sigma y\rho\,\mathrm dS}{M} }
+$$
+
+$$
+\boxed{ \bar z= \frac{\iint_\Sigma z\rho\,\mathrm dS}{M} }
+$$
+
+这里假设总质量 $M>0$。
+
+#### 3. 转动惯量
+
+对于 $z$ 轴：
+
+$$
+\boxed{ I_z= \iint_\Sigma(x^2+y^2)\rho\,\mathrm dS }
+$$
+
+对于 $x$ 轴：
+
+$$
+\boxed{ I_x= \iint_\Sigma(y^2+z^2)\rho\,\mathrm dS }
+$$
+
+对于原点：
+
+$$
+\boxed{ I_O= \iint_\Sigma(x^2+y^2+z^2)\rho\,\mathrm dS }
+$$
+
+关键不是死记形式，而是理解：
+
+转动惯量等于各质量微元乘以到指定轴或点的距离平方，再求和。
+
+### 十八、母题十：锥面薄壳质量
+
+#### 资料标注：2017年考研数学一
+
+设薄壳 $S$ 为圆锥面：
+
+$$
+z=\sqrt{x^2+y^2}
+$$
+
+被柱面：
+
+$$
+z^2=2x
+$$
+
+截得的有限部分。
+
+薄壳面密度：
+
+$$
+\mu=9\sqrt{x^2+y^2+z^2}
+$$
+
+求交线在 $xOy$ 平面上的投影方程，以及薄壳质量。
+
+<Steps>
+
+  <Step>
+
+#### 第一问：交线投影
+
+由圆锥方程：
+
+$$
+z^2=x^2+y^2
+$$
+
+代入柱面：
+
+$$
+z^2=2x
+$$
+
+得到：
+
+$$
+x^2+y^2=2x
+$$
+
+因此交线在 $xOy$ 平面上的投影是：
+
+$$
+\boxed{ \begin{cases} x^2+y^2=2x\\ z=0 \end{cases} }
+$$
+
+它是平面 $z=0$ 内、以 $(1,0)$ 为圆心、半径为1的圆。
+
+  </Step>
+
+  <Step>
+
+#### 第二问：化简面密度
+
+令：
+
+$$
+r=\sqrt{x^2+y^2}
+$$
+
+在锥面上：
+
+$$
+z=r
+$$
+
+因此：
+
+$$
+\begin{aligned} \mu &=9\sqrt{x^2+y^2+z^2}\\ &=9\sqrt{r^2+r^2}\\ &=9\sqrt2r \end{aligned}
+$$
+
+锥面的面积元：
+
+$$
+\mathrm dS=\sqrt2\,\mathrm dx\,\mathrm dy
+$$
+
+因此：
+
+$$
+\boxed{ \mu\,\mathrm dS = 18r\,\mathrm dx\,\mathrm dy }
+$$
+
+这里发生了非常方便的简化。
+
+  </Step>
+
+  <Step>
+
+#### 第三步：转化为极坐标
+
+投影区域仍然是：
+
+$$
+x^2+y^2\le2x
+$$
+
+所以：
+
+$$
+-\frac\pi2\le\theta\le\frac\pi2
+$$
+
+$$
+0\le r\le2\cos\theta
+$$
+
+质量为：
+
+$$
+\begin{aligned} M &=\iint_S\mu\,\mathrm dS\\ &=18\iint_Dr\,\mathrm dx\,\mathrm dy\\ &=18\int_{-\pi/2}^{\pi/2} \int_0^{2\cos\theta}r^2\,\mathrm dr\,\mathrm d\theta\\ &=18\cdot\frac83\cdot\frac43 \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{M=64}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 与1995年母题的关系
+
+1995年的题目计算：
+
+$$
+\iint_\Sigma z\,\mathrm dS
+$$
+
+而2017年的题目计算：
+
+$$
+\iint_\Sigma9\sqrt{x^2+y^2+z^2}\,\mathrm dS
+$$
+
+但在同一个锥面上：
+
+$$
+9\sqrt{x^2+y^2+z^2}=9\sqrt2z
+$$
+
+所以：
+
+$$
+M=9\sqrt2 \iint_\Sigma z\,\mathrm dS
+$$
+
+利用1995年母题的结果：
+
+$$
+M =9\sqrt2\cdot\frac{32\sqrt2}{9} =64
+$$
+
+这说明一件非常重要的事：
+
+考研不同年份的题目，可能只是同一个母题换了物理解释、曲面约束的写法或被积函数。
+
+你只要识别出了相同的几何结构，就能快速迁移。
+
+### 十九、母题十一：非均匀球面薄壳质心
+
+#### 李林六套卷 · 第3套第14题
+
+设单位上半球面：
+
+$$
+\Sigma:z=\sqrt{1-x^2-y^2}
+$$
+
+面密度：
+
+$$
+\rho=z
+$$
+
+求质心的竖坐标：
+
+$$
+\bar z
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：写质心公式
+
+$$
+\bar z= \frac{\iint_\Sigma z\rho\,\mathrm dS} {\iint_\Sigma\rho\,\mathrm dS}
+$$
+
+因为：
+
+$$
+\rho=z
+$$
+
+所以：
+
+$$
+\boxed{ \bar z= \frac{\iint_\Sigma z^2\,\mathrm dS} {\iint_\Sigma z\,\mathrm dS} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：利用球冠高度积分
+
+单位上半球：
+
+$$
+R=1,\qquad0\le z\le1
+$$
+
+总质量：
+
+$$
+\begin{aligned} M &=2\pi\int_0^1z\,\mathrm dz\\ &=\pi \end{aligned}
+$$
+
+关于 $xy$ 平面的质量矩：
+
+$$
+\begin{aligned} M_{xy} &=2\pi\int_0^1z^2\,\mathrm dz\\ &=\frac{2\pi}{3} \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{ \bar z=\frac23 }
+$$
+
+由于曲面和密度均关于 $z$ 轴旋转对称：
+
+$$
+\bar x=\bar y=0
+$$
+
+最终质心：
+
+$$
+\boxed{ \left(0,0,\frac23\right) }
+$$
+
+  </Step>
+
+</Steps>
+
+#### 进阶结论：密度为 $z^p$ 的上半球
+
+设半径为 $R$，面密度为：
+
+$$
+\rho=z^p,\qquad p>-1
+$$
+
+则：
+
+$$
+M=2\pi R\int_0^Rz^p\,\mathrm dz = \frac{2\pi R^{p+2}}{p+1}
+$$
+
+同时：
+
+$$
+M_{xy} = 2\pi R\int_0^Rz^{p+1}\,\mathrm dz = \frac{2\pi R^{p+3}}{p+2}
+$$
+
+所以：
+
+$$
+\boxed{ \bar z=\frac{p+1}{p+2}R }
+$$
+
+这个结论很有意义：
+
+当：
+
+$$
+p=0
+$$
+
+即均匀面密度时：
+
+$$
+\bar z=\frac R2
+$$
+
+当：
+
+$$
+p=1
+$$
+
+时：
+
+$$
+\bar z=\frac{2R}{3}
+$$
+
+当 $p$ 增大时，薄壳上部密度的相对权重增大，质心逐渐靠近球顶。
+
+这比单纯计算一道质心题更有价值，因为它能让你通过物理直觉检查答案。
+
+## 第六部分：竖直曲面与封闭曲面的分片计算
+
+### 二十、为什么圆柱侧面通常不投影到 $xy$ 平面？
+
+对于竖直圆柱：
+
+$$
+x^2+y^2=R^2
+$$
+
+曲面不是一个形如：
+
+$$
+z=f(x,y)
+$$
+
+的单值图形。
+
+如果直接把它投影到 $xy$ 平面，投影只是圆周：
+
+$$
+x^2+y^2=R^2
+$$
+
+圆周是二维平面中的一维集合，无法直接用其面积来表示圆柱侧面的面积。
+
+因此更合适的方法是参数化：
+
+$$
+\begin{cases} x=R\cos\theta\\ y=R\sin\theta\\ z=z \end{cases}
+$$
+
+求偏导后：
+
+$$
+|\boldsymbol r_\theta\times\boldsymbol r_z|=R
+$$
+
+因此：
+
+$$
+\boxed{ \mathrm dS=R\,\mathrm d\theta\,\mathrm dz }
+$$
+
+对于：
+
+$$
+0\le z\le H
+$$
+
+的圆柱侧面：
+
+$$
+\boxed{ \iint_\Sigma f\,\mathrm dS = R\int_0^{2\pi}\int_0^H f(R\cos\theta,R\sin\theta,z) \,\mathrm dz\,\mathrm d\theta }
+$$
+
+如果上下界随 $\theta$ 变化，就把 $z$ 的上下限改为对应的函数。
+
+### 二十一、母题十二：完整封闭薄壳
+
+#### 李林880题 · 第九章对应题
+
+设：
+
+$$
+\Omega: \begin{cases} x^2+y^2\le R^2\\ 0\le z\le R+x \end{cases}
+$$
+
+其中 $R>0$。
+
+设 $S$ 为该立体的完整边界曲面，计算：
+
+$$
+I=\iint_Sz\,\mathrm dS
+$$
+
+这是典型的“题目本身不难，但很容易漏面”的考法。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：先分片
+
+完整边界由三部分组成：
+
+$$
+S=S_1\cup S_2\cup S_3
+$$
+
+其中：
+
+$$
+S_1:z=R+x
+$$
+
+是斜顶面；
+
+$$
+S_2:z=0
+$$
+
+是底面；
+
+$$
+S_3:x^2+y^2=R^2
+$$
+
+是圆柱侧面。
+
+于是：
+
+$$
+I=I_1+I_2+I_3
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：计算顶面
+
+在：
+
+$$
+z=R+x
+$$
+
+上：
+
+$$
+z_x=1,\qquad z_y=0
+$$
+
+因此：
+
+$$
+\mathrm dS=\sqrt2\,\mathrm dx\,\mathrm dy
+$$
+
+水平投影为：
+
+$$
+D:x^2+y^2\le R^2
+$$
+
+所以：
+
+$$
+\begin{aligned} I_1 &=\sqrt2\iint_D(R+x)\,\mathrm dx\,\mathrm dy\\ &=\sqrt2 R\pi R^2 \end{aligned}
+$$
+
+即：
+
+$$
+\boxed{I_1=\sqrt2\pi R^3}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：计算底面
+
+在：
+
+$$
+z=0
+$$
+
+上：
+
+$$
+I_2=\iint_{S_2}0\,\mathrm dS=0
+$$
+
+注意，底面的面积不是零，只是它对本题积分的贡献为零。
+
+  </Step>
+
+  <Step>
+
+#### 第四步：计算圆柱侧面
+
+参数化：
+
+$$
+x=R\cos\theta,\qquad y=R\sin\theta
+$$
+
+在侧面上：
+
+$$
+0\le z\le R+x=R(1+\cos\theta)
+$$
+
+面积元：
+
+$$
+\mathrm dS=R\,\mathrm d\theta\,\mathrm dz
+$$
+
+因此：
+
+$$
+\begin{aligned} I_3 &=R\int_0^{2\pi} \int_0^{R(1+\cos\theta)} z\,\mathrm dz\,\mathrm d\theta\\ &=\frac{R^3}{2} \int_0^{2\pi}(1+\cos\theta)^2\,\mathrm d\theta \end{aligned}
+$$
+
+展开：
+
+$$
+(1+\cos\theta)^2 = 1+2\cos\theta+\cos^2\theta
+$$
+
+利用：
+
+$$
+\int_0^{2\pi}\cos\theta\,\mathrm d\theta=0
+$$
+
+$$
+\int_0^{2\pi}\cos^2\theta\,\mathrm d\theta=\pi
+$$
+
+得：
+
+$$
+\boxed{ I_3=\frac{3\pi R^3}{2} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第五步：相加
+
+$$
+I = \sqrt2\pi R^3 + 0 + \frac{3\pi R^3}{2}
+$$
+
+所以：
+
+$$
+\boxed{ I=\pi R^3\left(\sqrt2+\frac32\right) }
+$$
+
+  </Step>
+
+</Steps>
+
+#### 从这道题提炼通法
+
+如果题目写着：
+
+“由若干曲面围成的立体的完整表面”
+
+必须先判断：
+
+$$
+\boxed{ \text{上表面} + \text{下表面} + \text{所有侧面} }
+$$
+
+再分别确定面积元。
+
+不能因为题目给出一个立体，就直接写三重积分；薄壳质量仍然是曲面积分。
+
+### 二十二、母题十三：球面与圆柱面相互截取
+
+#### 李林880对应提高题
+
+半径为 $R$ 的球面：
+
+$$
+x^2+y^2+z^2=R^2
+$$
+
+被柱体：
+
+$$
+x^2+y^2\le Rx
+$$
+
+截得的球面面积为 $S_1$。
+
+同一圆柱：
+
+$$
+x^2+y^2=Rx
+$$
+
+在球体内部的侧面积为 $S_2$。
+
+求：
+
+$$
+\frac{S_1}{S_2}
+$$
+
+#### 为什么这道题难？
+
+因为球面片与柱面片共享交线，但它们是不同的曲面。
+
+因此必须分别计算：
+
+$$
+S_1\quad\text{和}\quad S_2
+$$
+
+不能因为它们具有同一个边界，就认为面积元相同。
+
+#### 第一部分：球面面积 $S_1$
+
+球的上半片：
+
+$$
+z=\sqrt{R^2-x^2-y^2}
+$$
+
+面积元：
+
+$$
+\mathrm dS= \frac{R}{\sqrt{R^2-r^2}}\, r\,\mathrm dr\,\mathrm d\theta
+$$
+
+柱体投影条件：
+
+$$
+r^2\le Rr\cos\theta
+$$
+
+所以：
+
+$$
+-\frac\pi2\le\theta\le\frac\pi2
+$$
+
+$$
+0\le r\le R\cos\theta
+$$
+
+球的上、下两片面积相同，因此：
+
+$$
+S_1= 2R\int_{-\pi/2}^{\pi/2} \int_0^{R\cos\theta} \frac{r}{\sqrt{R^2-r^2}} \,\mathrm dr\,\mathrm d\theta
+$$
+
+先积分 $r$：
+
+$$
+\int\frac r{\sqrt{R^2-r^2}}\,\mathrm dr = -\sqrt{R^2-r^2}
+$$
+
+于是：
+
+$$
+\begin{aligned} S_1 &=2R^2 \int_{-\pi/2}^{\pi/2} (1-|\sin\theta|)\,\mathrm d\theta\\ &=2R^2(\pi-2) \end{aligned}
+$$
+
+所以：
+
+$$
+\boxed{S_1=2R^2(\pi-2)}
+$$
+
+这里：
+
+$$
+\sqrt{1-\cos^2\theta}=|\sin\theta|
+$$
+
+绝对值不可遗漏。
+
+#### 第二部分：圆柱侧面积 $S_2$
+
+将圆柱方程配方：
+
+$$
+\left(x-\frac R2\right)^2+y^2=\frac{R^2}{4}
+$$
+
+可知圆柱轴线经过：
+
+$$
+\left(\frac R2,0\right)
+$$
+
+底面圆半径为：
+
+$$
+\frac R2
+$$
+
+参数化：
+
+$$
+\begin{cases} x=\frac R2(1+\cos t)\\ y=\frac R2\sin t \end{cases}
+$$
+
+其中：
+
+$$
+0\le t\le2\pi
+$$
+
+圆柱侧面面积元：
+
+$$
+\mathrm dS=\frac R2\,\mathrm dt\,\mathrm dz
+$$
+
+由球体条件：
+
+$$
+x^2+y^2+z^2\le R^2
+$$
+
+又因为：
+
+$$
+x^2+y^2 = R^2\cos^2\frac t2
+$$
+
+所以：
+
+$$
+|z|\le R\sin\frac t2
+$$
+
+因此：
+
+$$
+\begin{aligned} S_2 &=\int_0^{2\pi} \int_{-R\sin(t/2)}^{R\sin(t/2)} \frac R2\,\mathrm dz\,\mathrm dt\\ &=R^2\int_0^{2\pi}\sin\frac t2\,\mathrm dt\\ &=4R^2 \end{aligned}
+$$
+
+故：
+
+$$
+\boxed{S_2=4R^2}
+$$
+
+最终：
+
+$$
+\boxed{ \frac{S_1}{S_2}=\frac{\pi-2}{2} }
+$$
+
+#### 高阶迁移
+
+如果题目给出两个曲面相交，并要求它们各自在对方内部的面积，建议先分别判断：
+
+哪一个曲面适合图形投影？
+
+哪一个曲面适合参数化？
+
+本题球面适合水平投影，圆柱侧面适合圆周角与高度参数。
+
+这是典型的“同一道题需要两套坐标表达”的综合题。
+
+## 第七部分：模拟题中的高阶方法与创新考法
+
+前面的真题帮助我们建立了基本方法，但模拟题经常会把这些方法组合起来。
+
+其中最值得重视的有三种变化：复杂对称积分、曲面面积比较，以及含参数的面积元约分。
+
+### 二十三、提高母题一：第一卦限球面的轮换对称
+
+#### 李林六套卷 · 第6套第11题
+
+设 $\Sigma$ 为单位球面：
+
+$$
+x^2+y^2+z^2=1
+$$
+
+在第一卦限的部分。
+
+计算：
+
+$$
+I=\iint_\Sigma xyz(y^2z^2+z^2x^2+x^2y^2)\,\mathrm dS
+$$
+
+这道题乍看运算量很大，但真正的关键是识别轮换对称性。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：先展开被积函数
+
+$$
+I= \iint_\Sigma (xy^3z^3+x^3yz^3+x^3y^3z) \,\mathrm dS
+$$
+
+注意第一卦限球面在交换 $x,y,z$ 后保持不变。
+
+三个积分相等，因此：
+
+$$
+I=3\iint_\Sigma xy^3z^3\,\mathrm dS
+$$
+
+这一步直接把三个复杂积分变成一个。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：选择合适的投影
+
+在第一卦限：
+
+$$
+x=\sqrt{1-y^2-z^2}
+$$
+
+所以：
+
+$$
+x_y=-\frac yx,\qquad x_z=-\frac zx
+$$
+
+面积元：
+
+$$
+\begin{aligned} \mathrm dS &=\sqrt{1+\frac{y^2+z^2}{x^2}} \,\mathrm dy\,\mathrm dz\\ &=\frac1x\,\mathrm dy\,\mathrm dz \end{aligned}
+$$
+
+因此：
+
+$$
+xy^3z^3\,\mathrm dS = y^3z^3\,\mathrm dy\,\mathrm dz
+$$
+
+被积函数中的 $x$ 与面积元中的 $1/x$ 正好抵消。
+
+所以：
+
+$$
+I=3\iint_Dy^3z^3\,\mathrm dy\,\mathrm dz
+$$
+
+其中：
+
+$$
+D: \begin{cases} y\ge0\\ z\ge0\\ y^2+z^2\le1 \end{cases}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：极坐标计算
+
+令：
+
+$$
+y=r\cos\theta,\qquad z=r\sin\theta
+$$
+
+于是：
+
+$$
+I= 3\int_0^1r^7\,\mathrm dr \int_0^{\pi/2} \cos^3\theta\sin^3\theta\,\mathrm d\theta
+$$
+
+其中：
+
+$$
+\int_0^1r^7\,\mathrm dr=\frac18
+$$
+
+并且：
+
+$$
+\int_0^{\pi/2} \cos^3\theta\sin^3\theta\,\mathrm d\theta =\frac1{12}
+$$
+
+故：
+
+$$
+\boxed{I=\frac1{32}}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 为什么这是高质量母题？
+
+它同时体现了三个层次的简化：
+
+$$
+\boxed{ \text{轮换对称} \rightarrow \text{选择最优投影} \rightarrow \text{面积元约分} }
+$$
+
+特别注意，对球面进行投影时，不一定要把 $z$ 表示为 $x,y$ 的函数。
+
+有时写成：
+
+$$
+x=x(y,z)
+$$
+
+反而会使被积函数与面积元相消。
+
+遇到复杂乘积时，可以先观察被积函数是否包含某个坐标因子，再考虑沿该坐标方向投影。
+
+### 二十四、提高母题二：不计算曲面面积，直接比较大小
+
+#### 张宇8套卷 · 第2套第4题
+
+设三块曲面：
+
+$$
+\Sigma_1:z=\frac{x^3+y^3}{3}
+$$
+
+$$
+\Sigma_2:z=\frac{x^2-y^2}{2}
+$$
+
+$$
+\Sigma_3:z=\frac{x^2y^2}{2}
+$$
+
+均取被柱面：
+
+$$
+x^2+y^2=1
+$$
+
+截取的部分。
+
+它们的面积分别为：
+
+$$
+S_1,S_2,S_3
+$$
+
+比较大小。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：统一投影区域
+
+三块曲面的水平投影均为：
+
+$$
+D:x^2+y^2\le1
+$$
+
+因此：
+
+$$
+S_i=\iint_D\sqrt{1+f_{ix}^2+f_{iy}^2}\, \mathrm dx\,\mathrm dy
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：写出三个面积元
+
+对于 $\Sigma_1$：
+
+$$
+f_{1x}=x^2,\qquad f_{1y}=y^2
+$$
+
+所以：
+
+$$
+S_1=\iint_D\sqrt{1+x^4+y^4}\, \mathrm dx\,\mathrm dy
+$$
+
+对于 $\Sigma_2$：
+
+$$
+f_{2x}=x,\qquad f_{2y}=-y
+$$
+
+所以：
+
+$$
+S_2=\iint_D\sqrt{1+x^2+y^2}\, \mathrm dx\,\mathrm dy
+$$
+
+对于 $\Sigma_3$：
+
+$$
+f_{3x}=xy^2,\qquad f_{3y}=x^2y
+$$
+
+所以：
+
+$$
+S_3=\iint_D\sqrt{1+x^2y^4+x^4y^2}\, \mathrm dx\,\mathrm dy
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：比较被积函数
+
+在单位圆盘上：
+
+$$
+x^2+y^2\le1
+$$
+
+因此：
+
+$$
+x^4\le x^2,\qquad y^4\le y^2
+$$
+
+从而：
+
+$$
+x^4+y^4\le x^2+y^2
+$$
+
+另一方面：
+
+$$
+x^2y^4+x^4y^2 = x^2y^2(x^2+y^2)
+$$
+
+由于：
+
+$$
+x^2+y^2\le1
+$$
+
+且：
+
+$$
+x^2y^2\le x^4+y^4
+$$
+
+所以：
+
+$$
+x^2y^4+x^4y^2 \le x^4+y^4
+$$
+
+综合：
+
+$$
+x^2+y^2 \ge x^4+y^4 \ge x^2y^4+x^4y^2
+$$
+
+在单位圆盘内部，严格不等式在正面积的区域上成立。
+
+因此：
+
+$$
+\boxed{S_2>S_1>S_3}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 这道题的核心方法
+
+如果题目只要求比较曲面面积，而不是求具体面积，那么：
+
+只需把各面积写成相同区域上的二重积分，再比较被积函数。
+
+一般地，若两曲面：
+
+$$
+z=f(x,y),\qquad z=g(x,y)
+$$
+
+投影区域相同，并且在 $D$ 上：
+
+$$
+f_x^2+f_y^2\ge g_x^2+g_y^2
+$$
+
+则：
+
+$$
+\boxed{S_f\ge S_g}
+$$
+
+因为平方根函数单调递增。
+
+这是未来考研选择题、综合比较题非常值得掌握的方法。
+
+### 二十五、提高母题三：椭球面积元中的特殊约分
+
+#### 核心资料原创迁移题
+
+设：
+
+$$
+\Sigma: \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2}=1, \qquad z\ge0
+$$
+
+其中 $a,b,c>0$。
+
+计算：
+
+$$
+I= \iint_\Sigma \frac{z} {\sqrt{x^2/a^4+y^2/b^4+z^2/c^4}} \,\mathrm dS
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：写隐函数
+
+令：
+
+$$
+F(x,y,z) = \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2}-1
+$$
+
+梯度：
+
+$$
+\nabla F= \left( \frac{2x}{a^2}, \frac{2y}{b^2}, \frac{2z}{c^2} \right)
+$$
+
+因此：
+
+$$
+|\nabla F| = 2\sqrt{ \frac{x^2}{a^4} + \frac{y^2}{b^4} + \frac{z^2}{c^4} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：应用隐式曲面公式
+
+由于：
+
+$$
+F_z=\frac{2z}{c^2}
+$$
+
+在上半椭球内部 $z>0$ 时：
+
+$$
+\begin{aligned} \mathrm dS &=\frac{|\nabla F|}{F_z}\, \mathrm dx\,\mathrm dy\\ &= \frac{c^2}{z} \sqrt{ \frac{x^2}{a^4} + \frac{y^2}{b^4} + \frac{z^2}{c^4} } \,\mathrm dx\,\mathrm dy \end{aligned}
+$$
+
+所以：
+
+$$
+\frac{z} {\sqrt{x^2/a^4+y^2/b^4+z^2/c^4}} \,\mathrm dS = c^2\,\mathrm dx\,\mathrm dy
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：计算投影面积
+
+上半椭球的水平投影为：
+
+$$
+D:\frac{x^2}{a^2}+\frac{y^2}{b^2}\le1
+$$
+
+其面积为：
+
+$$
+S_D=\pi ab
+$$
+
+因此：
+
+$$
+I=c^2S_D
+$$
+
+最终：
+
+$$
+\boxed{I=\pi abc^2}
+$$
+
+  </Step>
+
+</Steps>
+
+#### 可以提炼出的通用公式
+
+设：
+
+$$
+F(x,y,z)=0
+$$
+
+定义了一个能够单值投影到 $xy$ 平面的光滑曲面片，并且：
+
+$$
+F_z\ne0
+$$
+
+那么：
+
+$$
+\boxed{ \iint_\Sigma h(x,y,z)\frac{|F_z|}{|\nabla F|} \,\mathrm dS = \iint_Dh(x,y,z(x,y)) \,\mathrm dx\,\mathrm dy }
+$$
+
+特别地，当 $h=1$：
+
+$$
+\boxed{ \iint_\Sigma \frac{|F_z|}{|\nabla F|} \,\mathrm dS = \operatorname{area}(D) }
+$$
+
+这具有非常清晰的几何意义：
+
+$$
+\frac{|F_z|}{|\nabla F|}
+$$
+
+就是曲面单位法向量与 $z$ 轴夹角余弦的绝对值。
+
+因此它把真实曲面面积折算为水平投影面积。
+
+但要注意：如果完整曲面有上下两片，二者的投影可能重合，此公式对两片分别使用后会计算两次投影面积。
+
+### 二十六、李正元练习题：哪些方法最值得吸收？
+
+#### 1. 斜平面上的简单积分
+
+李正元第九章的一道对应练习为：
+
+$$
+\Sigma:y+z=5
+$$
+
+由柱面：
+
+$$
+x^2+y^2=25
+$$
+
+截取。
+
+计算：
+
+$$
+I=\iint_\Sigma(x+y+z)\,\mathrm dS
+$$
+
+因为：
+
+$$
+z=5-y
+$$
+
+所以：
+
+$$
+x+y+z=x+5
+$$
+
+又：
+
+$$
+z_x=0,\qquad z_y=-1
+$$
+
+故：
+
+$$
+\mathrm dS=\sqrt2\,\mathrm dx\,\mathrm dy
+$$
+
+投影区域是半径5的圆盘：
+
+$$
+D:x^2+y^2\le25
+$$
+
+于是：
+
+$$
+I=\sqrt2\iint_D(x+5)\,\mathrm dx\,\mathrm dy
+$$
+
+由对称性：
+
+$$
+\iint_Dx\,\mathrm dx\,\mathrm dy=0
+$$
+
+所以：
+
+$$
+\boxed{I=125\sqrt2\pi}
+$$
+
+这道题很简单，但反映了一种重要顺序：
+
+先利用曲面方程化简被积函数，再使用对称性。
+
+不要在被积函数尚未代入曲面方程时，就急着进行积分计算。
+
+#### 2. 圆柱侧面的距离型积分
+
+李正元第九章还有一道具有代表性的圆柱题。
+
+设：
+
+$$
+\Sigma:x^2+y^2=R^2,\qquad0\le z\le H
+$$
+
+其中 $R,H>0$。
+
+记曲面上一点到原点的距离为 $r$，计算：
+
+$$
+I=\iint_\Sigma\frac1{r^2}\,\mathrm dS
+$$
+
+注意，这里的 $r$ 是空间距离：
+
+$$
+r^2=x^2+y^2+z^2
+$$
+
+在圆柱面上：
+
+$$
+r^2=R^2+z^2
+$$
+
+取圆柱参数化：
+
+$$
+x=R\cos\theta,\quad y=R\sin\theta
+$$
+
+则：
+
+$$
+\mathrm dS=R\,\mathrm d\theta\,\mathrm dz
+$$
+
+所以：
+
+$$
+\begin{aligned} I &=R\int_0^{2\pi}\int_0^H \frac1{R^2+z^2} \,\mathrm dz\,\mathrm d\theta\\ &=2\pi R\int_0^H\frac1{R^2+z^2}\,\mathrm dz \end{aligned}
+$$
+
+因此：
+
+$$
+\boxed{ I=2\pi\arctan\frac HR }
+$$
+
+这一题告诉我们：遇到 $x^2+y^2=R^2$ 的圆柱侧面时，应该先利用曲面约束，把 $x^2+y^2$ 直接替换为常数 $R^2$。
+
+## 第八部分：第一类曲面积分的解题决策体系
+
+### 二十七、拿到陌生题目，如何迅速判断方法？
+
+真正掌握本节，意味着不用依赖“以前做过完全一样的题”。
+
+你应该建立下面这个解题决策框架。
+
+| 第一眼看到的特征                 | 首先想到什么   | 最容易忽略什么                    |
+| ------------------------ | -------- | -------------------------- |
+| $z=f(x,y)$           | 图形曲面公式   | $\sqrt{1+f_x^2+f_y^2}$ |
+| $F(x,y,z)=0$         | 隐式面积元    | 投影是否单值                     |
+| $x^2+y^2=R^2$        | 圆柱参数化    | 上下高度限制                     |
+| $x^2+y^2+z^2=R^2$    | 球面对称、球坐标 | 是整球还是局部球面                  |
+| $x^2+y^2=2ax$        | 偏心圆盘     | 极坐标的角度范围                   |
+| $f$ 含大量奇次项           | 奇偶对称性    | 区域是否对称                     |
+| 被积函数含 $\|\nabla F\|$ | 寻找面积元约分  | 绝对值与 $F_z=0$           |
+| “全表面”                    | 分片相加     | 封顶、底面、侧面                   |
+| “面积比较”                   | 比较坡度平方   | 无需计算具体面积                   |
+| “最大面积”                   | 建立参数函数   | 几何存在条件                     |
+| “密度”“质心”                 | 面积分与质量矩  | 分子分母权重不同                   |
+
+#### 一个更深层次的理解：曲面面积元衡量的是坡度
+
+对：
+
+$$
+z=f(x,y)
+$$
+
+有：
+
+$$
+\mathrm dS = \sqrt{1+|\nabla f|^2} \,\mathrm dx\,\mathrm dy
+$$
+
+其中：
+
+$$
+|\nabla f|^2=f_x^2+f_y^2
+$$
+
+也就是说，曲面的面积放大因子只取决于曲面局部的倾斜程度，而不直接取决于曲面的高度。
+
+例如：
+
+$$
+z=x^2+y^2
+$$
+
+与：
+
+$$
+z=100+x^2+y^2
+$$
+
+在同一个投影区域上的面积完全相等。
+
+因为它们只是沿 $z$ 轴方向平移，偏导数没有改变。
+
+但是：
+
+$$
+z=x^2+y^2
+$$
+
+与：
+
+$$
+z=2x^2+2y^2
+$$
+
+的面积通常不同，因为后者坡度更大。
+
+这也是面积比较题的几何本质。
+
+### 二十八、考场上最容易出现的八类错误
+
+<Accordions>
+
+  <Accordion title="展开八类常见错误和检查办法">
+
+| 错误            | 典型表现                                                                  | 正确检查方式                |
+| ------------- | --------------------------------------------------------------------- | --------------------- |
+| 把第一类曲面积分当成第二类 | 无故加正负号                                                                | 第一类面积元没有方向            |
+| 忘记面积因子        | 直接积分 $f\,\mathrm dx\,\mathrm dy$                                | 必须先写 $\mathrm dS$ |
+| 忘记极坐标雅可比      | 将 $\mathrm dx\,\mathrm dy$ 写成 $\mathrm dr\,\mathrm d\theta$ | 必须乘 $r$           |
+| 忽略上下两片        | 整个球面只算上半球                                                             | 检查投影是否一对多             |
+| 错判投影区域        | 将偏心圆当成原点圆盘                                                            | 先配方，再换元               |
+| 滥用奇偶对称        | 区域并不对称就消去奇函数                                                          | 同时检查区域与被积函数           |
+| 忽略全表面的其他部分    | 只计算圆锥侧面                                                               | 判断是否需要封顶、封底           |
+| 忽略几何定义域       | 球冠高度为负还套公式                                                            | 先求参数允许范围              |
+
+  </Accordion>
+
+</Accordions>
+
+其中最容易造成整题失分的是投影区域和曲面分片判断错误。
+
+例如：
+
+$$
+x^2+y^2\le2x
+$$
+
+转换为极坐标后，不能直接写成：
+
+$$
+0\le r\le2
+$$
+
+正确的是：
+
+$$
+0\le r\le2\cos\theta
+$$
+
+并且：
+
+$$
+-\frac\pi2\le\theta\le\frac\pi2
+$$
+
+另一个常见错误来自：
+
+$$
+\sqrt{R^2-R^2\cos^2\theta}
+$$
+
+其正确结果是：
+
+$$
+R|\sin\theta|
+$$
+
+而不是无条件写成 $R\sin\theta$。
+
+### 二十九、计算题标准书写模板
+
+建议训练自己按以下顺序书写。
+
+第一步：写出曲面及其实际范围。
+
+例如：
+
+$$
+\Sigma:z=f(x,y),\qquad(x,y)\in D
+$$
+
+如果是隐式曲面，先确定要取哪一片。
+
+第二步：确定投影区域。
+
+使用题设中的平面、柱面、锥面或其他边界约束，写出 $D$ 的准确范围。
+
+第三步：计算面积元。
+
+$$
+\mathrm dS= \sqrt{1+f_x^2+f_y^2}\, \mathrm dx\,\mathrm dy
+$$
+
+或者选择合适的参数曲面公式。
+
+第四步：使用曲面方程化简被积函数。
+
+例如在球面：
+
+$$
+x^2+y^2+z^2=R^2
+$$
+
+上，应及时替换为常数。
+
+第五步：检查对称性。
+
+先消去能消去的项，再做积分。
+
+第六步：执行积分并检查结果。
+
+重点检查：
+
+$$
+\text{符号、量纲、面积倍数、参数范围}
+$$
+
+对于曲面面积：
+
+$$
+S=\iint_D\sqrt{1+f_x^2+f_y^2}\,\mathrm dx\,\mathrm dy
+$$
+
+必有：
+
+$$
+\boxed{S\ge\operatorname{area}(D)}
+$$
+
+这可以作为图形曲面的一个基本检验。
+
+## 第九部分：专项训练与自测
+
+下面这组题按“基础 → 强化 → 综合 → 创新”安排。它们不追求题量，而是覆盖不同的解题机制。
+
+### 三十、第一组：基础公式与投影
+
+#### 练习1：斜平面二次矩
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma: \begin{cases} x+y+z=1\\ x,y,z\ge0 \end{cases}
+$$
+
+计算：
+
+$$
+I=\iint_\Sigma(x^2+y^2)\,\mathrm dS
+$$
+
+要求使用三角域对称性，尽量减少积分运算。
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{I=\frac{\sqrt3}{6}}
+$$
+
+关键是：
+
+$$
+\iint_Dx^2\,\mathrm dx\,\mathrm dy = \iint_Dy^2\,\mathrm dx\,\mathrm dy =\frac1{12}
+$$
+
+再乘斜平面的面积因子 $\sqrt3$。
+
+  </Tab>
+
+</Tabs>
+
+#### 练习2：一般圆锥
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma:z=2\sqrt{x^2+y^2}
+$$
+
+被柱体：
+
+$$
+x^2+y^2\le2ax,\qquad a>0
+$$
+
+截得。
+
+求：
+
+$$
+I=\iint_\Sigma z\,\mathrm dS
+$$
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{ I=\frac{64\sqrt5}{9}a^3 }
+$$
+
+关键是：
+
+$$
+\mathrm dS=\sqrt5\,\mathrm dx\,\mathrm dy
+$$
+
+而：
+
+$$
+z=2r
+$$
+
+所以被积函数与面积元的乘积为：
+
+$$
+2\sqrt5r\,\mathrm dx\,\mathrm dy
+$$
+
+随后沿用1995年锥面母题的投影方法即可。
+
+  </Tab>
+
+</Tabs>
+
+### 三十一、第二组：对称性与球面矩
+
+#### 练习3：平移球面
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma:(x-2)^2+y^2+z^2=9
+$$
+
+计算：
+
+$$
+I_1=\iint_\Sigma x\,\mathrm dS
+$$
+
+以及：
+
+$$
+I_2=\iint_\Sigma x^2\,\mathrm dS
+$$
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{I_1=72\pi}
+$$
+
+$$
+\boxed{I_2=252\pi}
+$$
+
+不需要球坐标积分。
+
+直接使用球心：
+
+$$
+(2,0,0)
+$$
+
+半径：
+
+$$
+R=3
+$$
+
+以及整个球面的线性矩、二次矩公式。
+
+  </Tab>
+
+</Tabs>
+
+#### 练习4：球面幂函数积分
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma:x^2+y^2+z^2=R^2,\qquad z\ge0
+$$
+
+计算：
+
+$$
+I=\iint_\Sigma z^2\,\mathrm dS
+$$
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{ I=\frac{2\pi R^4}{3} }
+$$
+
+可以直接用高度积分：
+
+$$
+I=2\pi R\int_0^Rz^2\,\mathrm dz
+$$
+
+  </Tab>
+
+</Tabs>
+
+### 三十二、第三组：竖直曲面与封闭薄壳
+
+#### 练习5：圆柱侧面的线性函数
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma:x^2+y^2=4,\qquad0\le z\le3
+$$
+
+计算：
+
+$$
+I=\iint_\Sigma z\,\mathrm dS
+$$
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{I=18\pi}
+$$
+
+使用：
+
+$$
+\mathrm dS=2\,\mathrm d\theta\,\mathrm dz
+$$
+
+  </Tab>
+
+</Tabs>
+
+#### 练习6：带封顶的圆锥薄壳
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设 $\Sigma$ 是由：
+
+$$
+z=\sqrt{x^2+y^2}
+$$
+
+和：
+
+$$
+z=1
+$$
+
+围成的立体全表面，面密度：
+
+$$
+\rho=x^2+y^2
+$$
+
+求薄壳质量。
+
+这是资料中李林六套卷第4套第12题的对应题型。
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{ M=\frac\pi2(1+\sqrt2) }
+$$
+
+必须同时计算圆锥侧面与顶部圆盘。
+
+其中：
+
+$$
+M_{\text{锥面}}=\frac{\sqrt2\pi}{2}
+$$
+
+$$
+M_{\text{顶面}}=\frac\pi2
+$$
+
+两部分相加才是全表面质量。
+
+  </Tab>
+
+</Tabs>
+
+### 三十三、第四组：创新与综合
+
+#### 练习7：上半球的参数积分
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+\Sigma:x^2+y^2+z^2=R^2,\qquad z\ge0
+$$
+
+讨论：
+
+$$
+I_p=\iint_\Sigma z^p\,\mathrm dS
+$$
+
+的收敛性，并求收敛时的积分。
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+当：
+
+$$
+\boxed{p>-1}
+$$
+
+时收敛，并且：
+
+$$
+\boxed{ I_p=\frac{2\pi R^{p+2}}{p+1} }
+$$
+
+当：
+
+$$
+p\le-1
+$$
+
+时发散。
+
+因为：
+
+$$
+I_p=2\pi R\int_0^Rz^p\,\mathrm dz
+$$
+
+问题直接转化为一元广义积分。
+
+这道题考查的是：
+
+曲面积分与广义积分收敛性之间的联系。
+
+尤其要理解，即使赤道本身面积为零，被积函数在赤道附近无界，积分仍然可能发散。
+
+  </Tab>
+
+</Tabs>
+
+#### 练习8：具有法向量权重的曲面积分
+
+<Tabs items={["先独立完成", "答案与解析"]} defaultIndex={0}>
+
+  <Tab value="先独立完成">
+
+设：
+
+$$
+F(x,y,z)=0
+$$
+
+定义了一片光滑曲面 $\Sigma$，它能够单值投影到 $xy$ 平面上的区域 $D$，并且：
+
+$$
+F_z>0
+$$
+
+计算：
+
+$$
+I= \iint_\Sigma \frac{F_z}{\sqrt{F_x^2+F_y^2+F_z^2}} \,\mathrm dS
+$$
+
+  </Tab>
+
+  <Tab value="答案与解析">
+
+**答案：**
+
+$$
+\boxed{ I=\operatorname{area}(D) }
+$$
+
+这是隐式曲面投影公式的直接应用。
+
+这类题可能不需要求出 $z(x,y)$ 的显式表达式。
+
+只要能确定投影区域，积分就可以完成。
+
+  </Tab>
+
+</Tabs>
+
+## 第十部分：如何进一步提高综合题能力？
+
+### 三十四、真正值得建立的五种迁移能力
+
+| 迁移能力  | 基础题中的表现            | 综合题中的表现         |
+| ----- | ------------------ | --------------- |
+| 几何识别  | 识别圆盘、锥面、球冠         | 两曲面相交、复杂截取      |
+| 面积元选择 | 直接套图形曲面公式          | 根据被积函数选择投影      |
+| 对称性利用 | 奇函数积分为零            | 平移对称、轮换对称、二次矩   |
+| 条件转化  | 由 $z\ge0$ 求投影域 | 梯度、切平面、参数先行确定   |
+| 参数分析  | 给定曲面直接求积           | 判断收敛性、面积最值、临界条件 |
+
+其中最值得投入时间训练的是第二项和第三项。
+
+因为它们决定你能否把一道复杂曲面积分简化到真正需要计算的部分。
+
+举一个统一的例子：
+
+设曲面满足：
+
+$$
+F(x,y,z)=0
+$$
+
+而被积函数为：
+
+$$
+g(x,y,z)=\frac{A(x,y,z)}{|\nabla F|}
+$$
+
+如果你只会对 $z$ 求显式表达式，再对 $x,y$ 求偏导，计算可能很繁琐。
+
+但如果你想到：
+
+$$
+\mathrm dS=\frac{|\nabla F|}{|F_z|} \,\mathrm dx\,\mathrm dy
+$$
+
+则立即得到：
+
+$$
+g\,\mathrm dS= \frac{A(x,y,z)}{|F_z|} \,\mathrm dx\,\mathrm dy
+$$
+
+如果 $A$ 中又含有 $|F_z|$，积分便可以大幅简化。
+
+这就是把不同公式联系起来的能力。
+
+### 三十五、如何利用现有资料安排练习？
+
+根据已经阅读的题目内容，建议遵循以下顺序。
+
+| 训练阶段      | 优先题目                  | 必须掌握的能力       |
+| --------- | --------------------- | ------------- |
+| 第一阶段：基础计算 | 1995、2012年资料标注真题      | 曲面面积元与投影      |
+| 第二阶段：对称性  | 2000、2007年真题及李林880球面题 | 奇偶性、球面平移      |
+| 第三阶段：综合计算 | 1999、2010、2019年真题     | 梯度、隐式曲面与面积元   |
+| 第四阶段：几何应用 | 1989、2017年真题          | 球冠最值、薄壳质量     |
+| 第五阶段：强化模拟 | 李林六套卷球面题、张宇8套卷面积比较题   | 二次矩、轮换对称、积分比较 |
+| 第六阶段：创新训练 | 椭球面积元约分、球面参数收敛题       | 公式推广与新题迁移     |
+
+对于每一道题，建议自己先回答三个问题：这道题的曲面是什么形状？它的真实积分范围是什么？有没有办法不直接计算全部积分？
+
+只有在这些判断完成后，再开始代数计算。
+
+# 最后总结：这一节真正需要记住什么？
+
+第一类曲面积分的核心可以压缩为三个层次。
+
+第一层：会计算。
+
+你必须熟练使用：
+
+$$
+\boxed{ \mathrm dS= \sqrt{1+f_x^2+f_y^2}\, \mathrm dx\,\mathrm dy }
+$$
+
+以及：
+
+$$
+\boxed{ \mathrm dS= \frac{|\nabla F|}{|F_z|} \,\mathrm dx\,\mathrm dy }
+$$
+
+并掌握球面、圆锥面、圆柱面和旋转曲面的常用参数化。
+
+第二层：会简化。
+
+在真正积分前，优先利用：
+
+$$
+\boxed{ \text{曲面方程} + \text{区域对称性} + \text{被积函数结构} }
+$$
+
+特别是球面上的平移对称、二次矩公式，以及隐式曲面面积元中的根号约分。
+
+第三层：会处理新题。
+
+面对复杂综合题，不要急于套公式，而要先把题目转换成明确的几何对象：
+
+$$
+\boxed{ \text{确定曲面} \rightarrow \text{确定范围} \rightarrow \text{选择表示方式} \rightarrow \text{化简权函数} \rightarrow \text{积分} }
+$$
+
+对考研数学一而言，本节最值得反复研究的是：
+
+1995年锥面题、1999年切平面距离题、2010年隐式椭球题、2017年薄壳质量题、2019年方向导数与曲面面积综合题。
+
+它们分别代表了投影计算、法向量联系、隐函数分片、几何建模和跨章节综合五种重要的命题思路。
+
+如果能够不看答案，独立完成这五道母题，并解释每一步为什么这么做，再掌握球面对称、圆柱参数化和封闭曲面分片，那么面对本节多数常规题、综合题乃至经过改编的创新题，就已经具有了较为完整的方法基础。
+
+本节最重要的一句话是：第一类曲面积分，难点往往不在积分，而在把空间曲面正确地转化为平面上的计算问题。
