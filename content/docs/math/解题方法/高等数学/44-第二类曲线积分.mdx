@@ -1,0 +1,3294 @@
+---
+title: "第二类曲线积分"
+description: "考研数学一 · 高等数学｜有向曲线积分、全微分、格林公式、路径无关、奇点绕数与斯托克斯公式｜MyFumadocs MDX 格式重构"
+---
+
+**资料来源：**你提供的 Google Drive 压缩包《数学分类题目1101.zip》。
+
+我已读取并核对其中的相关资料，包括：
+
+- 《考研核心题目→高等数学→第九模块→第四节：第二类曲线积分》正文，包含31道核心题及解析。
+- 《数学模拟题分类1031→高等数学→第九模块→第四节》，包含22道归类模拟题。
+- 张宇1000题第18章《多元函数积分学》。
+- 李林880题第9章《曲线积分与曲面积分》。
+- 李正元第9、10章中涉及第二类曲线积分、格林公式及路径无关的题目。
+
+真题年份、模拟卷名称和教材来源，以下均以资料包中的标注为依据。
+
+这节内容不能只当作“多了一种积分计算方法”。它实际上把之前学习的导数、全微分、二重积分、微分方程、多元函数极值、向量场连接了起来。
+
+掌握本节后，你应该能够做到：拿到一条从未见过的有向曲线积分，迅速判断它应该直接参数化、寻找全微分、补线使用格林公式、构造势函数，还是利用奇点与绕数处理。
+
+## 一、本节知识体系：先建立整体框架
+
+第二类曲线积分可以归纳为五个核心层次。
+
+| 层次    | 核心问题               | 最重要的方法         |
+| ----- | ------------------ | -------------- |
+| 基础计算  | 给定一条有向曲线，怎样求积分？    | 参数化、分段、方向判断    |
+| 结构化简  | 怎样避免复杂的直接积分？       | 全微分、端点差、对称性    |
+| 闭曲线积分 | 怎样把曲线积分变成二重积分？     | 格林公式、补线法       |
+| 路径无关  | 什么情况下只需计算起点和终点？    | 交叉偏导、势函数       |
+| 综合创新  | 存在奇点、未知函数、空间曲线怎么办？ | 绕数、微分方程、斯托克斯公式 |
+
+其中，最值得反复训练的是以下三个判断：
+
+判断一：积分中有没有全微分？
+
+$$
+P\,\mathrm dx+Q\,\mathrm dy=\mathrm dU?
+$$
+
+判断二：曲线是否闭合，能不能使用格林公式？
+
+$$
+\oint_LP\,\mathrm dx+Q\,\mathrm dy \overset{?}{=} \iint_D(Q_x-P_y)\,\mathrm dA
+$$
+
+判断三：被积函数是否存在奇点？
+
+即使
+
+$$
+Q_x-P_y=0,
+$$
+
+也不一定能够断定闭路积分为零。
+
+第三个问题尤其重要，它是普通计算题与较难综合题之间的分水岭。
+
+## 二、基础概念：第二类曲线积分究竟在计算什么？
+
+### 2.1 从物理直观理解
+
+设质点在平面上沿有向曲线 $L$ 运动，受到的力为
+
+$$
+\boldsymbol F(x,y) =P(x,y)\boldsymbol i+Q(x,y)\boldsymbol j.
+$$
+
+质点发生微小位移
+
+$$
+\mathrm d\boldsymbol r =(\mathrm dx,\mathrm dy).
+$$
+
+力所做的微元功为
+
+$$
+\mathrm dW =\boldsymbol F\cdot\mathrm d\boldsymbol r =P\,\mathrm dx+Q\,\mathrm dy.
+$$
+
+于是总功为
+
+$$
+\boxed{ W=\int_LP(x,y)\,\mathrm dx+Q(x,y)\,\mathrm dy }
+$$
+
+这就是第二类曲线积分。
+
+它有两个重要特征。
+
+首先，积分值一般与曲线路径有关。即使起点与终点相同，只要中间走的路线不同，所做的功也可能不同。
+
+其次，积分值与曲线方向有关。同一条曲线反向行走，位移微元反号，因此积分也反号。
+
+### 2.2 与第一类曲线积分的本质区别
+
+第九模块第3节研究第一类曲线积分：
+
+$$
+I_1=\int_Lf(x,y)\,\mathrm ds.
+$$
+
+本节研究第二类曲线积分：
+
+$$
+I_2=\int_LP\,\mathrm dx+Q\,\mathrm dy.
+$$
+
+| 比较项目   | 第一类曲线积分                   | 第二类曲线积分                                             |
+| ------ | ------------------------- | --------------------------------------------------- |
+| 微元     | 弧长 $\mathrm ds$       | 坐标微元 $\mathrm dx,\mathrm dy$                    |
+| 是否依赖方向 | 不依赖                       | 依赖                                                  |
+| 反向时    | 积分不变                      | 积分变号                                                |
+| 物理意义   | 质量、长度加权等                  | 功、环流等                                               |
+| 参数化    | 使用参数导数的模                  | 使用带符号的参数导数                                          |
+| 典型公式   | $\int f\,\mathrm ds$ | $\int \boldsymbol F\cdot\mathrm d\boldsymbol r$ |
+
+注意：第一类曲线积分并不总是正数，只有当被积函数非负时才保证非负。
+
+### 2.3 最基本的参数化公式
+
+设有向曲线 $L$ 具有参数方程
+
+$$
+\begin{cases} x=x(t),\\ y=y(t), \end{cases} \qquad a\le t\le b,
+$$
+
+其中 $t$ 增大的方向与题目要求的方向一致。
+
+则
+
+$$
+\mathrm dx=x'(t)\,\mathrm dt,\qquad \mathrm dy=y'(t)\,\mathrm dt.
+$$
+
+因此
+
+$$
+\boxed{ \begin{aligned} &\int_LP(x,y)\,\mathrm dx+Q(x,y)\,\mathrm dy\\ &=\int_a^b \left[ P(x(t),y(t))x'(t) +Q(x(t),y(t))y'(t) \right]\mathrm dt. \end{aligned} }
+$$
+
+与第一类曲线积分进行比较：
+
+$$
+\int_Lf\,\mathrm ds = \int_a^b f(x(t),y(t)) \sqrt{x'(t)^2+y'(t)^2}\,\mathrm dt.
+$$
+
+第二类曲线积分的参数导数不取绝对值，这是最根本的计算区别。
+
+### 2.4 曲线反向公式
+
+设 $-L$ 表示与 $L$ 几何形状相同、方向相反的曲线。
+
+则
+
+$$
+\boxed{ \int_{-L}P\,\mathrm dx+Q\,\mathrm dy = -\int_LP\,\mathrm dx+Q\,\mathrm dy }
+$$
+
+证明很简单。
+
+假设原方向由 $t=a$ 到 $t=b$，那么反向积分就是
+
+$$
+\int_b^a \left(Px'+Qy'\right)\mathrm dt = -\int_a^b \left(Px'+Qy'\right)\mathrm dt.
+$$
+
+这里要特别注意：曲线的方向不一定等于 $x$ 增大的方向。
+
+例如上半圆从左端走向右端，$x$ 可以增大，但绕圆心的极角却在减小。
+
+## 三、三个极其重要的基础公式
+
+在开始做真题之前，必须掌握三个看似简单、实际用途极大的结论。
+
+### 3.1 $\int_L\mathrm dx$ 和 $\int_L\mathrm dy$
+
+设曲线从
+
+$$
+A(x_A,y_A)
+$$
+
+到
+
+$$
+B(x_B,y_B).
+$$
+
+则
+
+$$
+\boxed{ \int_L\mathrm dx=x_B-x_A }
+$$
+
+$$
+\boxed{ \int_L\mathrm dy=y_B-y_A }
+$$
+
+这两个积分只与起终点有关。
+
+无论曲线绕多少圈、出现多少个拐弯，结果都不会改变。
+
+### 3.2 全微分公式
+
+如果存在二元函数 $U(x,y)$，满足
+
+$$
+P(x,y)=U_x(x,y),
+$$
+
+$$
+Q(x,y)=U_y(x,y),
+$$
+
+那么
+
+$$
+P\,\mathrm dx+Q\,\mathrm dy =\mathrm dU.
+$$
+
+所以
+
+$$
+\boxed{ \int_LP\,\mathrm dx+Q\,\mathrm dy =U(B)-U(A) }
+$$
+
+这就是第二类曲线积分中最重要的简化方法之一。
+
+对闭曲线，由于起点与终点相同，
+
+$$
+\boxed{ \oint_L\mathrm dU=0 }
+$$
+
+这里要求 $U$ 是曲线所在区域中能够使用的单值势函数。
+
+### 3.3 用两类微分识别常见结构
+
+<Tabs items={["径向微分", "角度微分"]} defaultIndex={0}>
+
+  <Tab value="径向微分">
+
+**第一类：径向微分。**
+
+$$
+\mathrm d(x^2+y^2) =2x\,\mathrm dx+2y\,\mathrm dy.
+$$
+
+因此
+
+$$
+\boxed{ x\,\mathrm dx+y\,\mathrm dy =\frac12\mathrm d(x^2+y^2) }
+$$
+
+进一步得到
+
+$$
+\boxed{ \frac{x\,\mathrm dx+y\,\mathrm dy}{x^2+y^2} =\mathrm d\ln\sqrt{x^2+y^2} }
+$$
+
+  </Tab>
+
+  <Tab value="角度微分">
+
+**第二类：角度微分。**
+
+令
+
+$$
+x=r\cos\theta,\qquad y=r\sin\theta.
+$$
+
+直接求微分：
+
+$$
+\begin{aligned} x\,\mathrm dy-y\,\mathrm dx &=r\cos\theta(\sin\theta\,\mathrm dr +r\cos\theta\,\mathrm d\theta)\\ &\quad-r\sin\theta(\cos\theta\,\mathrm dr -r\sin\theta\,\mathrm d\theta)\\ &=r^2\,\mathrm d\theta. \end{aligned}
+$$
+
+所以
+
+$$
+\boxed{ \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+y^2} =\mathrm d\theta }
+$$
+
+但这个公式有一个关键限制：
+
+$\theta$ 可以沿不经过原点的曲线连续选取，却未必能在整个去心平面上定义为单值连续函数。
+
+因此对绕原点一周的逆时针闭曲线，
+
+$$
+\boxed{ \oint_L \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+y^2} =2\pi }
+$$
+
+而不是零。
+
+后面讲到奇点和路径无关时，我们会把这两个结构彻底区分。
+
+  </Tab>
+
+</Tabs>
+
+## 四、第一大题型：开弧积分、参数化与方向判断
+
+这是学习第二类曲线积分首先必须熟练掌握的题型。
+
+### 母题1：2007年数学一真题——等值线与积分符号
+
+资料中的题目：
+
+设曲线 $L:f(x,y)=1$，其中 $f$ 具有连续的一阶偏导数。曲线上有第二象限内的点 $M$ 和第四象限内的点 $N$，曲线弧 $\Gamma$ 的方向为 $M\to N$。
+
+判断以下四种积分的符号：
+
+$$
+I_1=\int_\Gamma f(x,y)\,\mathrm dx,
+$$
+
+$$
+I_2=\int_\Gamma f(x,y)\,\mathrm dy,
+$$
+
+$$
+I_3=\int_\Gamma f(x,y)\,\mathrm ds,
+$$
+
+$$
+I_4=\int_\Gamma f_x\,\mathrm dx+f_y\,\mathrm dy.
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：注意曲线上的约束。
+
+沿着整条曲线，
+
+$$
+f(x,y)=1.
+$$
+
+因此
+
+$$
+I_1=\int_\Gamma\mathrm dx=x_N-x_M.
+$$
+
+由于 $M$ 在第二象限、$N$ 在第四象限，
+
+$$
+x_M<0,\quad x_N>0,
+$$
+
+所以
+
+$$
+I_1>0.
+$$
+
+同理，
+
+$$
+I_2=y_N-y_M<0.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：处理第一类曲线积分。
+
+$$
+I_3=\int_\Gamma\mathrm ds =\operatorname{Length}(\Gamma)>0.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：识别全微分。
+
+$$
+I_4=\int_\Gamma\mathrm df =f(N)-f(M)=1-1=0.
+$$
+
+  </Step>
+
+</Steps>
+
+最终得到
+
+$$
+\boxed{I_1>0,\quad I_2<0,\quad I_3>0,\quad I_4=0}.
+$$
+
+这道题真正要掌握的母题思想：
+
+面对等值线
+
+$$
+f(x,y)=C,
+$$
+
+优先考虑沿曲线直接使用 $f=C$，而不是去求曲线的具体方程。
+
+如果出现
+
+$$
+f_x\,\mathrm dx+f_y\,\mathrm dy,
+$$
+
+则立即想到全微分。
+
+这种思维也适用于未来可能出现的隐式曲线和抽象函数题。
+
+### 母题2：2008年数学一真题——显式曲线直接参数化
+
+计算
+
+$$
+I=\int_L\sin2x\,\mathrm dx +2(x^2-1)y\,\mathrm dy,
+$$
+
+其中 $L$ 为
+
+$$
+y=\sin x
+$$
+
+上从 $(0,0)$ 到 $(\pi,0)$ 的曲线弧。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：识别参数。
+
+曲线直接给出 $y=\sin x$，使用 $x$ 作为参数最自然。
+
+$$
+y=\sin x,\qquad \mathrm dy=\cos x\,\mathrm dx.
+$$
+
+方向为 $x:0\to\pi$。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：代入并整理。
+
+$$
+\begin{aligned} I &=\int_0^\pi \left[ \sin2x +2(x^2-1)\sin x\cos x \right]\mathrm dx\\ &=\int_0^\pi \left[ \sin2x+(x^2-1)\sin2x \right]\mathrm dx\\ &=\int_0^\pi x^2\sin2x\,\mathrm dx. \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：分部积分。
+
+$$
+\begin{aligned} I &=\left[-\frac{x^2\cos2x}{2}\right]_0^\pi +\int_0^\pi x\cos2x\,\mathrm dx. \end{aligned}
+$$
+
+后一个积分为
+
+$$
+\int_0^\pi x\cos2x\,\mathrm dx = \left[ \frac{x\sin2x}{2} +\frac{\cos2x}{4} \right]_0^\pi =0.
+$$
+
+所以
+
+$$
+\boxed{I=-\frac{\pi^2}{2}}.
+$$
+
+  </Step>
+
+</Steps>
+
+方法迁移：
+
+遇到
+
+$$
+L:y=g(x),\quad x:a\to b,
+$$
+
+可以直接套用
+
+$$
+\boxed{ \int_LP\,\mathrm dx+Q\,\mathrm dy = \int_a^b \left[P(x,g(x))+Q(x,g(x))g'(x)\right]\mathrm dx }
+$$
+
+如果是
+
+$$
+x=h(y),
+$$
+
+则反过来优先用 $y$ 参数化。
+
+不必所有题目都使用格林公式。对于显式开弧，直接参数化往往是最快的办法。
+
+### 母题3：2012年数学一真题——复杂路径先拆全微分
+
+已知 $L$ 由两段第一象限圆弧构成：
+
+第一段从 $(0,0)$ 沿
+
+$$
+x^2+y^2=2x
+$$
+
+到 $(2,0)$；
+
+第二段从 $(2,0)$ 沿
+
+$$
+x^2+y^2=4
+$$
+
+到 $(0,2)$。
+
+计算
+
+$$
+I=\int_L3x^2y\,\mathrm dx +(x^3+x-2y)\,\mathrm dy.
+$$
+
+这是非常有代表性的中档解答题。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：不要急着参数化。
+
+观察到
+
+$$
+\mathrm d(x^3y) =3x^2y\,\mathrm dx+x^3\,\mathrm dy.
+$$
+
+所以
+
+$$
+\begin{aligned} I &=\int_L\mathrm d(x^3y) +\int_Lx\,\mathrm dy -\int_L2y\,\mathrm dy\\ &=[x^3y]_A^B+\int_Lx\,\mathrm dy-[y^2]_A^B. \end{aligned}
+$$
+
+起点和终点分别为
+
+$$
+A=(0,0),\qquad B=(0,2).
+$$
+
+代入：
+
+$$
+[x^3y]_A^B=0,
+$$
+
+$$
+[y^2]_A^B=4.
+$$
+
+于是
+
+$$
+\boxed{ I=\int_Lx\,\mathrm dy-4 }
+$$
+
+原本复杂的多项式积分已经大幅简化。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：分别处理两段圆弧。
+
+对于第一段，
+
+$$
+(x-1)^2+y^2=1.
+$$
+
+取
+
+$$
+x=1+\cos t,\qquad y=\sin t.
+$$
+
+从 $(0,0)$ 到 $(2,0)$，需要
+
+$$
+t:\pi\to0.
+$$
+
+因此
+
+$$
+\begin{aligned} \int_{L_1}x\,\mathrm dy &=\int_\pi^0(1+\cos t)\cos t\,\mathrm dt\\ &=-\frac\pi2. \end{aligned}
+$$
+
+对于第二段，
+
+$$
+x=2\cos t,\qquad y=2\sin t,
+$$
+
+方向对应
+
+$$
+0\le t\le\frac\pi2.
+$$
+
+所以
+
+$$
+\begin{aligned} \int_{L_2}x\,\mathrm dy &=\int_0^{\pi/2}4\cos^2t\,\mathrm dt\\ &=\pi. \end{aligned}
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：合并结果。
+
+$$
+I=-\frac\pi2+\pi-4.
+$$
+
+最终
+
+$$
+\boxed{I=\frac\pi2-4}.
+$$
+
+  </Step>
+
+</Steps>
+
+这道题体现了一种非常重要的思维顺序：
+
+$$
+\boxed{ \text{先寻找全微分} \longrightarrow \text{再分段} \longrightarrow \text{最后参数化} }
+$$
+
+如果一开始就把三项都代入圆弧参数方程，会出现较多三角函数乘积，既浪费时间，又容易出现方向错误。
+
+### 母题4：2026年数学一资料题——利用奇偶性消去复杂函数
+
+资料中还有一道值得重视的椭圆题。
+
+设
+
+$$
+L:x^2+3y^2=1
+$$
+
+上从
+
+$$
+A\left(-\frac12,-\frac12\right)
+$$
+
+逆时针到
+
+$$
+B\left(\frac12,\frac12\right)
+$$
+
+的椭圆弧。
+
+计算
+
+$$
+\begin{aligned} I=\int_L& \left(e^{x^2}\sin x-2xy\right)\mathrm dx\\ &+\left(6x-x^2-y\cos^4y\right)\mathrm dy. \end{aligned}
+$$
+
+这道题看似包含无法求初等原函数的复杂表达式，实际上考查的是结构识别。
+
+将积分拆开：
+
+$$
+\begin{aligned} I={}&\int_L e^{x^2}\sin x\,\mathrm dx -\int_L y\cos^4y\,\mathrm dy\\ &-\int_L\mathrm d(x^2y) +6\int_Lx\,\mathrm dy. \end{aligned}
+$$
+
+由于
+
+$$
+e^{x^2}\sin x
+$$
+
+是 $x$ 的奇函数，起终点横坐标为相反数，因此
+
+$$
+\int_L e^{x^2}\sin x\,\mathrm dx =\int_{-1/2}^{1/2}e^{x^2}\sin x\,\mathrm dx=0.
+$$
+
+这里不要求 $x$ 沿椭圆弧单调变化，因为这一项是单变量函数乘 $\mathrm dx$，具有原函数，始终只与端点有关。
+
+同理，
+
+$$
+\int_Ly\cos^4y\,\mathrm dy=0.
+$$
+
+再计算
+
+$$
+-\int_L\mathrm d(x^2y) =-[x^2y]_A^B=-\frac14.
+$$
+
+最后只剩下
+
+$$
+6\int_Lx\,\mathrm dy.
+$$
+
+令
+
+$$
+x=\cos t,\qquad y=\frac{\sin t}{\sqrt3}.
+$$
+
+根据题目方向，
+
+$$
+t:\frac{4\pi}{3}\to\frac{7\pi}{3}.
+$$
+
+所以
+
+$$
+\begin{aligned} \int_Lx\,\mathrm dy &=\frac1{\sqrt3} \int_{4\pi/3}^{7\pi/3}\cos^2t\,\mathrm dt\\ &=\frac{\pi}{2\sqrt3}. \end{aligned}
+$$
+
+最终
+
+$$
+\boxed{ I=\sqrt3\pi-\frac14 }.
+$$
+
+这是一道典型的“复杂表达式反而不需要硬算”的题。
+
+以后遇到
+
+$$
+g(x)\,\mathrm dx+h(y)\,\mathrm dy
+$$
+
+时，要主动检查端点、奇偶性和原函数性质。
+
+## 五、第二大题型：格林公式——闭曲线积分的核心工具
+
+### 5.1 格林公式的内容
+
+设 $D$ 是平面上的有界区域，其边界 $L$ 为分段光滑的正向闭曲线。
+
+假设 $P,Q$ 在包含 $\overline D$ 的开区域内具有连续一阶偏导数。
+
+则
+
+$$
+\boxed{ \oint_LP\,\mathrm dx+Q\,\mathrm dy = \iint_D \left( \frac{\partial Q}{\partial x} -\frac{\partial P}{\partial y} \right) \mathrm dx\,\mathrm dy }
+$$
+
+这是本节最重要的公式之一。
+
+记
+
+$$
+\omega=Q_x-P_y,
+$$
+
+它表示平面向量场的标量旋度。
+
+格林公式的核心思想是：
+
+沿整个边界的环流，等于区域内部旋转效应的累积。
+
+这与定积分和牛顿—莱布尼茨公式的思想相似：把内部的变化与边界上的量联系起来。
+
+### 5.2 什么叫正向？
+
+对于简单闭曲线，平面上的正向通常指逆时针。
+
+更一般地说：
+
+<Callout type="info" title="格林公式的正向约定">
+
+沿着边界的正方向前进时，区域始终位于左侧。
+
+</Callout>
+
+对于带孔区域，外边界取逆时针，内边界则取顺时针，这样整个区域才始终在左侧。
+
+这一约定决定了格林公式中的正负号。
+
+如果只有一条顺时针边界，就要写成
+
+$$
+\boxed{ \oint_{L^-}P\,\mathrm dx+Q\,\mathrm dy = -\iint_D(Q_x-P_y)\,\mathrm dA }
+$$
+
+其中 $L^-$ 表示负向边界。
+
+### 5.3 格林公式的三个重要推论
+
+推论一：面积公式
+
+取
+
+$$
+P=0,\qquad Q=x,
+$$
+
+有
+
+$$
+Q_x-P_y=1.
+$$
+
+因此
+
+$$
+\boxed{ S_D=\oint_{\partial D^+}x\,\mathrm dy }
+$$
+
+类似地，
+
+$$
+\boxed{ S_D=-\oint_{\partial D^+}y\,\mathrm dx }
+$$
+
+将二者平均：
+
+$$
+\boxed{ S_D=\frac12\oint_{\partial D^+} (x\,\mathrm dy-y\,\mathrm dx) }
+$$
+
+这组公式在计算圆弧、椭圆、封闭多边形积分时非常有用。
+
+推论二：常旋度公式
+
+如果
+
+$$
+Q_x-P_y=k,
+$$
+
+其中 $k$ 是常数，则
+
+$$
+\boxed{ \oint_{\partial D^+}P\,\mathrm dx+Q\,\mathrm dy =kS_D }
+$$
+
+这意味着不必参数化边界，只需要计算区域面积。
+
+推论三：对称区域积分
+
+若
+
+$$
+Q_x-P_y=a+bx+cy,
+$$
+
+并且 $D$ 关于原点对称，则
+
+$$
+\iint_Dx\,\mathrm dA=0,\qquad \iint_Dy\,\mathrm dA=0.
+$$
+
+因此
+
+$$
+\oint_{\partial D^+}P\,\mathrm dx+Q\,\mathrm dy =aS_D.
+$$
+
+很多模拟题会故意构造复杂的 $P,Q$，但交叉求导之后只剩下常数或低次多项式。
+
+### 母题5：1987年数学一真题——最基础的格林公式
+
+设 $L$ 为正向圆周
+
+$$
+x^2+y^2=9.
+$$
+
+计算
+
+$$
+I=\oint_L(2xy-2y)\,\mathrm dx +(x^2-4x)\,\mathrm dy.
+$$
+
+令
+
+$$
+P=2xy-2y,\qquad Q=x^2-4x.
+$$
+
+计算偏导：
+
+$$
+P_y=2x-2,
+$$
+
+$$
+Q_x=2x-4.
+$$
+
+因此
+
+$$
+Q_x-P_y=-2.
+$$
+
+由格林公式，
+
+$$
+I=-2\iint_D\mathrm dA.
+$$
+
+区域为半径3的圆盘，面积为 $9\pi$。
+
+所以
+
+$$
+\boxed{I=-18\pi}.
+$$
+
+本题最重要的不是计算，而是建立一个条件反射：
+
+看到光滑多项式与正向闭曲线，先求 $Q_x-P_y$。
+
+### 5.4 开弧能否使用格林公式？
+
+可以，但通常要先补线。
+
+假设曲线 $L$ 从 $A$ 到 $B$，再增加一条从 $B$ 返回 $A$ 的路径 $S$，使
+
+$$
+C=L+S
+$$
+
+成为闭曲线。
+
+那么
+
+$$
+\oint_C P\,\mathrm dx+Q\,\mathrm dy = \int_LP\,\mathrm dx+Q\,\mathrm dy + \int_SP\,\mathrm dx+Q\,\mathrm dy.
+$$
+
+所以
+
+$$
+\boxed{ \int_LP\,\mathrm dx+Q\,\mathrm dy = \oint_CP\,\mathrm dx+Q\,\mathrm dy - \int_SP\,\mathrm dx+Q\,\mathrm dy }
+$$
+
+关键是选择使补边积分简单的路径。
+
+常见补边包括坐标轴线段、直线段和圆弧。
+
+特别要注意：上方曲线从左向右走、然后沿下方线段返回，形成的是顺时针边界，不是逆时针。
+
+### 母题6：2027考研模拟题——全微分与补线结合
+
+资料中的李永乐六套卷第1套第18题：
+
+设 $L$ 为
+
+$$
+y=1-x^2
+$$
+
+上从 $(-1,0)$ 到 $(1,0)$ 的曲线弧。
+
+计算
+
+$$
+\begin{aligned} I=\int_L& \left(\frac{x}{1+x^2+y^2}-x^2y\right)\mathrm dx\\ &+\left(\frac{y}{1+x^2+y^2}+xy^2\right)\mathrm dy. \end{aligned}
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：消去全微分。
+
+注意
+
+$$
+\frac{x\,\mathrm dx+y\,\mathrm dy}{1+x^2+y^2} =\frac12\mathrm d\ln(1+x^2+y^2).
+$$
+
+两个端点都满足 $x^2+y^2=1$，因此这一部分的积分为0。
+
+剩下
+
+$$
+I=\int_L-x^2y\,\mathrm dx+xy^2\,\mathrm dy.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：补上 $x$ 轴线段。
+
+从 $(1,0)$ 返回 $(-1,0)$。
+
+补线段上
+
+$$
+y=0,\qquad\mathrm dy=0,
+$$
+
+所以补线积分为0。
+
+原抛物线从左到右，补线后构成顺时针闭曲线。
+
+  </Step>
+
+  <Step>
+
+#### 第三步：使用负向格林公式。
+
+设
+
+$$
+P=-x^2y,\qquad Q=xy^2.
+$$
+
+则
+
+$$
+Q_x-P_y=y^2+x^2.
+$$
+
+因此
+
+$$
+I=-\iint_D(x^2+y^2)\,\mathrm dA.
+$$
+
+其中
+
+$$
+D=\{(x,y):-1\le x\le1,\ 0\le y\le1-x^2\}.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：计算二重积分。
+
+$$
+\begin{aligned} I &=-\int_{-1}^1 \int_0^{1-x^2} (x^2+y^2)\,\mathrm dy\,\mathrm dx\\ &=-\int_{-1}^1 \left[x^2(1-x^2)+\frac{(1-x^2)^3}{3}\right]\mathrm dx\\ &=-\frac47. \end{aligned}
+$$
+
+最终
+
+$$
+\boxed{I=-\frac47}.
+$$
+
+这道模拟题可以推广出一个通用方法：
+
+$$
+\boxed{ \text{全微分消项} \rightarrow \text{补线闭合} \rightarrow \text{判断方向} \rightarrow \text{格林公式} }
+$$
+
+此方法非常适合未来的综合计算题。
+
+  </Step>
+
+</Steps>
+
+## 六、第三大题型：格林公式与积分最值、区域比较
+
+这是比直接计算更深一层的考查方式。
+
+### 6.1 为什么区域越大，积分不一定越大？
+
+根据格林公式，
+
+$$
+I(D)=\iint_Dg(x,y)\,\mathrm dA,
+$$
+
+其中
+
+$$
+g(x,y)=Q_x-P_y.
+$$
+
+如果 $g\ge0$，扩大积分区域通常会增加积分。
+
+但是如果 $g$ 有正有负，就不能单纯通过面积大小比较积分值。
+
+例如
+
+$$
+g(x,y)=1-x^2-y^2.
+$$
+
+在单位圆内，
+
+$$
+g>0,
+$$
+
+而在单位圆外，
+
+$$
+g<0.
+$$
+
+因此把区域扩大到单位圆之前，积分不断增加；超过单位圆之后，加入的部分贡献为负，反而降低积分。
+
+这就是曲线积分最值问题的核心思想。
+
+### 母题7：2021年数学一真题——最优积分区域与奇点综合
+
+设
+
+$$
+I(D)=\iint_D(4-x^2-y^2)\,\mathrm dx\,\mathrm dy.
+$$
+
+在题设允许的有界单连通闭区域中，求使 $I(D)$ 最大的区域 $D_1$，并求最大值。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：判断密度正负。
+
+令
+
+$$
+g(x,y)=4-x^2-y^2.
+$$
+
+则
+
+$$
+g(x,y) \begin{cases} >0,&x^2+y^2<4,\\ =0,&x^2+y^2=4,\\ <0,&x^2+y^2>4. \end{cases}
+$$
+
+因此，要让积分最大，应保留全部正贡献，避免加入负贡献。
+
+所以
+
+$$
+\boxed{ D_1:x^2+y^2\le4 }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：计算最大值。
+
+使用极坐标：
+
+$$
+\begin{aligned} I(D_1) &=\int_0^{2\pi}\int_0^2(4-r^2)r\,\mathrm dr\,\mathrm d\theta\\ &=2\pi\left[2r^2-\frac{r^4}{4}\right]_0^2\\ &=2\pi(8-4)\\ &=\boxed{8\pi}. \end{aligned}
+$$
+
+此题原资料还有第二问：
+
+$$
+J=\oint_{\partial D_1} \frac{ (xe^{x^2+4y^2}+y)\,\mathrm dx +(4ye^{x^2+4y^2}-x)\,\mathrm dy }{x^2+4y^2}.
+$$
+
+正向边界是半径2的逆时针圆周。
+
+先令
+
+$$
+s=x^2+4y^2.
+$$
+
+那么
+
+$$
+\mathrm ds=2x\,\mathrm dx+8y\,\mathrm dy.
+$$
+
+所以
+
+$$
+\begin{aligned} J &=\oint_{\partial D_1} \frac{e^s(x\,\mathrm dx+4y\,\mathrm dy)}s\\ &\quad-\oint_{\partial D_1} \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+4y^2}\\ &=\oint_{\partial D_1}\frac{e^s}{2s}\,\mathrm ds -\oint_{\partial D_1} \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+4y^2}. \end{aligned}
+$$
+
+第一项是单值全微分，闭路积分为0。
+
+第二项令
+
+$$
+u=x,\qquad v=2y.
+$$
+
+则
+
+$$
+\frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+4y^2} = \frac12 \frac{u\,\mathrm dv-v\,\mathrm du}{u^2+v^2}.
+$$
+
+变换后的闭曲线逆时针围绕原点一周，因此
+
+$$
+J=-\frac12\cdot2\pi.
+$$
+
+最终
+
+$$
+\boxed{J=-\pi}.
+$$
+
+  </Step>
+
+</Steps>
+
+这道题的第一问属于区域最值，第二问属于奇点与绕数。
+
+将二者放在同一道题中，正是综合题的重要特点。
+
+### 6.2 一个很有用的椭圆积分公式
+
+设椭圆区域
+
+$$
+D:\frac{x^2}{a^2}+\frac{y^2}{b^2}\le1, \qquad a,b>0.
+$$
+
+通过代换
+
+$$
+x=au,\qquad y=bv
+$$
+
+可得
+
+$$
+\boxed{ \iint_D1\,\mathrm dA=\pi ab }
+$$
+
+$$
+\boxed{ \iint_Dx^2\,\mathrm dA =\frac{\pi a^3b}{4} }
+$$
+
+$$
+\boxed{ \iint_Dy^2\,\mathrm dA =\frac{\pi ab^3}{4} }
+$$
+
+这些公式在格林公式后的二重积分计算中非常常见。
+
+例如，2013年数学一资料题将四个正向圆、椭圆上的积分化为
+
+$$
+I(a,b)=\pi ab \left(1-\frac{a^2}{4}-\frac{b^2}{8}\right).
+$$
+
+四种区域分别对应：
+
+| 区域边界             | $(a,b)$           | 积分结果                       |
+| ---------------- | --------------------- | -------------------------- |
+| $x^2+y^2=1$  | $(1,1)$           | $\frac{5\pi}{8}$       |
+| $x^2+y^2=2$  | $(\sqrt2,\sqrt2)$ | $\frac{\pi}{2}$        |
+| $x^2+2y^2=2$ | $(\sqrt2,1)$      | $\frac{3\sqrt2\pi}{8}$ |
+| $2x^2+y^2=2$ | $(1,\sqrt2)$      | $\frac{\sqrt2\pi}{2}$  |
+
+因此最大的是第四个区域。
+
+注意这里不能只凭椭圆面积判断，还需要考虑 $x^2,y^2$ 对积分的影响。
+
+## 七、第四大题型：路径无关、全微分与势函数
+
+这一部分是第二类曲线积分的理论核心，也是考研数学一证明题、含参数题与综合题的重要来源。
+
+### 7.1 什么叫积分与路径无关？
+
+设
+
+$$
+I=\int_LP(x,y)\,\mathrm dx+Q(x,y)\,\mathrm dy.
+$$
+
+如果在某个区域 $D$ 内，任意两条具有相同起点和终点的分段光滑路径，其积分值都相等，就称积分在区域 $D$ 内与路径无关。
+
+这里有三个关键词：
+
+相同起点、相同终点、任意路径。
+
+如果只知道两条特殊路径的积分相等，并不能说明积分与路径无关。
+
+### 7.2 路径无关的核心定理
+
+设 $D$ 是连通开区域，且
+
+$$
+P,Q\in C^1(D).
+$$
+
+那么以下三个条件等价：
+
+（1）积分
+
+$$
+\int_LP\,\mathrm dx+Q\,\mathrm dy
+$$
+
+在 $D$ 内与路径无关。
+
+（2）对 $D$ 内任意分段光滑闭曲线，
+
+$$
+\oint_LP\,\mathrm dx+Q\,\mathrm dy=0.
+$$
+
+（3）存在单值函数 $U(x,y)$，使得
+
+$$
+\mathrm dU=P\,\mathrm dx+Q\,\mathrm dy.
+$$
+
+若进一步假设 $D$ 是单连通区域，则上述条件还等价于
+
+$$
+\boxed{ P_y=Q_x }
+$$
+
+这个结论值得反复强调。
+
+<Callout type="warn" title="路径无关需要定义域前提">
+
+只有在满足相应定义域条件时，交叉偏导相等才能充分保证路径无关。
+
+</Callout>
+
+如果区域不是单连通的，$P_y=Q_x$ 一般只是必要条件，并不充分。
+
+### 7.3 为什么交叉偏导相等？
+
+如果存在势函数 $U$，满足
+
+$$
+U_x=P,\qquad U_y=Q,
+$$
+
+那么
+
+$$
+P_y=U_{xy},\qquad Q_x=U_{yx}.
+$$
+
+由混合偏导连续时的交换次序定理，
+
+$$
+U_{xy}=U_{yx}.
+$$
+
+因此
+
+$$
+\boxed{P_y=Q_x}.
+$$
+
+反过来，在合适的单连通区域中，可以根据交叉偏导相等构造势函数。
+
+### 7.4 怎样寻找势函数？
+
+这是考场上的标准方法。
+
+已知
+
+$$
+U_x=P(x,y),\qquad U_y=Q(x,y).
+$$
+
+先对 $x$ 积分：
+
+$$
+U(x,y)=\int P(x,y)\,\mathrm dx+\varphi(y).
+$$
+
+这里对 $x$ 积分时，$y$ 被看作常量，所以积分后的待定项是关于 $y$ 的函数，而不是普通常数。
+
+然后求
+
+$$
+U_y,
+$$
+
+令其等于 $Q$，就可以确定 $\varphi'(y)$。
+
+最后代入两个端点：
+
+$$
+I=U(B)-U(A).
+$$
+
+这套方法比逐条计算可能的路径更高效。
+
+### 母题8：1989年数学一真题——路径无关确定未知函数
+
+设
+
+$$
+I=\int_Cxy^2\,\mathrm dx+y\varphi(x)\,\mathrm dy
+$$
+
+与路径无关，已知
+
+$$
+\varphi(0)=0.
+$$
+
+求 $\varphi(x)$，并计算从 $(0,0)$ 到 $(1,1)$ 的积分。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：识别系数。
+
+$$
+P=xy^2,\qquad Q=y\varphi(x).
+$$
+
+由于积分与路径无关，
+
+$$
+P_y=Q_x.
+$$
+
+于是
+
+$$
+2xy=y\varphi'(x).
+$$
+
+等式对区域中任意 $y$ 成立，因此
+
+$$
+\varphi'(x)=2x.
+$$
+
+积分：
+
+$$
+\varphi(x)=x^2+C.
+$$
+
+由初始条件，
+
+$$
+C=0.
+$$
+
+所以
+
+$$
+\boxed{\varphi(x)=x^2}.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：构造势函数。
+
+原积分变为
+
+$$
+I=\int_Cxy^2\,\mathrm dx+x^2y\,\mathrm dy.
+$$
+
+注意
+
+$$
+\mathrm d\left(\frac12x^2y^2\right) =xy^2\,\mathrm dx+x^2y\,\mathrm dy.
+$$
+
+因此势函数为
+
+$$
+U(x,y)=\frac12x^2y^2.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：计算端点差。
+
+$$
+I=U(1,1)-U(0,0).
+$$
+
+最终
+
+$$
+\boxed{I=\frac12}.
+$$
+
+  </Step>
+
+</Steps>
+
+这道题是所有“路径无关确定参数或未知函数”题目的基础母题。
+
+其一般结构为：
+
+$$
+\boxed{ P_y=Q_x \longrightarrow \text{确定未知函数} \longrightarrow \text{构造势函数} \longrightarrow \text{端点求值} }
+$$
+
+### 母题9：2002年数学一真题——直接识别复合函数全微分
+
+题目给出
+
+$$
+\begin{aligned} I=\int_L& \frac{1+y^2f(xy)}y\,\mathrm dx\\ &+\frac{x[y^2f(xy)-1]}{y^2}\,\mathrm dy, \end{aligned}
+$$
+
+其中 $L$ 位于上半平面 $y>0$，从 $(a,b)$ 到 $(c,d)$。
+
+要求证明路径无关，并在 $ab=cd$ 时求积分。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：整理微分形式。
+
+将系数展开：
+
+$$
+\begin{aligned} P\,\mathrm dx+Q\,\mathrm dy ={}& \left(\frac1y+yf(xy)\right)\mathrm dx\\ &+\left(xf(xy)-\frac{x}{y^2}\right)\mathrm dy. \end{aligned}
+$$
+
+重新分组：
+
+$$
+\begin{aligned} ={}& \left(\frac1y\,\mathrm dx -\frac{x}{y^2}\,\mathrm dy\right)\\ &+f(xy) \left(y\,\mathrm dx+x\,\mathrm dy\right). \end{aligned}
+$$
+
+观察到
+
+$$
+\mathrm d\left(\frac xy\right) =\frac1y\,\mathrm dx-\frac{x}{y^2}\,\mathrm dy,
+$$
+
+而
+
+$$
+\mathrm d(xy)=y\,\mathrm dx+x\,\mathrm dy.
+$$
+
+所以
+
+$$
+\boxed{ P\,\mathrm dx+Q\,\mathrm dy = \mathrm d\left(\frac xy\right) +f(xy)\,\mathrm d(xy) }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：构造势函数。
+
+设 $F'=f$，那么
+
+$$
+f(xy)\,\mathrm d(xy)=\mathrm dF(xy).
+$$
+
+因此
+
+$$
+U(x,y)=\frac xy+F(xy)
+$$
+
+就是势函数。
+
+这直接证明积分与路径无关。
+
+  </Step>
+
+  <Step>
+
+#### 第三步：计算端点差。
+
+$$
+\begin{aligned} I &=U(c,d)-U(a,b)\\ &=\frac cd-\frac ab+F(cd)-F(ab). \end{aligned}
+$$
+
+由于
+
+$$
+ab=cd,
+$$
+
+后两项抵消。
+
+所以
+
+$$
+\boxed{ I=\frac cd-\frac ab }.
+$$
+
+  </Step>
+
+</Steps>
+
+本题的方法升级：
+
+当题目中反复出现 $xy$、$x/y$、$x^2+y^2$ 等组合时，应该考虑把整个组合看成新变量。
+
+例如：
+
+$$
+\mathrm d(xy)=y\,\mathrm dx+x\,\mathrm dy,
+$$
+
+$$
+\mathrm d\left(\frac xy\right) =\frac{y\,\mathrm dx-x\,\mathrm dy}{y^2}.
+$$
+
+这种“识别复合微分”的能力，通常比机械计算 $P_y,Q_x$ 更重要。
+
+### 母题10：2017年数学一真题——含参数的路径无关判定
+
+已知
+
+$$
+I=\int_L \frac{x\,\mathrm dx-ay\,\mathrm dy}{x^2+y^2-1}
+$$
+
+在区域
+
+$$
+D:x^2+y^2<1
+$$
+
+内与路径无关，求参数 $a$。
+
+设
+
+$$
+P=\frac{x}{x^2+y^2-1},
+$$
+
+$$
+Q=-\frac{ay}{x^2+y^2-1}.
+$$
+
+计算：
+
+$$
+P_y=-\frac{2xy}{(x^2+y^2-1)^2},
+$$
+
+$$
+Q_x=\frac{2axy}{(x^2+y^2-1)^2}.
+$$
+
+由
+
+$$
+P_y=Q_x
+$$
+
+得
+
+$$
+-2xy=2axy.
+$$
+
+这个恒等式必须对区域内所有点成立，因此
+
+$$
+\boxed{a=-1}.
+$$
+
+代入检查：
+
+$$
+\begin{aligned} P\,\mathrm dx+Q\,\mathrm dy &=\frac{x\,\mathrm dx+y\,\mathrm dy}{x^2+y^2-1}\\ &=\frac12\mathrm d\ln(1-x^2-y^2). \end{aligned}
+$$
+
+由于在 $D$ 内
+
+$$
+1-x^2-y^2>0,
+$$
+
+势函数合法，因而结论确实成立。
+
+这里体现了含参数题的一个重要习惯：
+
+通过偏导相等确定参数后，最好再作一次充分性检查。
+
+## 八、第五大题型：路径无关与微分方程结合
+
+这是张宇、李林、李正元相关练习中非常值得训练的一类题。
+
+题目的表面形式是曲线积分，实际上会转化成一阶微分方程。
+
+### 母题11：李正元练习——未知函数满足一阶线性微分方程
+
+设 $\varphi(x)$ 在 $x>0$ 内有连续导数，并且
+
+$$
+\varphi(\pi)=1.
+$$
+
+要求曲线积分
+
+$$
+I=\int_{AB} [\sin x-\varphi(x)]\frac yx\,\mathrm dx +\varphi(x)\,\mathrm dy
+$$
+
+与路径无关。
+
+求 $\varphi(x)$。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：建立交叉偏导关系。
+
+$$
+P=\frac yx[\sin x-\varphi(x)],
+$$
+
+$$
+Q=\varphi(x).
+$$
+
+因此
+
+$$
+P_y=\frac{\sin x-\varphi(x)}x,
+$$
+
+$$
+Q_x=\varphi'(x).
+$$
+
+路径无关要求
+
+$$
+\frac{\sin x-\varphi(x)}x=\varphi'(x).
+$$
+
+整理：
+
+$$
+\boxed{ x\varphi'(x)+\varphi(x)=\sin x }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：识别乘积求导。
+
+左侧就是
+
+$$
+[x\varphi(x)]'.
+$$
+
+所以
+
+$$
+[x\varphi(x)]'=\sin x.
+$$
+
+积分：
+
+$$
+x\varphi(x)=-\cos x+C.
+$$
+
+由
+
+$$
+\varphi(\pi)=1
+$$
+
+得到
+
+$$
+\pi=1+C.
+$$
+
+因此
+
+$$
+C=\pi-1.
+$$
+
+最终
+
+$$
+\boxed{ \varphi(x)=\frac{\pi-1-\cos x}{x} }
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：寻找势函数。
+
+由微分方程可知
+
+$$
+P=y\varphi'(x).
+$$
+
+而
+
+$$
+Q=\varphi(x).
+$$
+
+因此
+
+$$
+P\,\mathrm dx+Q\,\mathrm dy =\mathrm d[y\varphi(x)].
+$$
+
+势函数为
+
+$$
+U(x,y)=y\varphi(x).
+$$
+
+若
+
+$$
+A=(1,1),\qquad B=(\pi,\pi),
+$$
+
+那么
+
+$$
+\begin{aligned} I &=\pi\varphi(\pi)-\varphi(1)\\ &=\pi-(\pi-1-\cos1). \end{aligned}
+$$
+
+所以
+
+$$
+\boxed{I=1+\cos1}.
+$$
+
+  </Step>
+
+</Steps>
+
+为什么这类题值得重视？
+
+因为它不是直接考你会不会解微分方程，而是要求你从“路径无关”的数学条件中主动建立微分方程。
+
+以后遇到类似
+
+$$
+P=yA(x),\qquad Q=B(x)
+$$
+
+的结构，可以优先检查
+
+$$
+A(x)=B'(x).
+$$
+
+这常常对应势函数
+
+$$
+U(x,y)=yB(x).
+$$
+
+### 8.1 另一个重要升级：齐次函数与格林公式
+
+2006年数学一资料题中出现条件：
+
+$$
+f(tx,ty)=t^{-2}f(x,y),\qquad t>0.
+$$
+
+这说明 $f$ 是 $-2$ 次齐次函数。
+
+根据欧拉齐次函数定理，
+
+$$
+\boxed{ xf_x+yf_y=-2f }
+$$
+
+要求证明，在上半平面内任意分段光滑简单闭曲线 $L$ 上，
+
+$$
+\oint_Lyf\,\mathrm dx-xf\,\mathrm dy=0.
+$$
+
+令
+
+$$
+P=yf,\qquad Q=-xf.
+$$
+
+则
+
+$$
+P_y=f+yf_y,
+$$
+
+$$
+Q_x=-f-xf_x.
+$$
+
+因此
+
+$$
+\begin{aligned} Q_x-P_y &=-2f-xf_x-yf_y\\ &=-2f-(-2f)\\ &=0. \end{aligned}
+$$
+
+因为上半平面是凸区域，题设闭曲线所围的内部也在上半平面内，能够合法使用格林公式。
+
+于是
+
+$$
+\boxed{ \oint_Lyf\,\mathrm dx-xf\,\mathrm dy=0 }.
+$$
+
+这道题的母题结构是：
+
+$$
+\boxed{ \text{抽象函数条件} \rightarrow \text{欧拉恒等式} \rightarrow \text{旋度为零} \rightarrow \text{格林公式} }
+$$
+
+遇到抽象函数和闭曲线积分组合时，不一定要先求出函数的具体形式。
+
+## 九、第六大题型：奇点、绕数与非单连通区域
+
+这一部分是本节最容易产生概念性错误的地方。
+
+它也是区分基础水平与较强综合能力的重要内容。
+
+### 9.1 为什么旋度为零，闭路积分仍然可能不为零？
+
+考虑向量场
+
+$$
+P=-\frac y{x^2+y^2},
+$$
+
+$$
+Q=\frac x{x^2+y^2}.
+$$
+
+在原点以外，
+
+$$
+P_y=Q_x.
+$$
+
+也就是说
+
+$$
+Q_x-P_y=0.
+$$
+
+然而，对于逆时针单位圆
+
+$$
+x=\cos t,\qquad y=\sin t, \qquad0\le t\le2\pi,
+$$
+
+有
+
+$$
+\mathrm dx=-\sin t\,\mathrm dt,
+$$
+
+$$
+\mathrm dy=\cos t\,\mathrm dt.
+$$
+
+所以
+
+$$
+\begin{aligned} I &=\oint_L \frac{-y\,\mathrm dx+x\,\mathrm dy}{x^2+y^2}\\ &=\int_0^{2\pi} (\sin^2t+\cos^2t)\,\mathrm dt\\ &=2\pi. \end{aligned}
+$$
+
+因此
+
+$$
+\boxed{I=2\pi\ne0}.
+$$
+
+为什么这不矛盾？
+
+因为该场在
+
+$$
+(0,0)
+$$
+
+没有定义。
+
+单位圆所围区域包含奇点，无法直接在整个圆盘上使用格林公式。
+
+而在去心平面
+
+$$
+D=\mathbb R^2\setminus\{(0,0)\}
+$$
+
+中，虽然交叉偏导相等，但该区域不是单连通的。
+
+### 9.2 绕数公式
+
+定义
+
+$$
+\omega= \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+y^2}.
+$$
+
+如果有向闭曲线 $L$ 不经过原点，则
+
+$$
+\boxed{ \oint_L\omega =2\pi n(L,0) }
+$$
+
+其中 $n(L,0)$ 为曲线关于原点的绕数。
+
+对不自交的简单闭曲线：
+
+| 原点与曲线的位置关系 | 方向   | 积分          |
+| ---------- | ---- | ----------- |
+| 原点在曲线外     | 任意方向 | $0$     |
+| 原点在曲线内     | 逆时针  | $2\pi$  |
+| 原点在曲线内     | 顺时针  | $-2\pi$ |
+| 曲线经过原点     | —    | 通常积分无定义     |
+
+如果曲线逆时针绕原点两圈，那么
+
+$$
+n(L,0)=2,
+$$
+
+积分便是
+
+$$
+4\pi.
+$$
+
+这个结论与曲线是圆、椭圆还是不规则封闭曲线无关。
+
+### 母题12：2000年数学一真题——分母不是标准圆形
+
+计算
+
+$$
+I=\oint_L \frac{x\,\mathrm dy-y\,\mathrm dx}{4x^2+y^2},
+$$
+
+其中 $L$ 为以 $(1,0)$ 为圆心、$R>1$ 为半径的逆时针圆周。
+
+<Steps>
+
+  <Step>
+
+#### 第一步：确定奇点位置。
+
+分母
+
+$$
+4x^2+y^2
+$$
+
+只在原点为零。
+
+由于圆心到原点的距离为1，而 $R>1$，原点位于圆内部。
+
+  </Step>
+
+  <Step>
+
+#### 第二步：线性变换。
+
+取
+
+$$
+u=2x,\qquad v=y.
+$$
+
+则
+
+$$
+4x^2+y^2=u^2+v^2,
+$$
+
+并且
+
+$$
+x\,\mathrm dy-y\,\mathrm dx =\frac12(u\,\mathrm dv-v\,\mathrm du).
+$$
+
+所以
+
+$$
+I=\frac12 \oint_{L'} \frac{u\,\mathrm dv-v\,\mathrm du}{u^2+v^2}.
+$$
+
+由于变换的行列式为正，曲线方向不改变，仍逆时针绕原点一次。
+
+因此
+
+$$
+\boxed{I=\pi}.
+$$
+
+  </Step>
+
+</Steps>
+
+这道题总结出一种重要方法：
+
+<Callout type="idea" title="奇点积分的线性换元技巧">
+
+分母出现正定二次型时，尝试通过线性变换化为 $u^2+v^2$。
+
+</Callout>
+
+例如
+
+$$
+x^2+2xy+2y^2 =(x+y)^2+y^2.
+$$
+
+可以取
+
+$$
+u=x+y,\qquad v=y.
+$$
+
+由于
+
+$$
+u\,\mathrm dv-v\,\mathrm du =x\,\mathrm dy-y\,\mathrm dx,
+$$
+
+因此对逆时针绕原点一周的闭曲线，
+
+$$
+\boxed{ \oint_L \frac{x\,\mathrm dy-y\,\mathrm dx}{x^2+2xy+2y^2} =2\pi }
+$$
+
+这正是资料中一道2027考研模拟题的核心思路。
+
+### 9.3 更一般的正定二次型公式
+
+如果
+
+$$
+u=ax+by,\qquad v=cx+dy,
+$$
+
+且
+
+$$
+\Delta=ad-bc\ne0,
+$$
+
+则
+
+$$
+u\,\mathrm dv-v\,\mathrm du =\Delta(x\,\mathrm dy-y\,\mathrm dx).
+$$
+
+利用绕数与线性变换的方向关系，可以推出
+
+$$
+\boxed{ \oint_L \frac{x\,\mathrm dy-y\,\mathrm dx} {(ax+by)^2+(cx+dy)^2} = \frac{2\pi}{|\Delta|}n(L,0) }
+$$
+
+其中 $L$ 是不经过原点的闭曲线。
+
+这个公式不是需要死记的独立公式，而是“线性变换＋绕数”的直接推论。
+
+它有很强的迁移价值：即使将圆改成椭圆、菱形或其他闭曲线，只要绕数不变，仍可使用。
+
+### 9.4 含参数时，还必须检查区域拓扑
+
+李正元练习中有这样的问题：
+
+$$
+\begin{aligned} P&=\frac{x-y}{(x^2+y^2)^n},\\ Q&=\frac{x+y}{(x^2+y^2)^n}. \end{aligned}
+$$
+
+问积分在去心平面上是否与路径无关。
+
+计算可得
+
+$$
+\boxed{ Q_x-P_y =2(1-n)(x^2+y^2)^{-n} }
+$$
+
+因此，如果 $n\ne1$，旋度不为零，不可能路径无关。
+
+如果 $n=1$，则
+
+$$
+\begin{aligned} P\,\mathrm dx+Q\,\mathrm dy ={}& \frac{x\,\mathrm dx+y\,\mathrm dy}{x^2+y^2}\\ &+\frac{-y\,\mathrm dx+x\,\mathrm dy}{x^2+y^2}. \end{aligned}
+$$
+
+即
+
+$$
+\mathrm d\ln r+\mathrm d\theta
+$$
+
+的局部形式。
+
+沿逆时针单位圆，
+
+$$
+\oint_L\mathrm d\ln r=0,
+$$
+
+但
+
+$$
+\oint_L\mathrm d\theta=2\pi.
+$$
+
+所以 $n=1$ 也不满足路径无关。
+
+最终
+
+$$
+\boxed{\text{不存在使积分在整个去心平面路径无关的实数 }n}.
+$$
+
+这道题所体现的解题顺序极其重要：
+
+$$
+\boxed{ \text{先检查 }P_y=Q_x \rightarrow \text{再检查定义域} \rightarrow \text{必要时计算典型闭路} }
+$$
+
+不能仅通过代数条件确定参数就结束作答。
+
+## 十、综合模拟题：从曲线积分反推出未知函数
+
+下面这道题选自资料中的李永乐六套卷第4套第14题，比普通格林公式题更综合。
+
+题目给出
+
+$$
+L:y=x(2-x)
+$$
+
+上从 $(0,0)$ 到 $(2,0)$ 的有向曲线弧。
+
+连续函数 $f(t)$ 满足
+
+$$
+f(t)=t^2+t\int_L (e^y-xy)\,\mathrm dx +x[f(y)+e^y]\,\mathrm dy.
+$$
+
+求 $f(t)$。
+
+这道题有两个关键隐藏条件。
+
+首先，积分路径 $L$ 是固定的，曲线积分本身是一个常数。
+
+其次，被积函数里面再次出现未知函数 $f(y)$。
+
+### 第一步：将整个积分记为常数
+
+令
+
+$$
+m=\int_L (e^y-xy)\,\mathrm dx +x[f(y)+e^y]\,\mathrm dy.
+$$
+
+那么题目立即变成
+
+$$
+\boxed{f(t)=t^2+mt}.
+$$
+
+所以
+
+$$
+f(y)=y^2+my.
+$$
+
+代入原积分：
+
+$$
+m=\int_L (e^y-xy)\,\mathrm dx +x(y^2+my+e^y)\,\mathrm dy.
+$$
+
+### 第二步：使用格林公式
+
+设
+
+$$
+P=e^y-xy,
+$$
+
+$$
+Q=x(y^2+my+e^y).
+$$
+
+则
+
+$$
+\begin{aligned} Q_x-P_y &=y^2+my+e^y-(e^y-x)\\ &=x+y^2+my. \end{aligned}
+$$
+
+注意：原路径沿抛物线上边界从左到右，补上 $x$ 轴返回后为顺时针边界。
+
+补线段上
+
+$$
+P=1,\qquad\mathrm dy=0,
+$$
+
+所以补线积分为
+
+$$
+\int_2^0\mathrm dx=-2.
+$$
+
+因此
+
+$$
+m-2=-\iint_D(x+y^2+my)\,\mathrm dA.
+$$
+
+### 第三步：计算区域矩
+
+积分区域为
+
+$$
+D: \begin{cases} 0\le x\le2,\\ 0\le y\le x(2-x). \end{cases}
+$$
+
+直接积分得到
+
+$$
+\iint_Dx\,\mathrm dA=\frac43,
+$$
+
+$$
+\iint_Dy\,\mathrm dA=\frac8{15},
+$$
+
+$$
+\iint_Dy^2\,\mathrm dA=\frac{32}{105}.
+$$
+
+于是
+
+$$
+m-2 =-\frac43-\frac{32}{105}-\frac8{15}m.
+$$
+
+整理：
+
+$$
+\frac{23}{15}m=\frac{38}{105}.
+$$
+
+得到
+
+$$
+m=\frac{38}{161}.
+$$
+
+所以
+
+$$
+\boxed{ f(t)=t^2+\frac{38}{161}t }.
+$$
+
+### 这道题代表什么创新方向？
+
+它把四个知识点连接起来：
+
+$$
+\boxed{ \text{未知函数} \rightarrow \text{待定常数} \rightarrow \text{格林公式} \rightarrow \text{代数方程} }
+$$
+
+以后看到
+
+$$
+f(t)=g(t)+h(t)\int_L(\cdots)
+$$
+
+这样的形式，先观察积分是否真的依赖自由变量 $t$。
+
+如果路径固定、被积函数中的积分变量也与外部自由变量无关，那么积分可以整体记为常数。
+
+这是解决这类题的第一突破口。
+
+## 十一、格林公式与二重积分变量代换结合
+
+资料中的2027李林六套卷第6套第19题非常适合提高综合计算能力。
+
+已知
+
+$$
+f(4)-f(1)=1.
+$$
+
+区域 $D$ 位于第一象限，由四条曲线
+
+$$
+y=x,\qquad y=4x,\qquad xy=1,\qquad xy=4
+$$
+
+围成。
+
+边界 $L$ 取正向。
+
+计算
+
+$$
+I=\oint_L -\frac{f(xy)}x\,\mathrm dx +\frac{f(xy)}y\,\mathrm dy.
+$$
+
+### 第一步：格林公式
+
+令
+
+$$
+P=-\frac{f(xy)}x,\qquad Q=\frac{f(xy)}y.
+$$
+
+于是
+
+$$
+Q_x=f'(xy),
+$$
+
+$$
+P_y=-f'(xy).
+$$
+
+所以
+
+$$
+\begin{aligned} I &=\iint_D(Q_x-P_y)\,\mathrm dA\\ &=2\iint_Df'(xy)\,\mathrm dA. \end{aligned}
+$$
+
+### 第二步：根据边界选择换元
+
+观察区域：
+
+$$
+xy=1,\quad xy=4
+$$
+
+构成一组边界；
+
+$$
+\frac yx=1,\quad \frac yx=4
+$$
+
+构成另一组边界。
+
+因此自然令
+
+$$
+u=xy,\qquad v=\frac yx.
+$$
+
+新区域立即变成矩形：
+
+$$
+1\le u\le4,\qquad 1\le v\le4.
+$$
+
+利用雅可比行列式可得
+
+$$
+\left| \frac{\partial(x,y)}{\partial(u,v)} \right|=\frac1{2v}.
+$$
+
+### 第三步：分离变量
+
+$$
+\begin{aligned} I &=2\int_1^4\int_1^4 f'(u)\frac1{2v}\,\mathrm dv\,\mathrm du\\ &=\left(\int_1^4f'(u)\,\mathrm du\right) \left(\int_1^4\frac{\mathrm dv}{v}\right)\\ &=[f(4)-f(1)]\ln4. \end{aligned}
+$$
+
+所以
+
+$$
+\boxed{I=\ln4}.
+$$
+
+这道题的重要性在于，它不是单纯的曲线积分题，而是
+
+$$
+\boxed{ \text{格林公式} + \text{曲边区域识别} + \text{二重积分换元} }
+$$
+
+的综合运用。
+
+以后遇到由
+
+$$
+xy=c,\qquad y/x=c
+$$
+
+构成的区域，应优先想到 $u=xy,\ v=y/x$。
+
+## 十二、数一拓展：空间第二类曲线积分与斯托克斯公式
+
+第二类曲线积分不仅存在于平面，也存在于空间。
+
+空间形式为
+
+$$
+\int_LP\,\mathrm dx+Q\,\mathrm dy+R\,\mathrm dz.
+$$
+
+它同样依赖曲线方向。
+
+### 12.1 空间曲线直接参数化
+
+若
+
+$$
+\boldsymbol r(t) =(x(t),y(t),z(t)), \qquad a\le t\le b,
+$$
+
+则
+
+$$
+\boxed{ \begin{aligned} I=\int_a^b \big[ &P(x(t),y(t),z(t))x'(t)\\ +&Q(x(t),y(t),z(t))y'(t)\\ +&R(x(t),y(t),z(t))z'(t) \big]\,\mathrm dt. \end{aligned} }
+$$
+
+如果曲线是空间闭曲线，通常还可以考虑斯托克斯公式。
+
+### 12.2 斯托克斯公式
+
+令
+
+$$
+\boldsymbol F=(P,Q,R),
+$$
+
+则
+
+$$
+\boxed{ \oint_{\partial\Sigma} \boldsymbol F\cdot\mathrm d\boldsymbol r = \iint_\Sigma (\nabla\times\boldsymbol F)\cdot \boldsymbol n\,\mathrm dS }
+$$
+
+其中旋度为
+
+$$
+\boxed{ \nabla\times\boldsymbol F= \begin{pmatrix} R_y-Q_z\\ P_z-R_x\\ Q_x-P_y \end{pmatrix} }
+$$
+
+斯托克斯公式可以理解成格林公式在三维空间中的推广。
+
+最关键的不是计算旋度，而是选择合适的曲面，并判断法向量与边界方向是否匹配。
+
+如果闭曲线从 $z$ 轴正向观察为逆时针，其水平投影按逆时针绕行，通常对应选取 $z$ 分量为正的法向量。
+
+### 母题13：空间闭曲线与斯托克斯公式
+
+选取2027汤家凤八套卷第6套第14题。
+
+设空间曲线 $L$ 是
+
+$$
+x^2+y^2=2x
+$$
+
+与
+
+$$
+z=2x-y-1
+$$
+
+的交线，从 $z$ 轴正向看为逆时针。
+
+计算
+
+$$
+I=\oint_L y^2\,\mathrm dx+(z+1)\,\mathrm dy+x\,\mathrm dz.
+$$
+
+<Steps>
+
+  <Step>
+
+#### 第一步：选取积分曲面。
+
+取平面
+
+$$
+\Sigma:z=2x-y-1
+$$
+
+内部由 $L$ 围成的部分。
+
+其投影区域为圆盘
+
+$$
+D:(x-1)^2+y^2\le1.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第二步：计算旋度。
+
+设
+
+$$
+\boldsymbol F=(y^2,z+1,x).
+$$
+
+则
+
+$$
+\nabla\times\boldsymbol F =(-1,-1,-2y).
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第三步：确定有向面积元。
+
+由于
+
+$$
+z_x=2,\qquad z_y=-1,
+$$
+
+取向上法向时，
+
+$$
+\boldsymbol n\,\mathrm dS =(-z_x,-z_y,1)\,\mathrm dx\,\mathrm dy.
+$$
+
+即
+
+$$
+\boldsymbol n\,\mathrm dS =(-2,1,1)\,\mathrm dx\,\mathrm dy.
+$$
+
+  </Step>
+
+  <Step>
+
+#### 第四步：应用斯托克斯公式。
+
+$$
+\begin{aligned} I &=\iint_D (-1,-1,-2y)\cdot(-2,1,1)\,\mathrm dA\\ &=\iint_D(1-2y)\,\mathrm dA. \end{aligned}
+$$
+
+圆盘关于 $x$ 轴对称，因此
+
+$$
+\iint_Dy\,\mathrm dA=0.
+$$
+
+圆盘面积为 $\pi$，故
+
+$$
+\boxed{I=\pi}.
+$$
+
+  </Step>
+
+</Steps>
+
+这道题说明，空间曲线虽然可能很复杂，但如果能找到简单的张成曲面，其计算甚至可能比直接参数化更短。
+
+另外，斯托克斯公式要求向量场在所选曲面附近具有适当的光滑性，曲线方向与曲面法向必须符合右手定则；不能忽略这些前提。
+
+## 十三、考场上如何快速识别题型？
+
+前面讲了较多具体方法，现在需要把它们变成一套能够实际执行的判断流程。
+
+面对
+
+$$
+I=\int_LP\,\mathrm dx+Q\,\mathrm dy,
+$$
+
+先不要急着计算。
+
+建议按以下顺序思考。
+
+| 题目特征                                       | 第一反应                | 优先方法      |
+| ------------------------------------------ | ------------------- | --------- |
+| $y=f(x)$ 或 $x=g(y)$                | 曲线能否直接代入？           | 参数化       |
+| 多段圆弧、折线                                    | 是否需要分段？             | 分段参数化     |
+| 出现 $U_x\,\mathrm dx+U_y\,\mathrm dy$ | 是否为全微分？             | 端点差       |
+| 曲线是正向闭曲线                                   | $Q_x-P_y$ 是否简单？ | 格林公式      |
+| 开弧与坐标轴围成区域                                 | 补边积分是否简单？           | 补线法       |
+| 要求路径无关                                     | 区域是否单连通？            | 交叉偏导与势函数  |
+| 出现未知参数或未知函数                                | 能否建立恒等式？            | 偏导相等、微分方程 |
+| 分母出现 $x^2+y^2$                         | 原点是否为奇点？            | 绕数或挖洞     |
+| 分母出现正定二次型                                  | 能否化为平方和？            | 线性变换      |
+| 问积分的最大、最小值                                 | 旋度密度是否变号？           | 格林公式＋区域优化 |
+| 空间闭曲线                                      | 能否找到简单张成曲面？         | 斯托克斯公式    |
+
+### 一个非常实用的优先级
+
+对一般第二类曲线积分，可以记住：
+
+$$
+\boxed{ \text{先看全微分，再看路径和区域，最后才做繁琐积分} }
+$$
+
+具体来说：
+
+先观察是否存在
+
+$$
+\mathrm d(xy),\quad \mathrm d(x^2y),\quad \mathrm dF(x^2+y^2),\quad \mathrm dF(xy)
+$$
+
+这类结构。
+
+如果没有，检查路径是不是闭合的。
+
+若闭合，考虑旋度、格林公式，以及定义域内是否有奇点。
+
+若不闭合，检查是直接参数化更容易，还是补线更容易。
+
+若曲线在空间中，则再比较直接参数化和斯托克斯公式。
+
+这套顺序并不是绝对规则，但能避免绝大多数无效计算。
+
+## 十四、最容易丢分的七个陷阱
+
+<Accordions>
+
+  <Accordion title="展开七类高频错误与正确处理方法">
+
+| 常见错误                                              | 为什么错               | 正确做法                                      |
+| ------------------------------------------------- | ------------------ | ----------------------------------------- |
+| 把 $\mathrm dx,\mathrm dy$ 当作 $\mathrm ds$ | 第二类积分依赖方向          | 参数导数必须保留符号                                |
+| 所有圆弧都令 $t:0\to\pi$                            | 实际方向可能相反           | 先确定起点和终点参数                                |
+| 开弧直接套格林公式                                         | 开弧没有围成完整区域         | 先补线并减去补边积分                                |
+| 补线后忘记正负向                                          | 顺时针与逆时针结果相反        | 判断区域位于路径哪一侧                               |
+| 看到 $P_y=Q_x$ 就说路径无关                           | 非单连通区域可能存在拓扑障碍     | 检查定义域及闭路积分                                |
+| 分母存在奇点仍直接套格林公式                                    | 格林公式的光滑性前提不满足      | 挖去奇点或使用绕数                                 |
+| 对 $U_x=P$ 积分时只加常数                             | 积分“常数”可能依赖 $y$ | 写为 $U=\int P\,\mathrm dx+\varphi(y)$ |
+
+  </Accordion>
+
+</Accordions>
+
+其中最需要警惕的是第五、六项。
+
+未来较难的综合题，往往不会直接告诉你“这里不能用格林公式”，而是把奇点隐藏在分母或者复合函数中。
+
+你必须主动检查公式的适用条件。
+
+## 十五、针对未来创新题的三个重要推论
+
+### 15.1 任意闭路积分为零，可能隐藏微分方程
+
+资料中的张宇1000题出现如下结构：
+
+对任意简单闭曲线 $L$，均有
+
+$$
+\oint_L[f(x)-e^x]y^2\,\mathrm dx -2yf(x)\,\mathrm dy=0,
+$$
+
+且
+
+$$
+f(0)=0.
+$$
+
+由于任意闭路积分都为零，推出
+
+$$
+P_y=Q_x.
+$$
+
+即
+
+$$
+2y[f(x)-e^x]=-2yf'(x).
+$$
+
+所以
+
+$$
+f'(x)+f(x)=e^x.
+$$
+
+这是标准的一阶线性微分方程。
+
+求解：
+
+$$
+[e^xf(x)]'=e^{2x},
+$$
+
+因此
+
+$$
+f(x)=\frac12e^x+Ce^{-x}.
+$$
+
+由 $f(0)=0$，得到
+
+$$
+\boxed{f(x)=\sinh x}.
+$$
+
+这一题说明，命题人完全可以把微分方程的考查隐藏在曲线积分中。
+
+### 15.2 全微分积分可以转化为终点最优化
+
+资料中的2016年数学一题给出
+
+$$
+f_x(x,y)=(2x+1)e^{2x-y},
+$$
+
+以及
+
+$$
+f(0,y)=y+1.
+$$
+
+设 $L_t$ 从 $(0,0)$ 到 $(1,t)$，要求
+
+$$
+I(t)=\int_{L_t}f_x\,\mathrm dx+f_y\,\mathrm dy
+$$
+
+的最小值。
+
+先恢复原函数：
+
+$$
+f(x,y)=xe^{2x-y}+y+1.
+$$
+
+因为积分是全微分，
+
+$$
+\begin{aligned} I(t) &=f(1,t)-f(0,0)\\ &=e^{2-t}+t. \end{aligned}
+$$
+
+求导：
+
+$$
+I'(t)=1-e^{2-t}.
+$$
+
+驻点为
+
+$$
+t=2.
+$$
+
+又因为
+
+$$
+I''(t)=e^{2-t}>0,
+$$
+
+故为全局最小值。
+
+因此
+
+$$
+\boxed{I_{\min}=3}.
+$$
+
+这揭示出另一种综合模式：
+
+$$
+\boxed{ \text{全微分} \rightarrow \text{端点函数} \rightarrow \text{一元或多元最值} }
+$$
+
+### 15.3 力场为梯度场时，功的最大值可能转化为约束极值
+
+1992年数学一资料题中给出空间力场
+
+$$
+\boldsymbol F=(yz,zx,xy).
+$$
+
+注意
+
+$$
+\boldsymbol F=\nabla(xyz).
+$$
+
+所以质点从原点到 $M(x,y,z)$ 的功为
+
+$$
+W=xyz.
+$$
+
+若终点位于第一卦限的椭球面
+
+$$
+\frac{x^2}{a^2}+ \frac{y^2}{b^2}+ \frac{z^2}{c^2}=1,
+$$
+
+则问题变为求 $xyz$ 的最大值。
+
+令
+
+$$
+u=\frac xa,\qquad v=\frac yb,\qquad w=\frac zc.
+$$
+
+由
+
+$$
+u^2+v^2+w^2=1,
+$$
+
+以及均值不等式，
+
+$$
+u^2v^2w^2 \le \left(\frac{u^2+v^2+w^2}{3}\right)^3 =\frac1{27}.
+$$
+
+因此
+
+$$
+xyz=abcuvw\le\frac{abc}{3\sqrt3}.
+$$
+
+等号在
+
+$$
+u=v=w=\frac1{\sqrt3}
+$$
+
+时成立。
+
+于是
+
+$$
+\boxed{ M=\left( \frac a{\sqrt3}, \frac b{\sqrt3}, \frac c{\sqrt3} \right) }
+$$
+
+且
+
+$$
+\boxed{ W_{\max}=\frac{abc}{3\sqrt3} }.
+$$
+
+这类题表面是空间曲线积分，实质是势函数与约束最值问题。
+
+## 十六、精选巩固训练：练会方法，而不是记住答案
+
+下面给出六道适合按顺序训练的题目，其中有资料题型的改编，也有用于检验迁移能力的变式。
+
+建议先独立完成，再对照答案。
+
+### 训练1：全微分识别
+
+求
+
+$$
+I=\int_L ye^{xy}\,\mathrm dx +xe^{xy}\,\mathrm dy,
+$$
+
+其中 $L$ 是任意从 $(0,1)$ 到 $(1,1)$ 的分段光滑曲线。
+
+思路：
+
+$$
+\mathrm d(e^{xy}) =e^{xy}(y\,\mathrm dx+x\,\mathrm dy).
+$$
+
+所以
+
+$$
+\boxed{I=e-1}.
+$$
+
+### 训练2：半圆弧与方向
+
+设 $L$ 是单位圆上从 $(-1,0)$ 到 $(1,0)$ 的上半圆弧，求
+
+$$
+I=\int_Ly\,\mathrm dx-x\,\mathrm dy.
+$$
+
+思路：
+
+取
+
+$$
+x=\cos t,\qquad y=\sin t,
+$$
+
+其中
+
+$$
+t:\pi\to0.
+$$
+
+有
+
+$$
+y\,\mathrm dx-x\,\mathrm dy=-\mathrm dt.
+$$
+
+因此
+
+$$
+\boxed{I=\pi}.
+$$
+
+这道题重点检查你是否会处理递减的参数。
+
+### 训练3：闭路全微分
+
+计算
+
+$$
+I=\oint_L x^2y\,\mathrm dx+\frac{x^3}{3}\,\mathrm dy,
+$$
+
+其中 $L$ 是任意闭曲线。
+
+因为
+
+$$
+\mathrm d\left(\frac{x^3y}{3}\right) =x^2y\,\mathrm dx+\frac{x^3}{3}\,\mathrm dy,
+$$
+
+所以
+
+$$
+\boxed{I=0}.
+$$
+
+### 训练4：格林公式与最优半径
+
+设 $L_R$ 为逆时针圆周
+
+$$
+x^2+y^2=R^2,\qquad R>0.
+$$
+
+求使
+
+$$
+I(R)=\oint_{L_R} y^3\,\mathrm dx+(3x-x^3)\,\mathrm dy
+$$
+
+最大的 $R$。
+
+计算旋度：
+
+$$
+Q_x-P_y=3(1-x^2-y^2).
+$$
+
+所以
+
+$$
+I(R)=3\pi R^2-\frac{3\pi}{2}R^4.
+$$
+
+求导：
+
+$$
+I'(R)=6\pi R(1-R^2).
+$$
+
+因此
+
+$$
+\boxed{R=1}
+$$
+
+时最大，且
+
+$$
+\boxed{I_{\max}=\frac{3\pi}{2}}.
+$$
+
+### 训练5：奇点与半径分类
+
+令 $L_R$ 为圆
+
+$$
+(x-1)^2+y^2=R^2
+$$
+
+的逆时针边界。
+
+计算
+
+$$
+I(R)=\oint_{L_R} \frac{-y\,\mathrm dx+x\,\mathrm dy}{x^2+y^2}.
+$$
+
+结果为
+
+$$
+\boxed{ I(R)= \begin{cases} 0,&0<R<1,\\ 2\pi,&R>1. \end{cases} }
+$$
+
+当 $R=1$ 时，曲线经过原点，通常意义下的积分无定义。
+
+这道题要掌握的是原点位置发生变化时，绕数也可能发生变化。
+
+### 训练6：创新题——旋度与绕数双重判断
+
+考虑
+
+$$
+I_n(R)= \oint_{x^2+y^2=R^2} \frac{(x-y)\,\mathrm dx+(x+y)\,\mathrm dy} {(x^2+y^2)^n},
+$$
+
+圆周取逆时针方向，$R>0$。
+
+求 $I_n(R)$。
+
+解题思路：
+
+把分子拆开：
+
+$$
+\begin{aligned} &(x-y)\,\mathrm dx+(x+y)\,\mathrm dy\\ &=(x\,\mathrm dx+y\,\mathrm dy) +(-y\,\mathrm dx+x\,\mathrm dy). \end{aligned}
+$$
+
+在圆周上，
+
+$$
+x^2+y^2=R^2,
+$$
+
+所以
+
+$$
+x\,\mathrm dx+y\,\mathrm dy =\frac12\mathrm d(R^2)=0.
+$$
+
+另一方面，
+
+$$
+-y\,\mathrm dx+x\,\mathrm dy=R^2\,\mathrm d\theta.
+$$
+
+因此
+
+$$
+\begin{aligned} I_n(R) &=\int_0^{2\pi}\frac{R^2}{R^{2n}}\,\mathrm d\theta\\ &=2\pi R^{2-2n}. \end{aligned}
+$$
+
+最终
+
+$$
+\boxed{ I_n(R)=2\pi R^{2-2n} }.
+$$
+
+特别地，当 $n=1$ 时，
+
+$$
+\boxed{I_1(R)=2\pi}
+$$
+
+与圆的半径无关。
+
+这道题将径向微分、极角微分、参数化和拓扑性质统一到了一起，属于非常值得理解的创新题型。
+
+## 十七、复习顺序与掌握标准
+
+结合提供的真题、模拟题、张宇1000题、李林880题和李正元练习，我建议将本节复习分成四轮。
+
+| 复习阶段     | 重点              | 推荐代表题                   | 达标要求              |
+| -------- | --------------- | ----------------------- | ----------------- |
+| 第一轮：基础计算 | 参数化、方向、全微分      | 2007、2008、2012年真题       | 能独立完成开弧和分段曲线积分    |
+| 第二轮：格林公式 | 闭合、补线、区域积分      | 1987、2013、2021年真题       | 能正确判断正负方向和适用条件    |
+| 第三轮：路径无关 | 势函数、参数、微分方程     | 1989、2002、2017年真题，李正元练习 | 能证明路径无关并恢复势函数     |
+| 第四轮：综合创新 | 奇点、绕数、变量代换、空间积分 | 2000、2020年真题及2027分类模拟题  | 能处理新路径、新分母和跨章节综合题 |
+
+我尤其建议在第二轮结束后，拿出一张空白纸，独立完成以下三项任务：
+
+第一项：不看资料，推导格林公式的三个面积推论。
+
+必须能够写出
+
+$$
+S_D= \oint_{\partial D^+}x\,\mathrm dy = -\oint_{\partial D^+}y\,\mathrm dx = \frac12\oint_{\partial D^+} (x\,\mathrm dy-y\,\mathrm dx).
+$$
+
+第二项：解释为什么 $P_y=Q_x$ 仍不一定路径无关。
+
+不能只回答“定义域不是单连通的”，而应该能够举出
+
+$$
+\frac{-y\,\mathrm dx+x\,\mathrm dy}{x^2+y^2}
+$$
+
+这一经典反例，算出绕单位圆的积分为 $2\pi$，并准确指出格林公式的适用条件在哪里失效。
+
+第三项：独立处理一条没有见过的开弧。
+
+要求能比较三种策略的优劣：
+
+$$
+\text{直接参数化}, \qquad \text{寻找全微分}, \qquad \text{补线使用格林公式}.
+$$
+
+能主动选择方法，而不是看到什么公式就套什么公式，才说明真正掌握了本节。
+
+## 十八、全节最终总结
+
+第二类曲线积分的题目虽然外形多变，但核心方法非常集中。
+
+最重要的计算公式是
+
+$$
+\boxed{ \int_LP\,\mathrm dx+Q\,\mathrm dy = \int_a^b(Px'+Qy')\,\mathrm dt }
+$$
+
+最重要的化简公式是
+
+$$
+\boxed{ \int_L\mathrm dU=U(B)-U(A) }
+$$
+
+最重要的闭曲线公式是
+
+$$
+\boxed{ \oint_{\partial D^+}P\,\mathrm dx+Q\,\mathrm dy = \iint_D(Q_x-P_y)\,\mathrm dA }
+$$
+
+最重要的路径无关判据是：在适当的单连通区域中，若 $P,Q$ 具有连续一阶偏导数，则
+
+$$
+\boxed{ P_y=Q_x \iff \text{积分与路径无关} }
+$$
+
+最重要的奇点公式是
+
+$$
+\boxed{ \oint_L \frac{-y\,\mathrm dx+x\,\mathrm dy}{x^2+y^2} = 2\pi n(L,0) }
+$$
+
+而在空间中，还需要掌握
+
+$$
+\boxed{ \oint_{\partial\Sigma} \boldsymbol F\cdot\mathrm d\boldsymbol r = \iint_\Sigma (\nabla\times\boldsymbol F)\cdot \boldsymbol n\,\mathrm dS }
+$$
+
+这六组公式基本构成了本节的理论骨架。
+
+但对考研数学一而言，比记住公式更重要的是明确每个公式在什么条件下成立、什么情况下不能使用、什么时候存在更简单的方法。
+
+如果只能记住一条最终解题原则，我建议记住：
+
+先分析微分形式的结构，再检查曲线方向与定义域，最后选择计算工具。
+
+真正较难的新题，通常并不是发明全新的积分方法，而是把已有的全微分、格林公式、势函数、二重积分换元、奇点与绕数重新组合，并通过路径方向或适用条件制造陷阱。
+
+只要能熟练完成以上母题，并能够解释每一步为什么合法，就已经建立起解决第九模块第4节大部分常见题型及较难综合题所需要的核心知识体系。
